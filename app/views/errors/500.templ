@@ -1,7 +1,10 @@
 package errors
 
-import "shopTemplate/app/views/layouts"
-import 	"shopTemplate/app/types"
+import (
+	"shopTemplate/app/views/layouts"
+	"shopTemplate/app/types"
+)
+
 
 templ Error500() {
 	@layouts.BaseLayout(types.AuthUser{}) {

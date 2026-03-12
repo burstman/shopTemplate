@@ -5,23 +5,19 @@ import (
 
 	v "github.com/anthdm/superkit/validate"
 
-	"shopTemplate/app/views/layouts"
-	"shopTemplate/app/types"
 )
 
 templ ProfileShow(formValues ProfileFormValues) {
-	@layouts.App(types.AuthUser{}) {
-		<div class="mt-32 flex flex-col gap-12">
-			<div class="flex flex-col gap-2">
-				<h1 class="text-4xl">Welcome, <span class="font-medium">{ formValues.FirstName } { formValues.LastName }</span></h1>
-				<div class="flex gap-4">
-					<a href="/" class="text-sm underline">back to home</a>
-					<button hx-delete="/logout" class="text-sm underline">sign me out</button>
-				</div>
+	<div class="mt-32 flex flex-col gap-12">
+		<div class="flex flex-col gap-2">
+			<h1 class="text-4xl">Welcome, <span class="font-medium">{ formValues.FirstName } { formValues.LastName }</span></h1>
+			<div class="flex gap-4">
+				<a href="/" class="text-sm underline">back to home</a>
+				<button hx-delete="/logout" class="text-sm underline">sign me out</button>
 			</div>
-			@ProfileForm(formValues, v.Errors{})
 		</div>
-	}
+		@ProfileForm(formValues, v.Errors{})
+	</div>
 }
 
 templ ProfileForm(values ProfileFormValues, errors v.Errors) {

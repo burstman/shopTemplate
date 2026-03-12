@@ -9,7 +9,8 @@ import (
 
 func HandlePlantsIndex(kit *kit.Kit) error {
 	// In a real app, you'd fetch plants from a database here.
+	user, _ := kit.Auth().(types.AuthUser)
 
-	return RenderWithLayout(kit, layouts.PlantsLayouts(types.AuthUser{}, 1))
-	//return kit.Render(layouts.PlantsLayouts(types.AuthUser{}, 1))
+	return RenderWithLayout(kit, layouts.PlantsLayouts(user, 1))
+
 }

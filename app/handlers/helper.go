@@ -9,15 +9,10 @@ import (
 )
 
 func RenderWithLayout(kit *kit.Kit, content templ.Component) error {
-	isLoggedIn := kit.Auth().Check()
-
 	var user types.AuthUser
-	if isLoggedIn {
-		// Get the authenticated user and extract the role
-		if authedUser, ok := kit.Auth().(types.AuthUser); ok {
-			user = authedUser
-		}
+	if authedUser, ok := kit.Auth().(types.AuthUser); ok {
+		user = authedUser
 	}
 
-	return kit.Render(layouts.App(user))
+	return kit.Render(layouts.App(user, content))
 }

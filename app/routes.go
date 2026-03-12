@@ -33,7 +33,7 @@ func InitializeRoutes(router *chi.Mux) {
 	//  }
 	auth.InitializeRoutes(router)
 	authConfig := kit.AuthenticationConfig{
-		AuthFunc:    auth.AuthenticateUser,
+		AuthFunc:    handlers.HandleAuthentication,
 		RedirectURL: "/login",
 	}
 
@@ -55,6 +55,8 @@ func InitializeRoutes(router *chi.Mux) {
 		app.Use(kit.WithAuthentication(authConfig, true)) // strict set to true
 
 		// Routes
+		app.Get("/configuration", kit.Handler(handlers.HandleConfigurationIndex))
+		app.Post("/configuration", kit.Handler(handlers.HandleConfigurationUpdate))
 		// app.Get("/path", kit.Handler(myHandler.HandleIndex))
 	})
 }

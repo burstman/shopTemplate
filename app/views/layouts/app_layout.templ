@@ -1,9 +1,12 @@
 package layouts
 
-import "shopTemplate/app/types"
+import (
+	
+	"shopTemplate/app/types"
+)
 
-templ App(user types.AuthUser) {
+templ App(user types.AuthUser, content templ.Component) {
 	@BaseLayout(user) {
-		{ children... }
+		@content
 	}
 }

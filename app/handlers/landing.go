@@ -7,5 +7,5 @@ import (
 )
 
 func HandleLandingIndex(kit *kit.Kit) error {
-	return kit.Render(landing.Index())
+	return RenderWithLayout(kit, landing.Index())
 }
