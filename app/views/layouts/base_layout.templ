@@ -1,0 +1,341 @@
+package layouts
+
+import "github.com/anthdm/superkit/view"
+import "shopTemplate/app/types"
+import "shopTemplate/app/views/components"
+
+var (
+	title = "superkit project"
+	imagePlaceholder = "public/images/No_Image_Available.jpg"
+)
+
+templ BaseLayout(user types.AuthUser) {
+	<!DOCTYPE html>
+	<html lang="en">
+		<head>
+			<title>{ title }</title>
+			<link rel="icon" type="image/x-icon" href="/public/favicon.ico"/>
+			<meta charset="UTF-8"/>
+			<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+			<link rel="stylesheet" href={ view.Asset("styles.css") }/>
+			<script src={ view.Asset("index.js") }></script>
+			<!-- Alpine Plugins -->
+			<script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/focus@3.x.x/dist/cdn.min.js"></script>
+			<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+			<!-- HTMX -->
+			<script src="https://unpkg.com/htmx.org@1.9.9" defer></script>
+		</head>
+		<body x-data="{theme: 'light'}" :class="theme" class="bg-background text-foreground font-sans antialiased">
+			@Header(user)
+			{ children... }
+			@Footer()
+
+		</body>
+	</html>
+}
+
+templ Header(user types.AuthUser) {
+	<!-- Header -->
+	<header class="sticky top-0 z-50 bg-background/95 backdrop-blur-md border-b border-border">
+		<div class="w-full mx-auto px-4 sm:px-6 lg:px-14">
+			<div class="flex items-center justify-between h-11 lg:h-24">
+				<!-- Logo -->
+				<a href="#" class="font-serif text-3xl lg:text-4xl font-semibold text-foreground tracking-tight">
+					Botanica
+				</a>
+				@components.Navigation(user)
+				<!-- Icons -->
+				<div class="flex items-center gap-4">
+					<button class="p-2 text-muted-foreground hover:text-foreground transition-colors" aria-label="Search">
+						<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+						</svg>
+					</button>
+					<button class="p-2 text-muted-foreground hover:text-foreground transition-colors relative" aria-label="Cart">
+						<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
+						</svg>
+						<span class="absolute -top-1 -right-1 w-4 h-4 bg-primary text-primary-foreground text-xs rounded-full flex items-center justify-center">2</span>
+					</button>
+					<button class="md:hidden p-2 text-muted-foreground" aria-label="Menu">
+						<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 6h16M4 12h16M4 18h16"/>
+						</svg>
+					</button>
+				</div>
+			</div>
+		</div>
+	</header>
+}
+
+templ Hero() {
+	<!-- Hero Section -->
+	<section class="relative overflow-hidden bg-cream-100">
+		<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-24">
+			<div class="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+				<div class="max-w-xl">
+					<p class="text-sage-600 font-medium tracking-wide uppercase text-sm mb-4">New Collection 2026</p>
+					<h1 class="font-serif text-4xl sm:text-5xl lg:text-6xl font-semibold text-sage-900 leading-tight mb-6 text-balance">
+						Nature meets exquisite design
+					</h1>
+					<p class="text-sage-700 text-lg leading-relaxed mb-8">
+						Transform your living space with our curated collection of premium indoor plants. Each plant is hand-selected for its beauty, vitality, and air-purifying qualities.
+					</p>
+					<div class="flex flex-wrap gap-4">
+						<a href="#" class="inline-flex items-center justify-center px-8 py-3 bg-sage-700 text-cream-50 font-medium rounded-sm hover:bg-sage-800 transition-colors">
+							Shop Collection
+						</a>
+						<a href="#" class="inline-flex items-center justify-center px-8 py-3 border border-sage-300 text-sage-800 font-medium rounded-sm hover:bg-sage-50 transition-colors">
+							Learn More
+						</a>
+					</div>
+				</div>
+				<div class="relative">
+					<div class="aspect-[4/5] rounded-sm overflow-hidden bg-sage-100">
+						<img src={ imagePlaceholder } alt="Beautiful Monstera plant in terracotta pot" class="w-full h-full object-cover"/>
+					</div>
+					<div class="absolute -bottom-6 -left-6 bg-cream-50 p-4 rounded-sm shadow-lg hidden lg:block">
+						<p class="text-sm text-sage-600 mb-1">Starting from</p>
+						<p class="font-serif text-2xl text-sage-900">$29</p>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+}
+
+templ Categories() {
+	<!-- Categories Section -->
+	<section class="py-16 lg:py-24">
+		<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+			<div class="text-center mb-12">
+				<h2 class="font-serif text-3xl lg:text-4xl font-semibold text-sage-900 mb-4">Shop by Category</h2>
+				<p class="text-sage-600 max-w-2xl mx-auto">Find the perfect plant for every corner of your home</p>
+			</div>
+			<div class="grid md:grid-cols-3 gap-6">
+				<!-- Category 1 -->
+				<a href="#" class="group relative aspect-[3/4] rounded-sm overflow-hidden">
+					<img src={ imagePlaceholder } alt="Indoor Plants" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"/>
+					<div class="absolute inset-0 bg-gradient-to-t from-sage-900/70 to-transparent"></div>
+					<div class="absolute bottom-0 left-0 p-6">
+						<h3 class="font-serif text-2xl text-cream-50 mb-1">Indoor Plants</h3>
+						<p class="text-cream-200 text-sm">48 Products</p>
+					</div>
+				</a>
+			</div>
+		</div>
+	</section>
+}
+
+templ Testimonial() {
+	<!-- Testimonial -->
+	<section class="bg-sage-700 py-16 lg:py-20">
+		<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+			<svg class="w-10 h-10 text-sage-400 mx-auto mb-6" fill="currentColor" viewBox="0 0 24 24">
+				<path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z"/>
+			</svg>
+			<blockquote class="font-serif text-2xl lg:text-3xl text-cream-50 leading-relaxed mb-6 text-balance">
+				"Botanica has completely transformed how we think about bringing nature indoors. Their plants are exceptional quality."
+			</blockquote>
+			<cite class="text-sage-300 not-italic">- Architectural Digest</cite>
+		</div>
+	</section>
+}
+
+templ BestSellers() {
+	<!-- Best Sellers -->
+	<section class="py-16 lg:py-24">
+		<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+			<div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-12">
+				<div>
+					<h2 class="font-serif text-3xl lg:text-4xl font-semibold text-sage-900 mb-2">Best Sellers</h2>
+					<p class="text-sage-600">Our most loved plants this season</p>
+				</div>
+				<a href="#" class="text-sage-700 hover:text-sage-900 font-medium inline-flex items-center gap-2 group">
+					View All
+					<svg class="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+					</svg>
+				</a>
+			</div>
+			<div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+				<!-- Product 1 -->
+				<article class="product-card group">
+					<div class="relative aspect-[3/4] rounded-sm overflow-hidden bg-cream-100 mb-4">
+						<img src={ imagePlaceholder } alt="Fiddle Leaf Fig" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"/>
+						<span class="absolute top-3 left-3 bg-terracotta-500 text-cream-50 text-xs font-medium px-2 py-1 rounded-sm">Popular</span>
+						<button class="add-to-cart absolute bottom-4 left-4 right-4 bg-sage-800 text-cream-50 py-3 font-medium rounded-sm hover:bg-sage-900 transition-colors">
+							Add to Cart
+						</button>
+					</div>
+					<h3 class="font-medium text-sage-900 mb-1">Fiddle Leaf Fig</h3>
+					<p class="text-sage-600">$89.00</p>
+				</article>
+			</div>
+		</div>
+	</section>
+}
+
+templ Lifestyle() {
+	<!-- Lifestyle Banner -->
+	<section class="relative h-[500px] lg:h-[600px]">
+		<img src={ imagePlaceholder } alt="Modern living room with indoor plants" class="w-full h-full object-cover"/>
+		<div class="absolute inset-0 bg-sage-900/40"></div>
+		<div class="absolute inset-0 flex items-center justify-center">
+			<div class="text-center px-4">
+				<h2 class="font-serif text-3xl lg:text-5xl text-cream-50 mb-6 text-balance">Create Your Urban Jungle</h2>
+				<a href="#" class="inline-flex items-center justify-center px-8 py-3 bg-cream-50 text-sage-900 font-medium rounded-sm hover:bg-cream-100 transition-colors">
+					Explore Collection
+				</a>
+			</div>
+		</div>
+	</section>
+}
+
+templ NewArrivals() {
+	<!-- New Arrivals -->
+	<section class="py-16 lg:py-24">
+		<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+			<div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-12">
+				<div>
+					<h2 class="font-serif text-3xl lg:text-4xl font-semibold text-sage-900 mb-2">New Arrivals</h2>
+					<p class="text-sage-600">Fresh additions to our collection</p>
+				</div>
+				<a href="#" class="text-sage-700 hover:text-sage-900 font-medium inline-flex items-center gap-2 group">
+					View All
+					<svg class="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+					</svg>
+				</a>
+			</div>
+			<div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+				<!-- Product 5 -->
+				<article class="product-card group">
+					<div class="relative aspect-[3/4] rounded-sm overflow-hidden bg-cream-100 mb-4">
+						<img src={ imagePlaceholder } alt="Peace Lily" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"/>
+						<span class="absolute top-3 left-3 bg-sage-900 text-cream-50 text-xs font-medium px-2 py-1 rounded-sm">New</span>
+						<button class="add-to-cart absolute bottom-4 left-4 right-4 bg-sage-800 text-cream-50 py-3 font-medium rounded-sm hover:bg-sage-900 transition-colors">
+							Add to Cart
+						</button>
+					</div>
+					<h3 class="font-medium text-sage-900 mb-1">Peace Lily</h3>
+					<p class="text-sage-600">$55.00</p>
+				</article>
+			</div>
+		</div>
+	</section>
+}
+
+templ Features() {
+	<!-- Features -->
+	<section class="bg-cream-100 py-16 lg:py-20">
+		<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+			<div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
+				<div class="text-center">
+					<div class="w-12 h-12 bg-sage-100 rounded-full flex items-center justify-center mx-auto mb-4">
+						<svg class="w-6 h-6 text-sage-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"/>
+						</svg>
+					</div>
+					<h3 class="font-medium text-sage-900 mb-2">Free Shipping</h3>
+					<p class="text-sage-600 text-sm">On orders over $75</p>
+				</div>
+				<div class="text-center">
+					<div class="w-12 h-12 bg-sage-100 rounded-full flex items-center justify-center mx-auto mb-4">
+						<svg class="w-6 h-6 text-sage-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+						</svg>
+					</div>
+					<h3 class="font-medium text-sage-900 mb-2">Plant Guarantee</h3>
+					<p class="text-sage-600 text-sm">30-day health promise</p>
+				</div>
+				<div class="text-center">
+					<div class="w-12 h-12 bg-sage-100 rounded-full flex items-center justify-center mx-auto mb-4">
+						<svg class="w-6 h-6 text-sage-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
+						</svg>
+					</div>
+					<h3 class="font-medium text-sage-900 mb-2">Expert Support</h3>
+					<p class="text-sage-600 text-sm">Plant care advice</p>
+				</div>
+				<div class="text-center">
+					<div class="w-12 h-12 bg-sage-100 rounded-full flex items-center justify-center mx-auto mb-4">
+						<svg class="w-6 h-6 text-sage-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+						</svg>
+					</div>
+					<h3 class="font-medium text-sage-900 mb-2">Sustainable</h3>
+					<p class="text-sage-600 text-sm">Eco-friendly packaging</p>
+				</div>
+			</div>
+		</div>
+	</section>
+}
+
+templ Footer() {
+	<!-- Footer -->
+	<footer class="bg-sage-800 text-cream-100 py-16">
+		<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+			<div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
+				<div>
+					<h3 class="font-serif text-2xl text-cream-50 mb-4">Botanica</h3>
+					<p class="text-sage-300 text-sm leading-relaxed mb-4">Bringing nature home, one leaf at a time. Premium indoor plants for every space.</p>
+					<div class="flex gap-4">
+						<a href="#" class="text-sage-400 hover:text-cream-50 transition-colors" aria-label="Instagram">
+							<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+								<path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+							</svg>
+						</a>
+						<a href="#" class="text-sage-400 hover:text-cream-50 transition-colors" aria-label="Pinterest">
+							<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+								<path d="M12 0c-6.627 0-12 5.372-12 12 0 5.084 3.163 9.426 7.627 11.174-.105-.949-.2-2.405.042-3.441.218-.937 1.407-5.965 1.407-5.965s-.359-.719-.359-1.782c0-1.668.967-2.914 2.171-2.914 1.023 0 1.518.769 1.518 1.69 0 1.029-.655 2.568-.994 3.995-.283 1.194.599 2.169 1.777 2.169 2.133 0 3.772-2.249 3.772-5.495 0-2.873-2.064-4.882-5.012-4.882-3.414 0-5.418 2.561-5.418 5.207 0 1.031.397 2.138.893 2.738.098.119.112.224.083.345l-.333 1.36c-.053.22-.174.267-.402.161-1.499-.698-2.436-2.889-2.436-4.649 0-3.785 2.75-7.262 7.929-7.262 4.163 0 7.398 2.967 7.398 6.931 0 4.136-2.607 7.464-6.227 7.464-1.216 0-2.359-.631-2.75-1.378l-.748 2.853c-.271 1.043-1.002 2.35-1.492 3.146 1.124.347 2.317.535 3.554.535 6.627 0 12-5.373 12-12 0-6.628-5.373-12-12-12z"/>
+							</svg>
+						</a>
+						<a href="#" class="text-sage-400 hover:text-cream-50 transition-colors" aria-label="Facebook">
+							<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+								<path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385h-3.047v-3.47h3.047v-2.642c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953h-1.514c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385c5.737-.9 10.125-5.864 10.125-11.854z"/>
+							</svg>
+						</a>
+					</div>
+				</div>
+				<div>
+					<h4 class="font-medium text-cream-50 mb-4">Shop</h4>
+					<ul class="space-y-2 text-sm">
+						<li><a href="#" class="text-sage-300 hover:text-cream-50 transition-colors">All Plants</a></li>
+						<li><a href="#" class="text-sage-300 hover:text-cream-50 transition-colors">Indoor Plants</a></li>
+						<li><a href="#" class="text-sage-300 hover:text-cream-50 transition-colors">Outdoor Plants</a></li>
+						<li><a href="#" class="text-sage-300 hover:text-cream-50 transition-colors">Succulents</a></li>
+						<li><a href="#" class="text-sage-300 hover:text-cream-50 transition-colors">Plant Care</a></li>
+					</ul>
+				</div>
+				<div>
+					<h4 class="font-medium text-cream-50 mb-4">Help</h4>
+					<ul class="space-y-2 text-sm">
+						<li><a href="#" class="text-sage-300 hover:text-cream-50 transition-colors">FAQ</a></li>
+						<li><a href="#" class="text-sage-300 hover:text-cream-50 transition-colors">Shipping Info</a></li>
+						<li><a href="#" class="text-sage-300 hover:text-cream-50 transition-colors">Returns</a></li>
+						<li><a href="#" class="text-sage-300 hover:text-cream-50 transition-colors">Plant Care Guide</a></li>
+						<li><a href="#" class="text-sage-300 hover:text-cream-50 transition-colors">Contact Us</a></li>
+					</ul>
+				</div>
+				<div>
+					<h4 class="font-medium text-cream-50 mb-4">Company</h4>
+					<ul class="space-y-2 text-sm">
+						<li><a href="#" class="text-sage-300 hover:text-cream-50 transition-colors">About Us</a></li>
+						<li><a href="#" class="text-sage-300 hover:text-cream-50 transition-colors">Our Story</a></li>
+						<li><a href="#" class="text-sage-300 hover:text-cream-50 transition-colors">Sustainability</a></li>
+						<li><a href="#" class="text-sage-300 hover:text-cream-50 transition-colors">Careers</a></li>
+						<li><a href="#" class="text-sage-300 hover:text-cream-50 transition-colors">Press</a></li>
+					</ul>
+				</div>
+			</div>
+			<div class="border-t border-sage-700 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+				<p class="text-sage-400 text-sm">&copy; 2026 Botanica. All rights reserved.</p>
+				<div class="flex gap-6 text-sm">
+					<a href="#" class="text-sage-400 hover:text-cream-50 transition-colors">Privacy Policy</a>
+					<a href="#" class="text-sage-400 hover:text-cream-50 transition-colors">Terms of Service</a>
+				</div>
+			</div>
+		</div>
+	</footer>
+}

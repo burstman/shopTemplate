@@ -1,0 +1,9 @@
+package layouts
+
+import "shopTemplate/app/types"
+
+templ App(user types.AuthUser) {
+	@BaseLayout(user) {
+		{ children... }
+	}
+}

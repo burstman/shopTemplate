@@ -1,0 +1,17 @@
+package landing
+
+import (
+	"shopTemplate/app/views/layouts"
+	"shopTemplate/app/views/components"
+)
+
+templ Index() {
+	@layouts.Hero()
+	@layouts.Categories()
+	@layouts.Testimonial()
+	@layouts.BestSellers()
+	@components.Plants(components.PlantsProps{ ShowViewAll: true })
+	@layouts.Lifestyle()
+	@layouts.NewArrivals()
+	@layouts.Features()
+}
