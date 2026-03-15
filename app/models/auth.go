@@ -1,4 +1,6 @@
-package types
+package models
+
+import "gorm.io/gorm"
 
 // AuthUser represents an user that might be authenticated.
 type AuthUser struct {
@@ -17,4 +19,16 @@ func (user AuthUser) Check() bool {
 
 func (user AuthUser) checkRole() string {
 	return user.Role
+}
+
+type User struct {
+	gorm.Model
+	Email           string
+	FirstName       string
+	LastName        string
+	Role            string
+	PasswordHash    string
+	EmailVerifiedAt string
+	CreatedAt       string
+	UpdatedAt       string
 }

@@ -2,12 +2,11 @@ package auth
 
 import (
 	"shopTemplate/app/views/layouts"
-	"shopTemplate/app/types"
-
+	"shopTemplate/app/models"
 )
 
 templ EmailVerificationError(errorMessage string) {
-	@layouts.BaseLayout(types.AuthUser{}) {
+	@layouts.BaseLayout(models.AuthUser{}) {
 		<div class="h-screen flex flex-col justify-center items-center gap-4">
 			<div class="text-xl">{ errorMessage }</div>
 			<a href="/" class="underline text-sm">back to homepage</a>

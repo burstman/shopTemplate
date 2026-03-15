@@ -1,7 +1,7 @@
 package handlers
 
 import (
-	"shopTemplate/app/types"
+	"shopTemplate/app/models"
 	"shopTemplate/app/views/layouts"
 
 	"github.com/a-h/templ"
@@ -9,8 +9,8 @@ import (
 )
 
 func RenderWithLayout(kit *kit.Kit, content templ.Component) error {
-	var user types.AuthUser
-	if authedUser, ok := kit.Auth().(types.AuthUser); ok {
+	var user models.AuthUser
+	if authedUser, ok := kit.Auth().(models.AuthUser); ok {
 		user = authedUser
 	}
 

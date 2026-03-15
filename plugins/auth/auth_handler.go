@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"os"
 	"shopTemplate/app/db"
+	"shopTemplate/app/models"
 	"strconv"
 	"time"
 
@@ -149,7 +150,7 @@ func HandleEmailVerify(kit *kit.Kit) error {
 }
 
 func AuthenticateUser(kit *kit.Kit) (kit.Auth, error) {
-	auth := Auth{}
+	auth := models.AuthUser{}
 	sess := kit.GetSession(userSessionName)
 	token, ok := sess.Values["sessionToken"]
 	if !ok {
@@ -164,9 +165,9 @@ func AuthenticateUser(kit *kit.Kit) (kit.Auth, error) {
 		return auth, nil
 	}
 
-	return Auth{
+	return models.AuthUser{
 		LoggedIn: true,
-		UserID:   session.User.ID,
+		ID:       session.User.ID,
 		Email:    session.User.Email,
 		Role:     session.User.Role,
 	}, nil

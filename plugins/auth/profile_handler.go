@@ -3,7 +3,7 @@ package auth
 import (
 	"fmt"
 	"shopTemplate/app/db"
-	"shopTemplate/app/types"
+	"shopTemplate/app/models"
 	"shopTemplate/app/views/layouts"
 
 	"github.com/anthdm/superkit/kit"
@@ -24,10 +24,10 @@ type ProfileFormValues struct {
 }
 
 func HandleProfileShow(kit *kit.Kit) error {
-	pluginAuth := kit.Auth().(Auth)
+	pluginAuth := kit.Auth().(models.AuthUser)
 
 	var user User
-	if err := db.Get().First(&user, pluginAuth.UserID).Error; err != nil {
+	if err := db.Get().First(&user, pluginAuth.ID).Error; err != nil {
 		return err
 	}
 
@@ -38,13 +38,7 @@ func HandleProfileShow(kit *kit.Kit) error {
 		Email:     user.Email,
 	}
 
-	appUser := types.AuthUser{
-		ID:       pluginAuth.UserID,
-		Email:    pluginAuth.Email,
-		LoggedIn: pluginAuth.LoggedIn,
-		Role:     pluginAuth.Role,
-	}
-	return kit.Render(layouts.App(appUser, ProfileShow(formValues)))
+	return kit.Render(layouts.App(pluginAuth, ProfileShow(formValues)))
 }
 
 func HandleProfileUpdate(kit *kit.Kit) error {
@@ -54,12 +48,12 @@ func HandleProfileUpdate(kit *kit.Kit) error {
 		return kit.Render(ProfileForm(values, errors))
 	}
 
-	pluginAuth := kit.Auth().(Auth)
-	if pluginAuth.UserID != values.ID {
+	pluginAuth := kit.Auth().(models.AuthUser)
+	if pluginAuth.ID != values.ID {
 		return fmt.Errorf("unauthorized request for profile %d", values.ID)
 	}
 	err := db.Get().Model(&User{}).
-		Where("id = ?", pluginAuth.UserID).
+		Where("id = ?", pluginAuth.ID).
 		Updates(&User{
 			FirstName: values.FirstName,
 			LastName:  values.LastName,

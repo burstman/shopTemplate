@@ -1,15 +1,12 @@
 package auth
 
 import (
-	v "github.com/anthdm/superkit/validate"
-
-
 	"shopTemplate/app/views/layouts"
 	"shopTemplate/app/views/components"
-	"shopTemplate/app/types"
-
+	
+	v "github.com/anthdm/superkit/validate"
+	"shopTemplate/app/models"
 )
-
 type LoginIndexPageData struct {
 	FormValues LoginFormValues
 	FormErrors v.Errors
@@ -21,7 +18,7 @@ type LoginFormValues struct {
 }
 
 templ LoginIndex(data LoginIndexPageData) {
-	@layouts.BaseLayout(types.AuthUser{}) {
+	@layouts.BaseLayout(models.AuthUser{}) {
 		<div class="fixed top-6 right-6">
 			@components.ThemeSwitcher()
 		</div>

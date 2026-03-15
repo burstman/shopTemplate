@@ -1,7 +1,7 @@
 package handlers
 
 import (
-	"shopTemplate/app/types"
+	"shopTemplate/app/models"
 	"shopTemplate/plugins/auth"
 
 	"github.com/anthdm/superkit/kit"
@@ -14,7 +14,7 @@ func HandleAuthentication(kit *kit.Kit) (kit.Auth, error) {
 	}
 	userAuth := resp.(auth.Auth)
 
-	return types.AuthUser{
+	return models.AuthUser{
 		ID:       userAuth.UserID,
 		Email:    userAuth.Email,
 		LoggedIn: userAuth.LoggedIn,

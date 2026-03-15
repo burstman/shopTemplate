@@ -6,8 +6,6 @@ import (
 	"net/http"
 	"os"
 	"shopTemplate/app"
-	"shopTemplate/app/db"
-	"shopTemplate/plugins/auth"
 	"shopTemplate/public"
 
 	"github.com/anthdm/superkit/kit"
@@ -17,10 +15,6 @@ import (
 
 func main() {
 	kit.Setup()
-
-	if err := db.Get().AutoMigrate(&auth.User{}, &auth.Session{}); err != nil {
-		log.Fatal(err)
-	}
 
 	router := chi.NewMux()
 

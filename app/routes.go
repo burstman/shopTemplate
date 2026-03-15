@@ -33,7 +33,7 @@ func InitializeRoutes(router *chi.Mux) {
 	//  }
 	auth.InitializeRoutes(router)
 	authConfig := kit.AuthenticationConfig{
-		AuthFunc:    handlers.HandleAuthentication,
+		AuthFunc:    auth.AuthenticateUser,
 		RedirectURL: "/login",
 	}
 
@@ -57,6 +57,11 @@ func InitializeRoutes(router *chi.Mux) {
 		// Routes
 		app.Get("/configuration", kit.Handler(handlers.HandleConfigurationIndex))
 		app.Post("/configuration", kit.Handler(handlers.HandleConfigurationUpdate))
+		app.Get("/products/new", kit.Handler(handlers.HandleProductNew))
+		app.Post("/products", kit.Handler(handlers.HandleProductCreate))
+		app.Get("/products/{id}/edit", kit.Handler(handlers.HandleProductEdit))
+		app.Put("/products/{id}", kit.Handler(handlers.HandleProductUpdate))
+		app.Delete("/products/{id}", kit.Handler(handlers.HandleProductDelete))
 		// app.Get("/path", kit.Handler(myHandler.HandleIndex))
 	})
 }

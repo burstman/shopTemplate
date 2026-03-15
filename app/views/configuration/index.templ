@@ -1,0 +1,137 @@
+package configuration
+
+import (
+	"shopTemplate/app/models"
+	"sort"
+	"strconv"
+	"strings"
+)
+
+templ Index(configMap map[string]string, productsForSelector []models.Product) {
+	<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+		<div class="flex flex-col md:flex-row justify-between items-end mb-10 gap-4">
+			<div>
+				<h1 class="text-4xl font-serif font-bold text-foreground mb-3">Admin Configuration</h1>
+				<p class="text-muted-foreground text-lg">Welcome to the admin dashboard. Manage your application settings here.</p>
+			</div>
+		</div>
+		<div class="bg-background border rounded-md p-8">
+			<form action="/configuration" method="POST" enctype="multipart/form-data" class="max-w-xl flex flex-col gap-6">
+				
+				<div class="flex flex-col gap-2">
+					<label for="site_name" class="font-medium">Site Name</label>
+					<input type="text" name="site_name" id="site_name" value={ configMap["site_name"] } class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"/>
+					<p class="text-xs text-muted-foreground">The name displayed in the browser tab and header.</p>
+				</div>
+
+				<div class="flex flex-col gap-2">
+					<label for="support_email" class="font-medium">Support Email</label>
+					<input type="email" name="support_email" id="support_email" value={ configMap["support_email"] } class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"/>
+				</div>
+
+				<div class="flex flex-col gap-2">
+					<label for="carousel_images" class="font-medium">Carousel Images</label>
+					<input type="file" name="carousel_images" id="carousel_images" multiple accept="image/*" class="flex w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"/>
+					<p class="text-xs text-muted-foreground">Upload images for the homepage carousel. They will be auto-renamed to slide_1, slide_2, etc.</p>
+				</div>
+
+				<div class="flex flex-col gap-2">
+					<label for="category_count" class="font-medium">Shop by Category Count</label>
+					<input type="number" name="category_count" id="category_count" value={ configMap["category_count"] }
+						hx-get="/configuration"
+						hx-target="#product-selector-wrapper"
+						hx-swap="outerHTML"
+						hx-trigger="change"
+						hx-include="[name='category_products']"
+						class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"/>
+				</div>
+
+				@CategoryProductSelector(productsForSelector, configMap["category_products"], configMap["category_count"])
+
+				<div class="flex flex-col gap-2">
+					<label for="best_seller_count" class="font-medium">Best Seller Product Count</label>
+					<input type="number" name="best_seller_count" id="best_seller_count" value={ configMap["best_seller_count"] } class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"/>
+				</div>
+
+				<div class="flex flex-col gap-2">
+					<label for="favorite_plants_count" class="font-medium">Our Favorite Plants Count (New Arrivals)</label>
+					<input type="number" name="favorite_plants_count" id="favorite_plants_count" value={ configMap["favorite_plants_count"] } class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"/>
+				</div>
+
+				<div class="pt-4">
+					<button type="submit" class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2">Save Changes</button>
+				</div>
+			</form>
+		</div>
+	</div>
+}
+
+templ CategoryProductSelector(products []models.Product, selectedProductIDs string, countStr string) {
+	{{
+		count, _ := strconv.Atoi(countStr)
+		selectedIDs := strings.Split(selectedProductIDs, ",")
+		productMap := make(map[string]models.Product)
+		categoriesMap := make(map[string]bool)
+		for _, p := range products {
+			productMap[strconv.Itoa(int(p.ID))] = p
+			if p.Category != "" {
+				categoriesMap[p.Category] = true
+			}
+		}
+		var categories []string
+		for k := range categoriesMap {
+			categories = append(categories, k)
+		}
+		sort.Strings(categories)
+	}}
+	<div id="product-selector-wrapper" class="flex flex-col gap-4">
+		<div class="flex flex-col gap-2">
+			<label for="category_products" class="font-medium">Category Products</label>
+			<p class="text-xs text-muted-foreground">Select which products to show in the "category" section on the landing page.</p>
+			<div class="rounded-md border bg-muted/30 overflow-hidden">
+				<table class="w-full text-sm">
+					<thead class="bg-muted/50">
+						<tr>
+							<th class="px-4 py-3 text-left font-medium text-muted-foreground w-16">#</th>
+							<th class="px-4 py-3 text-left font-medium text-muted-foreground w-1/4">Category</th>
+							<th class="px-4 py-3 text-left font-medium text-muted-foreground">Product</th>
+						</tr>
+					</thead>
+					<tbody class="divide-y divide-border">
+						for i := 0; i < count; i++ {
+							{{
+								currentID := ""
+								currentCategory := ""
+								if i < len(selectedIDs) {
+									currentID = selectedIDs[i]
+									if p, ok := productMap[currentID]; ok {
+										currentCategory = p.Category
+									}
+								}
+							}}
+							<tr class="bg-background/50" x-data={ "{ category: '" + strings.ReplaceAll(currentCategory, "'", "\\'") + "' }" }>
+								<td class="px-4 py-3 font-medium align-middle">{ strconv.Itoa(i+1) }</td>
+								<td class="px-4 py-3 align-middle">
+									<select x-model="category" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">
+										<option value="">All Categories</option>
+										for _, cat := range categories {
+											<option value={ cat } selected?={ currentCategory == cat }>{ cat }</option>
+										}
+									</select>
+								</td>
+								<td class="px-4 py-3 align-middle">
+									<select name="category_products" x-on:change="category = $el.options[$el.selectedIndex].getAttribute('data-category')" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">
+										<option value="">Select a product</option>
+										for _, product := range products {
+											<option value={ strconv.Itoa(int(product.ID)) } data-category={ product.Category } selected?={ currentID == strconv.Itoa(int(product.ID)) } x-show={ "category === '' || category === '" + strings.ReplaceAll(product.Category, "'", "\\'") + "'" }>{ product.Name } ({ product.Category })</option>
+										}
+									</select>
+								</td>
+							</tr>
+						}
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+}

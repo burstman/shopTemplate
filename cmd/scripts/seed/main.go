@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"shopTemplate/app/db"
+	"shopTemplate/app/models"
 	"shopTemplate/plugins/auth"
 
 	"github.com/joho/godotenv"
@@ -64,4 +65,25 @@ func main() {
 	} else {
 		fmt.Printf("User already exists: %s\n", user.Email)
 	}
+
+	// Define the settings with default values.
+	// You can adjust the "Value" for each setting as needed.
+	settings := []models.Setting{
+		{Key: "carousel_count", Value: "5"},
+		{Key: "category_count", Value: "4"},
+		{Key: "best_seller_count", Value: "8"},
+		{Key: "favorite_plants_count", Value: "4"},
+	}
+
+	for _, setting := range settings {
+		// Use FirstOrCreate to prevent creating duplicate entries on subsequent runs.
+		// It will check if a setting with the given key exists, and if not, it will create it.
+		result := db.Get().Where(models.Setting{Key: setting.Key}).FirstOrCreate(&setting)
+		if result.Error != nil {
+			log.Printf("could not seed setting %q: %v\n", setting.Key, result.Error)
+		}
+	}
+
+	log.Println("Database seeding finished.")
+
 }

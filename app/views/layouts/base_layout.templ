@@ -1,16 +1,17 @@
 package layouts
 
-import "github.com/anthdm/superkit/view"
+import ("github.com/anthdm/superkit/view"
 
-import "shopTemplate/app/views/components"
-import "shopTemplate/app/types"
+ "shopTemplate/app/views/components"
+ "shopTemplate/app/models"
+)
 
 var (
 	title = "superkit project"
 	imagePlaceholder = "public/images/No_Image_Available.jpg"
 )
 
-templ BaseLayout(user types.AuthUser) {
+templ BaseLayout(user models.AuthUser) {
 	<!DOCTYPE html>
 	<html lang="en">
 		<head>
@@ -35,7 +36,7 @@ templ BaseLayout(user types.AuthUser) {
 	</html>
 }
 
-templ Header(user types.AuthUser) {
+templ Header(user models.AuthUser) {
 	<!-- Header -->
 	<header class="sticky top-0 z-50 bg-background/95 backdrop-blur-md border-b border-border">
 		<div class="w-full mx-auto px-4 sm:px-6 lg:px-14">
@@ -84,7 +85,11 @@ templ Header(user types.AuthUser) {
 			</div>
 		</div>
 	</header>
-}
+	}
+
+	
+
+
 
 templ Hero() {
 	<!-- Hero Section -->
@@ -122,7 +127,7 @@ templ Hero() {
 	</section>
 }
 
-templ Categories() {
+templ Categories(count int) {
 	<!-- Categories Section -->
 	<section class="py-16 lg:py-24">
 		<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -132,14 +137,16 @@ templ Categories() {
 			</div>
 			<div class="grid md:grid-cols-3 gap-6">
 				<!-- Category 1 -->
-				<a href="#" class="group relative aspect-[3/4] rounded-sm overflow-hidden">
-					<img src={ imagePlaceholder } alt="Indoor Plants" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"/>
-					<div class="absolute inset-0 bg-gradient-to-t from-sage-900/70 to-transparent"></div>
-					<div class="absolute bottom-0 left-0 p-6">
-						<h3 class="font-serif text-2xl text-cream-50 mb-1">Indoor Plants</h3>
-						<p class="text-cream-200 text-sm">48 Products</p>
-					</div>
-				</a>
+				for i := 0; i < count; i++ {
+					<a href="#" class="group relative aspect-[3/4] rounded-sm overflow-hidden">
+						<img src={ imagePlaceholder } alt="Indoor Plants" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"/>
+						<div class="absolute inset-0 bg-gradient-to-t from-sage-900/70 to-transparent"></div>
+						<div class="absolute bottom-0 left-0 p-6">
+							<h3 class="font-serif text-2xl text-cream-50 mb-1">Category { " " + string(rune('1'+i)) }</h3>
+							<p class="text-cream-200 text-sm">Products</p>
+						</div>
+					</a>
+				}
 			</div>
 		</div>
 	</section>
@@ -160,7 +167,7 @@ templ Testimonial() {
 	</section>
 }
 
-templ BestSellers() {
+templ BestSellers(count int) {
 	<!-- Best Sellers -->
 	<section class="py-16 lg:py-24">
 		<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -178,39 +185,26 @@ templ BestSellers() {
 			</div>
 			<div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
 				<!-- Product 1 -->
-				<article class="product-card group">
-					<div class="relative aspect-[3/4] rounded-sm overflow-hidden bg-cream-100 mb-4">
-						<img src={ imagePlaceholder } alt="Fiddle Leaf Fig" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"/>
-						<span class="absolute top-3 left-3 bg-terracotta-500 text-cream-50 text-xs font-medium px-2 py-1 rounded-sm">Popular</span>
-						<button class="add-to-cart absolute bottom-4 left-4 right-4 bg-sage-800 text-cream-50 py-3 font-medium rounded-sm hover:bg-sage-900 transition-colors">
-							Add to Cart
-						</button>
-					</div>
-					<h3 class="font-medium text-sage-900 mb-1">Fiddle Leaf Fig</h3>
-					<p class="text-sage-600">$89.00</p>
-				</article>
+				for i := 0; i < count; i++ {
+					<article class="product-card group">
+						<div class="relative aspect-[3/4] rounded-sm overflow-hidden bg-cream-100 mb-4">
+							<img src={ imagePlaceholder } alt="Fiddle Leaf Fig" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"/>
+							<span class="absolute top-3 left-3 bg-terracotta-500 text-cream-50 text-xs font-medium px-2 py-1 rounded-sm">Popular</span>
+							<button class="add-to-cart absolute bottom-4 left-4 right-4 bg-sage-800 text-cream-50 py-3 font-medium rounded-sm hover:bg-sage-900 transition-colors">
+								Add to Cart
+							</button>
+						</div>
+						<h3 class="font-medium text-sage-900 mb-1">Best Seller Product</h3>
+						<p class="text-sage-600">$89.00</p>
+					</article>
+				}
 			</div>
 		</div>
 	</section>
 }
 
-templ Lifestyle() {
-	<!-- Lifestyle Banner -->
-	<section class="relative h-[500px] lg:h-[600px]">
-		<img src={ imagePlaceholder } alt="Modern living room with indoor plants" class="w-full h-full object-cover"/>
-		<div class="absolute inset-0 bg-sage-900/40"></div>
-		<div class="absolute inset-0 flex items-center justify-center">
-			<div class="text-center px-4">
-				<h2 class="font-serif text-3xl lg:text-5xl text-cream-50 mb-6 text-balance">Create Your Urban Jungle</h2>
-				<a href="#" class="inline-flex items-center justify-center px-8 py-3 bg-cream-50 text-sage-900 font-medium rounded-sm hover:bg-cream-100 transition-colors">
-					Explore Collection
-				</a>
-			</div>
-		</div>
-	</section>
-}
 
-templ NewArrivals() {
+templ NewArrivals(count int) {
 	<!-- New Arrivals -->
 	<section class="py-16 lg:py-24">
 		<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -228,17 +222,19 @@ templ NewArrivals() {
 			</div>
 			<div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
 				<!-- Product 5 -->
-				<article class="product-card group">
-					<div class="relative aspect-[3/4] rounded-sm overflow-hidden bg-cream-100 mb-4">
-						<img src={ imagePlaceholder } alt="Peace Lily" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"/>
-						<span class="absolute top-3 left-3 bg-sage-900 text-cream-50 text-xs font-medium px-2 py-1 rounded-sm">New</span>
-						<button class="add-to-cart absolute bottom-4 left-4 right-4 bg-sage-800 text-cream-50 py-3 font-medium rounded-sm hover:bg-sage-900 transition-colors">
-							Add to Cart
-						</button>
-					</div>
-					<h3 class="font-medium text-sage-900 mb-1">Peace Lily</h3>
-					<p class="text-sage-600">$55.00</p>
-				</article>
+				for i := 0; i < count; i++ {
+					<article class="product-card group">
+						<div class="relative aspect-[3/4] rounded-sm overflow-hidden bg-cream-100 mb-4">
+							<img src={ imagePlaceholder } alt="Peace Lily" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"/>
+							<span class="absolute top-3 left-3 bg-sage-900 text-cream-50 text-xs font-medium px-2 py-1 rounded-sm">New</span>
+							<button class="add-to-cart absolute bottom-4 left-4 right-4 bg-sage-800 text-cream-50 py-3 font-medium rounded-sm hover:bg-sage-900 transition-colors">
+								Add to Cart
+							</button>
+						</div>
+						<h3 class="font-medium text-sage-900 mb-1">Favorite Plant</h3>
+						<p class="text-sage-600">$55.00</p>
+					</article>
+				}
 			</div>
 		</div>
 	</section>
@@ -354,6 +350,11 @@ templ Footer() {
 					<a href="#" class="text-sage-400 hover:text-cream-50 transition-colors">Terms of Service</a>
 				</div>
 			</div>
+		
 		</div>
 	</footer>
+}
+
+type ComponentsProps struct {
+	ShowViewAll bool
 }
