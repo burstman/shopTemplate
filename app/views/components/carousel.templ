@@ -1,6 +1,6 @@
 package components
 
-import "fmt"
+import "strconv"
 
 type CarouselItem struct {
 	Image       string
@@ -11,59 +11,38 @@ type CarouselItem struct {
 }
 
 templ Carousel(items []CarouselItem) {
-	<div x-data={ fmt.Sprintf("{ activeSlide: 0, slideCount: %d, autoPlay() { setInterval(() => { this.activeSlide = (this.activeSlide + 1) %% this.slideCount }, 6000) } }", len(items)) }
-		 x-init="autoPlay()"
-		 class="relative w-full h-[600px] lg:h-[700px] overflow-hidden bg-gray-900 group">
-		
-		for i, item := range items {
-			<div x-show={ fmt.Sprintf("activeSlide === %d", i) }
-				 x-transition:enter="transition transform duration-1000 ease-out"
-				 x-transition:enter-start="opacity-0 scale-105"
-				 x-transition:enter-end="opacity-100 scale-100"
-				 x-transition:leave="transition transform duration-1000 ease-in"
-				 x-transition:leave-start="opacity-100 scale-100"
-				 x-transition:leave-end="opacity-0 scale-95"
-				 class="absolute inset-0 w-full h-full">
-				
-				<img src={ item.Image } alt={ item.Title } class="w-full h-full object-cover opacity-80" />
-				
-				<div class="absolute inset-0 bg-gradient-to-t from-black/60 via-black/30 to-transparent flex items-center justify-center">
-					<div class="text-center text-white px-4 max-w-5xl mx-auto mt-16">
-						<span class="inline-block py-1 px-3 border border-white/30 rounded-full text-xs font-medium tracking-widest uppercase mb-4 backdrop-blur-sm">New Collection</span>
-						<h2 class="font-serif text-5xl md:text-7xl lg:text-8xl font-bold mb-6 tracking-tight leading-none drop-shadow-lg">{ item.Title }</h2>
-						<p class="text-lg md:text-xl mb-10 text-white/90 max-w-2xl mx-auto leading-relaxed drop-shadow-md">{ item.Description }</p>
-						<div class="flex flex-col sm:flex-row gap-4 justify-center">
-							<a href={ item.ButtonLink } class="inline-flex items-center justify-center px-8 py-4 bg-white text-gray-900 font-medium text-sm tracking-wider uppercase hover:bg-gray-100 transition-colors rounded-sm min-w-[160px]">
-								{ item.ButtonText }
-							</a>
+	if len(items) > 0 {
+		<div class="relative group" x-data="{ activeSlide: 0, interval: null }" x-init="interval = setInterval(() => { activeSlide = activeSlide === $data.slideCount - 1 ? 0 : activeSlide + 1 }, 5000)" x-effect="$data.slideCount = $el.querySelectorAll('.carousel-slide').length">
+			<div class="relative h-[600px] overflow-hidden">
+				for i, item := range items {
+					<div class={ "carousel-slide absolute inset-0 transition-opacity duration-1000 ease-in-out", templ.KV("opacity-0", i != 0), templ.KV("opacity-100", i == 0) } x-bind:class={ "{ 'opacity-100': activeSlide === " + strconv.Itoa(i) + ", 'opacity-0': activeSlide !== " + strconv.Itoa(i) + " }" }>
+						<img src={ item.Image } alt={ item.Title } class="w-full h-full object-cover"/>
+						<div class="absolute inset-0 bg-black/40 flex items-center justify-center">
+							<div class="text-center text-white px-4 max-w-4xl">
+								<h1 class="text-4xl md:text-6xl font-bold mb-4">{ item.Title }</h1>
+								<p class="text-xl md:text-2xl mb-8">{ item.Description }</p>
+								if item.ButtonText != "" {
+									<a href={ templ.SafeURL(item.ButtonLink) } class="inline-block bg-primary hover:bg-primary/90 text-primary-foreground font-bold py-3 px-8 rounded-full transition duration-300">
+										{ item.ButtonText }
+									</a>
+								}
+							</div>
 						</div>
 					</div>
-				</div>
+				}
 			</div>
-		}
-
-		<!-- Navigation Buttons -->
-		<button @click="activeSlide = (activeSlide === 0) ? slideCount - 1 : activeSlide - 1" 
-				class="absolute left-4 md:left-8 top-1/2 -translate-y-1/2 p-2 md:p-3 text-white/70 hover:text-white border border-white/30 hover:border-white rounded-full transition-all opacity-0 group-hover:opacity-100 backdrop-blur-sm z-10">
-			<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-				<path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
-			</svg>
-		</button>
-
-		<button @click="activeSlide = (activeSlide + 1) % slideCount" 
-				class="absolute right-4 md:right-8 top-1/2 -translate-y-1/2 p-2 md:p-3 text-white/70 hover:text-white border border-white/30 hover:border-white rounded-full transition-all opacity-0 group-hover:opacity-100 backdrop-blur-sm z-10">
-			<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-				<path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
-			</svg>
-		</button>
-
-		<!-- Indicators -->
-		<div class="absolute bottom-8 left-1/2 -translate-x-1/2 flex space-x-3 z-10">
-			 for i := range items {
-				<button @click={ fmt.Sprintf("activeSlide = %d", i) }
-						:class={ fmt.Sprintf("{ 'bg-white w-8': activeSlide === %d, 'bg-white/40 w-2 hover:bg-white/60': activeSlide !== %d }", i, i) }
-						class="h-2 rounded-full transition-all duration-300"></button>
-			 }
+			
+			if len(items) > 1 {
+				<div class="absolute bottom-8 left-0 right-0 flex justify-center space-x-2 z-10">
+					for i := range items {
+						<button 
+							@click={ "activeSlide = " + strconv.Itoa(i) + "; clearInterval(interval); interval = setInterval(() => { activeSlide = activeSlide === $data.slideCount - 1 ? 0 : activeSlide + 1 }, 5000)" } 
+							class="w-3 h-3 rounded-full transition-colors duration-300 bg-white"
+							x-bind:class={ "{ 'bg-opacity-100': activeSlide === " + strconv.Itoa(i) + ", 'bg-opacity-50': activeSlide !== " + strconv.Itoa(i) + " }" }
+						></button>
+					}
+				</div>
+			}
 		</div>
-	</div>
+	}
 }

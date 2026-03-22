@@ -8,6 +8,7 @@ import (
 	"shopTemplate/app/models"
 
 	"fmt"
+	"shopTemplate/app/config"
 )
 
 type SignupIndexPageData struct {
@@ -24,7 +25,7 @@ type SignupFormValues struct {
 }
 
 templ SignupIndex(data SignupIndexPageData) {
-	@layouts.BaseLayout(models.AuthUser{}) {
+	@layouts.BaseLayout(models.AuthUser{}, config.Get(), nil) {
 		<div class="fixed top-6 right-6">
 			@components.ThemeSwitcher()
 		</div>

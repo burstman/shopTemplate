@@ -1,137 +1,234 @@
 package configuration
 
 import (
+	"shopTemplate/app/config"
 	"shopTemplate/app/models"
-	"sort"
 	"strconv"
-	"strings"
 )
 
-templ Index(configMap map[string]string, productsForSelector []models.Product) {
-	<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-		<div class="flex flex-col md:flex-row justify-between items-end mb-10 gap-4">
-			<div>
-				<h1 class="text-4xl font-serif font-bold text-foreground mb-3">Admin Configuration</h1>
-				<p class="text-muted-foreground text-lg">Welcome to the admin dashboard. Manage your application settings here.</p>
+templ Index(cfg *config.Config, products []models.Product, activeSection string) {
+	<form method="POST" action={ templ.URL("/admin/" + activeSection) } enctype="multipart/form-data" class="space-y-8 max-w-4xl mx-auto">
+		switch activeSection {
+			case "site":
+				@siteSettingsForm(cfg)
+			case "hero":
+				@heroSettingsForm(cfg)
+			case "sections":
+				@sectionsSettingsForm(cfg, products)
+			case "theme":
+				@themeSettingsForm(cfg)
+			case "storefront-sidebar":
+				@storefrontSidebarSettingsForm(cfg)
+		}
+		<div class="pt-5">
+			<div class="flex justify-end">
+				<button type="submit" class="px-4 py-2 text-sm font-medium text-white bg-green-600 border border-transparent rounded-md shadow-sm hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+					Save Changes
+				</button>
 			</div>
 		</div>
-		<div class="bg-background border rounded-md p-8">
-			<form action="/configuration" method="POST" enctype="multipart/form-data" class="max-w-xl flex flex-col gap-6">
-				
-				<div class="flex flex-col gap-2">
-					<label for="site_name" class="font-medium">Site Name</label>
-					<input type="text" name="site_name" id="site_name" value={ configMap["site_name"] } class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"/>
-					<p class="text-xs text-muted-foreground">The name displayed in the browser tab and header.</p>
-				</div>
+	</form>
+}
 
-				<div class="flex flex-col gap-2">
-					<label for="support_email" class="font-medium">Support Email</label>
-					<input type="email" name="support_email" id="support_email" value={ configMap["support_email"] } class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"/>
+templ siteSettingsForm(cfg *config.Config) {
+	<div class="p-6 bg-white rounded-lg shadow">
+		<h3 class="text-lg font-medium leading-6 text-gray-900">Site Settings</h3>
+		<div class="mt-6 grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
+			<div class="sm:col-span-4">
+				<label for="site_name" class="block text-sm font-medium text-gray-700">Site Name</label>
+				<div class="mt-1">
+					<input type="text" name="site_name" id="site_name" value={ cfg.Site.Name } class="block w-full border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500 sm:text-sm"/>
 				</div>
-
-				<div class="flex flex-col gap-2">
-					<label for="carousel_images" class="font-medium">Carousel Images</label>
-					<input type="file" name="carousel_images" id="carousel_images" multiple accept="image/*" class="flex w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"/>
-					<p class="text-xs text-muted-foreground">Upload images for the homepage carousel. They will be auto-renamed to slide_1, slide_2, etc.</p>
+			</div>
+			<div class="sm:col-span-4">
+				<label for="support_email" class="block text-sm font-medium text-gray-700">Support Email</label>
+				<div class="mt-1">
+					<input type="email" name="support_email" id="support_email" value={ cfg.Site.SupportEmail } class="block w-full border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500 sm:text-sm"/>
 				</div>
-
-				<div class="flex flex-col gap-2">
-					<label for="category_count" class="font-medium">Shop by Category Count</label>
-					<input type="number" name="category_count" id="category_count" value={ configMap["category_count"] }
-						hx-get="/configuration"
-						hx-target="#product-selector-wrapper"
-						hx-swap="outerHTML"
-						hx-trigger="change"
-						hx-include="[name='category_products']"
-						class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"/>
-				</div>
-
-				@CategoryProductSelector(productsForSelector, configMap["category_products"], configMap["category_count"])
-
-				<div class="flex flex-col gap-2">
-					<label for="best_seller_count" class="font-medium">Best Seller Product Count</label>
-					<input type="number" name="best_seller_count" id="best_seller_count" value={ configMap["best_seller_count"] } class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"/>
-				</div>
-
-				<div class="flex flex-col gap-2">
-					<label for="favorite_plants_count" class="font-medium">Our Favorite Plants Count (New Arrivals)</label>
-					<input type="number" name="favorite_plants_count" id="favorite_plants_count" value={ configMap["favorite_plants_count"] } class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"/>
-				</div>
-
-				<div class="pt-4">
-					<button type="submit" class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2">Save Changes</button>
-				</div>
-			</form>
+			</div>
 		</div>
 	</div>
 }
 
-templ CategoryProductSelector(products []models.Product, selectedProductIDs string, countStr string) {
-	{{
-		count, _ := strconv.Atoi(countStr)
-		selectedIDs := strings.Split(selectedProductIDs, ",")
-		productMap := make(map[string]models.Product)
-		categoriesMap := make(map[string]bool)
-		for _, p := range products {
-			productMap[strconv.Itoa(int(p.ID))] = p
-			if p.Category != "" {
-				categoriesMap[p.Category] = true
-			}
-		}
-		var categories []string
-		for k := range categoriesMap {
-			categories = append(categories, k)
-		}
-		sort.Strings(categories)
-	}}
-	<div id="product-selector-wrapper" class="flex flex-col gap-4">
-		<div class="flex flex-col gap-2">
-			<label for="category_products" class="font-medium">Category Products</label>
-			<p class="text-xs text-muted-foreground">Select which products to show in the "category" section on the landing page.</p>
-			<div class="rounded-md border bg-muted/30 overflow-hidden">
-				<table class="w-full text-sm">
-					<thead class="bg-muted/50">
-						<tr>
-							<th class="px-4 py-3 text-left font-medium text-muted-foreground w-16">#</th>
-							<th class="px-4 py-3 text-left font-medium text-muted-foreground w-1/4">Category</th>
-							<th class="px-4 py-3 text-left font-medium text-muted-foreground">Product</th>
-						</tr>
-					</thead>
-					<tbody class="divide-y divide-border">
-						for i := 0; i < count; i++ {
-							{{
-								currentID := ""
-								currentCategory := ""
-								if i < len(selectedIDs) {
-									currentID = selectedIDs[i]
-									if p, ok := productMap[currentID]; ok {
-										currentCategory = p.Category
-									}
-								}
-							}}
-							<tr class="bg-background/50" x-data={ "{ category: '" + strings.ReplaceAll(currentCategory, "'", "\\'") + "' }" }>
-								<td class="px-4 py-3 font-medium align-middle">{ strconv.Itoa(i+1) }</td>
-								<td class="px-4 py-3 align-middle">
-									<select x-model="category" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">
-										<option value="">All Categories</option>
-										for _, cat := range categories {
-											<option value={ cat } selected?={ currentCategory == cat }>{ cat }</option>
-										}
-									</select>
-								</td>
-								<td class="px-4 py-3 align-middle">
-									<select name="category_products" x-on:change="category = $el.options[$el.selectedIndex].getAttribute('data-category')" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">
-										<option value="">Select a product</option>
-										for _, product := range products {
-											<option value={ strconv.Itoa(int(product.ID)) } data-category={ product.Category } selected?={ currentID == strconv.Itoa(int(product.ID)) } x-show={ "category === '' || category === '" + strings.ReplaceAll(product.Category, "'", "\\'") + "'" }>{ product.Name } ({ product.Category })</option>
-										}
-									</select>
-								</td>
-							</tr>
-						}
-					</tbody>
-				</table>
+templ heroSettingsForm(cfg *config.Config) {
+	<div class="p-6 bg-white rounded-lg shadow">
+		<h3 class="text-lg font-medium leading-6 text-gray-900">Hero Section</h3>
+		<div class="mt-6 space-y-6">
+			<div class="flex items-center">
+				<input id="hero_enabled" name="hero_enabled" type="checkbox" checked?={ cfg.Hero.Enabled } class="w-4 h-4 text-green-600 border-gray-300 rounded focus:ring-green-500"/>
+				<label for="hero_enabled" class="ml-2 block text-sm text-gray-900">Enable Hero Section</label>
 			</div>
+			<div class="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
+				<div class="sm:col-span-6">
+					<label for="hero_title" class="block text-sm font-medium text-gray-700">Title</label>
+					<input type="text" name="hero_title" id="hero_title" value={ cfg.Hero.Title } class="mt-1 block w-full border-gray-300 rounded-md shadow-sm"/>
+				</div>
+				<div class="sm:col-span-6">
+					<label for="hero_subtitle" class="block text-sm font-medium text-gray-700">Subtitle</label>
+					<input type="text" name="hero_subtitle" id="hero_subtitle" value={ cfg.Hero.Subtitle } class="mt-1 block w-full border-gray-300 rounded-md shadow-sm"/>
+				</div>
+				<div class="sm:col-span-3">
+					<label for="hero_button_text" class="block text-sm font-medium text-gray-700">Button Text</label>
+					<input type="text" name="hero_button_text" id="hero_button_text" value={ cfg.Hero.ButtonText } class="mt-1 block w-full border-gray-300 rounded-md shadow-sm"/>
+				</div>
+				<div class="sm:col-span-3">
+					<label for="hero_button_link" class="block text-sm font-medium text-gray-700">Button Link</label>
+					<input type="text" name="hero_button_link" id="hero_button_link" value={ cfg.Hero.ButtonLink } class="mt-1 block w-full border-gray-300 rounded-md shadow-sm"/>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="p-6 bg-white rounded-lg shadow">
+		<h3 class="text-lg font-medium leading-6 text-gray-900">Carousel Slides</h3>
+		<div class="mt-4 space-y-4">
+			for i, slide := range cfg.Hero.Slides {
+				<div class="p-4 border border-gray-200 rounded-md">
+					<div class="flex items-center justify-between">
+						<img src={ slide.Image } alt="Slide Image" class="w-20 h-20 object-cover rounded"/>
+						<div class="flex items-center">
+							<label for={ "slide_" + strconv.Itoa(i) + "_delete" } class="mr-2 text-sm text-red-600">Delete</label>
+							<input type="checkbox" name={ "slide_" + strconv.Itoa(i) + "_delete" } id={ "slide_" + strconv.Itoa(i) + "_delete" }/>
+						</div>
+					</div>
+					<div class="mt-4 grid grid-cols-2 gap-4">
+						<input type="text" name={ "slide_" + strconv.Itoa(i) + "_title" } placeholder="Slide Title (optional)" value={ slide.Title } class="block w-full border-gray-300 rounded-md shadow-sm"/>
+						<input type="text" name={ "slide_" + strconv.Itoa(i) + "_subtitle" } placeholder="Slide Subtitle (optional)" value={ slide.Subtitle } class="block w-full border-gray-300 rounded-md shadow-sm"/>
+						<input type="text" name={ "slide_" + strconv.Itoa(i) + "_button_text" } placeholder="Button Text (optional)" value={ slide.ButtonText } class="block w-full border-gray-300 rounded-md shadow-sm"/>
+						<input type="text" name={ "slide_" + strconv.Itoa(i) + "_button_link" } placeholder="Button Link (optional)" value={ slide.ButtonLink } class="block w-full border-gray-300 rounded-md shadow-sm"/>
+					</div>
+				</div>
+			}
+		</div>
+		<div class="mt-6">
+			<label for="carousel_images" class="block text-sm font-medium text-gray-700">Add New Slides</label>
+			<input type="file" name="carousel_images" id="carousel_images" multiple class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-green-50 file:text-green-700 hover:file:bg-green-100"/>
+		</div>
+	</div>
+}
+
+templ sectionsSettingsForm(cfg *config.Config, products []models.Product) {
+	for _, section := range cfg.Sections {
+		<div class="p-6 bg-white rounded-lg shadow">
+			<div class="flex items-center justify-between">
+				<h3 class="text-lg font-medium leading-6 text-gray-900">{ section.Title }</h3>
+				<div class="flex items-center">
+					<input id={ section.Type + "_enabled" } name={ section.Type + "_enabled" } type="checkbox" checked?={ section.Enabled } class="w-4 h-4 text-green-600 border-gray-300 rounded focus:ring-green-500"/>
+					<label for={ section.Type + "_enabled" } class="ml-2 block text-sm text-gray-900">Enabled</label>
+				</div>
+			</div>
+			<div class="mt-6 grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
+				<div class="sm:col-span-4">
+					<label for={ section.Type + "_title" } class="block text-sm font-medium text-gray-700">Section Title</label>
+					<input type="text" name={ section.Type + "_title" } id={ section.Type + "_title" } value={ section.Title } class="mt-1 block w-full border-gray-300 rounded-md shadow-sm"/>
+				</div>
+				<div class="sm:col-span-2">
+					<label for={ section.Type + "_limit" } class="block text-sm font-medium text-gray-700">Item Limit</label>
+					<input type="number" name={ section.Type + "_limit" } id={ section.Type + "_limit" } value={ strconv.Itoa(section.Limit) } class="mt-1 block w-full border-gray-300 rounded-md shadow-sm"/>
+				</div>
+				if section.Type == "featured_products" {
+					<div class="sm:col-span-6">
+						<label for="featured_products_product_ids" class="block text-sm font-medium text-gray-700">Featured Products</label>
+						<select id="featured_products_product_ids" name="featured_products_product_ids" multiple class="mt-1 block w-full border-gray-300 rounded-md shadow-sm h-64">
+							for _, p := range products {
+								<option value={ strconv.Itoa(int(p.ID)) } selected?={ isSelected(strconv.Itoa(int(p.ID)), section.ProductIDs) }>{ p.Name } ({ p.Category })</option>
+							}
+						</select>
+						<p class="mt-2 text-sm text-gray-500">Hold Ctrl or Cmd to select multiple products.</p>
+					</div>
+				}
+			</div>
+		</div>
+	}
+}
+
+func isSelected(productID string, selectedIDs []string) bool {
+	for _, id := range selectedIDs {
+		if id == productID {
+			return true
+		}
+	}
+	return false
+}
+
+templ themeSettingsForm(cfg *config.Config) {
+	<div class="p-6 bg-white rounded-lg shadow">
+		<h3 class="text-lg font-medium leading-6 text-gray-900">Theme Settings</h3>
+		<div class="mt-6 grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
+			<div class="sm:col-span-3">
+				<label for="theme_primary_color" class="block text-sm font-medium text-gray-700">Primary Color</label>
+				<div class="mt-1 flex items-center">
+					<input type="color" name="theme_primary_color" id="theme_primary_color" value={ cfg.Theme.PrimaryColor } class="h-10 w-10 p-1 border-gray-300 rounded-md"/>
+					<input type="text" value={ cfg.Theme.PrimaryColor } class="ml-2 block w-full border-gray-300 rounded-md shadow-sm" onchange="document.getElementById('theme_primary_color').value = this.value"/>
+				</div>
+			</div>
+			<div class="sm:col-span-3">
+				<label for="theme_secondary_color" class="block text-sm font-medium text-gray-700">Secondary Color</label>
+				<div class="mt-1 flex items-center">
+					<input type="color" name="theme_secondary_color" id="theme_secondary_color" value={ cfg.Theme.SecondaryColor } class="h-10 w-10 p-1 border-gray-300 rounded-md"/>
+					<input type="text" value={ cfg.Theme.SecondaryColor } class="ml-2 block w-full border-gray-300 rounded-md shadow-sm" onchange="document.getElementById('theme_secondary_color').value = this.value"/>
+				</div>
+			</div>
+		</div>
+	</div>
+}
+
+templ storefrontSidebarSettingsForm(cfg *config.Config) {
+	<div class="p-6 bg-white rounded-lg shadow" x-data="{ newItems: 0 }">
+		<h3 class="text-lg font-medium leading-6 text-gray-900">Storefront Sidebar Menu</h3>
+		<div class="mt-6 space-y-4">
+			<p class="text-sm text-gray-500">Existing Items</p>
+			for i, item := range cfg.StorefrontSidebar {
+				<div class="p-4 border border-gray-200 rounded-md">
+					<div class="grid grid-cols-1 gap-y-4 gap-x-4 sm:grid-cols-9">
+						<div class="sm:col-span-3">
+							<label for={ "item_title_" + strconv.Itoa(i) } class="block text-sm font-medium text-gray-700">Title</label>
+							<input type="text" name={ "storefront_sidebar_" + strconv.Itoa(i) + "_title" } id={ "item_title_" + strconv.Itoa(i) } value={ item.Title } class="mt-1 block w-full border-gray-300 rounded-md shadow-sm"/>
+						</div>
+						<div class="sm:col-span-3">
+							<label for={ "item_link_" + strconv.Itoa(i) } class="block text-sm font-medium text-gray-700">Link</label>
+							<input type="text" name={ "storefront_sidebar_" + strconv.Itoa(i) + "_link" } id={ "item_link_" + strconv.Itoa(i) } value={ item.Link } class="mt-1 block w-full border-gray-300 rounded-md shadow-sm"/>
+						</div>
+						<div class="sm:col-span-2">
+							<label for={ "item_icon_" + strconv.Itoa(i) } class="block text-sm font-medium text-gray-700">Icon</label>
+							<input type="text" name={ "storefront_sidebar_" + strconv.Itoa(i) + "_icon" } id={ "item_icon_" + strconv.Itoa(i) } value={ item.Icon } class="mt-1 block w-full border-gray-300 rounded-md shadow-sm"/>
+						</div>
+						<div class="sm:col-span-1 flex items-end justify-center">
+							<input type="checkbox" name={ "storefront_sidebar_" + strconv.Itoa(i) + "_delete" } id={ "item_delete_" + strconv.Itoa(i) } class="h-4 w-4 text-red-600 border-gray-300 rounded focus:ring-red-500"/>
+							<label for={ "item_delete_" + strconv.Itoa(i) } class="ml-2 text-sm text-red-600">Delete</label>
+						</div>
+					</div>
+				</div>
+			}
+		</div>
+
+		<div class="mt-6 space-y-4" id="new-sidebar-items">
+			<p class="text-sm text-gray-500">New Items</p>
+			<template x-if="newItems > 0">
+				<template x-for="i in newItems" :key="i">
+					<div class="p-4 border border-dashed border-gray-300 rounded-md">
+						<div class="grid grid-cols-1 gap-y-4 gap-x-4 sm:grid-cols-8">
+							<div class="sm:col-span-3">
+								<label class="block text-sm font-medium text-gray-700">Title</label>
+								<input type="text" name="new_sidebar_item_title" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm"/>
+							</div>
+							<div class="sm:col-span-3">
+								<label class="block text-sm font-medium text-gray-700">Link</label>
+								<input type="text" name="new_sidebar_item_link" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm"/>
+							</div>
+							<div class="sm:col-span-2">
+								<label class="block text-sm font-medium text-gray-700">Icon</label>
+								<input type="text" name="new_sidebar_item_icon" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm"/>
+							</div>
+						</div>
+					</div>
+				</template>
+			</template>
+		</div>
+
+		<div class="mt-4">
+			<button type="button" @click="newItems++" class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50">
+				Add Menu Item
+			</button>
 		</div>
 	</div>
 }

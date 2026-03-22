@@ -6,6 +6,7 @@ import (
 	
 	v "github.com/anthdm/superkit/validate"
 	"shopTemplate/app/models"
+	"shopTemplate/app/config"
 )
 type LoginIndexPageData struct {
 	FormValues LoginFormValues
@@ -18,7 +19,7 @@ type LoginFormValues struct {
 }
 
 templ LoginIndex(data LoginIndexPageData) {
-	@layouts.BaseLayout(models.AuthUser{}) {
+	@layouts.BaseLayout(models.AuthUser{},config.Get(),nil) {
 		<div class="fixed top-6 right-6">
 			@components.ThemeSwitcher()
 		</div>

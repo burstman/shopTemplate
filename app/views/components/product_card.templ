@@ -1,11 +1,16 @@
 package components
 
-templ ProductCard() {
+import (
+	"fmt"
+	"shopTemplate/app/models"
+)
+
+templ ProductCard(product models.Product) {
 	<div class="group relative">
 		<div class="aspect-[3/4] w-full overflow-hidden rounded-md bg-muted lg:aspect-none group-hover:opacity-75 lg:h-80 relative">
 			<img 
-				src="/public/images/No_Image_Available.jpg" 
-				alt="Plant image" 
+				src={ product.Image } 
+				alt={ product.Name } 
 				class="h-full w-full object-cover object-center lg:h-full lg:w-full"
 			/>
 			<button class="absolute bottom-4 left-1/2 -translate-x-1/2 bg-background/90 text-foreground px-6 py-2 rounded-full font-medium opacity-0 group-hover:opacity-100 transition-all duration-300 shadow-sm hover:bg-background whitespace-nowrap">
@@ -15,14 +20,21 @@ templ ProductCard() {
 		<div class="mt-4 flex justify-between">
 			<div>
 				<h3 class="text-lg font-medium text-foreground">
-					<a href="#">
+					<a href={ templ.SafeURL(fmt.Sprintf("/products/%d", product.ID)) }>
 						<span aria-hidden="true" class="absolute inset-0"></span>
-						Monstera Deliciosa
+						{ product.Name }
 					</a>
 				</h3>
-				<p class="mt-1 text-sm text-muted-foreground">Indoor Plant</p>
+				<p class="mt-1 text-sm text-muted-foreground">
+					for i, cat := range product.Categories {
+						if i > 0 {
+							{ ", " }
+						}
+						{ cat.Name }
+					}
+				</p>
 			</div>
-			<p class="text-lg font-medium text-foreground">$35.00</p>
+			<p class="text-lg font-medium text-foreground">{ fmt.Sprintf("$%.2f", product.Price) }</p>
 		</div>
 	</div>
 }

@@ -1,42 +1,38 @@
 package handlers
 
 import (
+	"shopTemplate/app/config"
 	"shopTemplate/app/db"
 	"shopTemplate/app/models"
+	"shopTemplate/app/views/components"
 	"shopTemplate/app/views/landing"
-	"shopTemplate/app/views/layouts"
-	"strings"
 
 	"github.com/anthdm/superkit/kit"
 )
 
 func HandleLandingIndex(kit *kit.Kit) error {
 	// 1. Fetch all settings
-	var settings []models.Setting
-	err := db.Get().Find(&settings).Error
-	if err != nil {
-		return err
-	}
-	configMap := make(map[string]string)
-	for _, s := range settings {
-		configMap[s.Key] = s.Value
-	}
+	cfg := config.Get()
 
 	// 2. Fetch the specific products selected for the category section
 	var categoryProducts []models.Product
-	if idsStr := configMap["category_products"]; idsStr != "" {
-		// Filter out empty strings to prevent SQL errors
-		rawIDs := strings.Split(idsStr, ",")
-		var ids []string
-		for _, id := range rawIDs {
-			if trimmed := strings.TrimSpace(id); trimmed != "" {
-				ids = append(ids, trimmed)
+	var featuredSection *config.SectionConfig
+	for i := range cfg.Sections {
+		if cfg.Sections[i].Type == "featured_products" {
+			featuredSection = &cfg.Sections[i]
+			break
+		}
+	}
+
+	if featuredSection != nil && featuredSection.Enabled && len(featuredSection.ProductIDs) > 0 {
+		var validIDs []string
+		for _, id := range featuredSection.ProductIDs {
+			if id != "" {
+				validIDs = append(validIDs, id)
 			}
 		}
-
-		if len(ids) > 0 {
-			err := db.Get().Where("id IN ?", ids).Find(&categoryProducts).Error
-			if err != nil {
+		if len(validIDs) > 0 {
+			if err := db.Get().Where("id IN ?", validIDs).Preload("Categories").Find(&categoryProducts).Error; err != nil {
 				return err
 			}
 		}
@@ -44,12 +40,39 @@ func HandleLandingIndex(kit *kit.Kit) error {
 
 	// 3. Fetch all products for the main shop display, ordered by newest first
 	var allProducts []models.Product
-	if err := db.Get().Order("created_at desc").Find(&allProducts).Error; err != nil {
+	if err := db.Get().Order("created_at desc").Preload("Categories").Find(&allProducts).Error; err != nil {
 		return err
 	}
 
-	user, _ := kit.Auth().(models.AuthUser)
+	// 4. Prepare Carousel Items
+	var carouselItems []components.CarouselItem
+	if cfg.Hero.Enabled && len(cfg.Hero.Slides) > 0 {
+		for _, slide := range cfg.Hero.Slides {
+			title := slide.Title
+			if title == "" {
+				title = cfg.Hero.Title
+			}
+			subtitle := slide.Subtitle
+			if subtitle == "" {
+				subtitle = cfg.Hero.Subtitle
+			}
+			btnText := slide.ButtonText
+			if btnText == "" {
+				btnText = cfg.Hero.ButtonText
+			}
+			btnLink := slide.ButtonLink
+			if btnLink == "" {
+				btnLink = cfg.Hero.ButtonLink
+			}
+			carouselItems = append(carouselItems, components.CarouselItem{
+				Image:       slide.Image,
+				Title:       title,
+				Description: subtitle,
+				ButtonText:  btnText,
+				ButtonLink:  btnLink,
+			})
+		}
+	}
 
-	// Pass both featured and all products to the view
-	return kit.Render(layouts.App(user, landing.Index(configMap, categoryProducts, allProducts)))
+	return RenderWithLayout(kit, landing.Index(cfg, categoryProducts, allProducts, carouselItems))
 }

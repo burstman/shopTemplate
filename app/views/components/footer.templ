@@ -1,0 +1,46 @@
+package components
+
+import (
+	"shopTemplate/app/config"
+)
+
+templ Footer(cfg *config.Config) {
+	<footer class="bg-gray-900 text-white mt-auto">
+		<div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
+			<div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+				<div class="col-span-1 md:col-span-1">
+					<span class="text-2xl font-bold tracking-wider uppercase">{ cfg.Site.Name }</span>
+					<div class="flex space-x-6 mt-4">
+						for _, social := range cfg.Footer.SocialLinks {
+							<a href={ templ.SafeURL(social.URL) } class="text-gray-400 hover:text-gray-300">
+								<span class="sr-only">{ social.Platform }</span>
+								<span>{ social.Platform }</span>
+							</a>
+						}
+					</div>
+				</div>
+				<div class="col-span-1 md:col-span-3 grid grid-cols-1 sm:grid-cols-3 gap-8">
+					for _, col := range cfg.Footer.LinkColumns {
+						<div>
+							<h3 class="text-sm font-semibold text-gray-400 tracking-wider uppercase">{ col.Title }</h3>
+							<ul role="list" class="mt-4 space-y-4">
+								for _, link := range col.Links {
+									<li>
+										<a href={ templ.SafeURL(link.Link) } class="text-base text-gray-300 hover:text-white">
+											{ link.Title }
+										</a>
+									</li>
+								}
+							</ul>
+						</div>
+					}
+				</div>
+			</div>
+			<div class="mt-12 border-t border-gray-700 pt-8">
+				<p class="text-base text-gray-400 xl:text-center">
+					{ cfg.Footer.Copyright }
+				</p>
+			</div>
+		</div>
+	</footer>
+}

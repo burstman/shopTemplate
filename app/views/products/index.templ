@@ -1,0 +1,57 @@
+package products
+
+import (
+	"fmt"
+	"shopTemplate/app/models"
+	"shopTemplate/app/views/components"
+)
+
+templ Index(products []models.Product) {
+	<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+		<h1 class="text-3xl font-bold mb-8">All Products</h1>
+		<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+			for _, product := range products {
+				@components.ProductCard(product)
+			}
+		</div>
+	</div>
+}
+
+templ CategoryShow(category models.Category, products []models.Product, breadcrumbs []models.Category) {
+	<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+		@Breadcrumbs(breadcrumbs)
+		<div class="mb-8">
+			<h1 class="text-3xl font-bold">{ category.Name }</h1>
+			<p class="text-muted-foreground mt-2">{ fmt.Sprintf("%d products", len(products)) }</p>
+		</div>
+		<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+			for _, product := range products {
+				@components.ProductCard(product)
+			}
+		</div>
+	</div>
+}
+
+templ Breadcrumbs(crumbs []models.Category) {
+	<nav aria-label="Breadcrumb" class="mb-6">
+		<ol role="list" class="flex items-center space-x-2 text-sm">
+			<li>
+				<div>
+					<a href="/" class="text-gray-500 hover:text-gray-700">Home</a>
+				</div>
+			</li>
+			for i, crumb := range crumbs {
+				<li>
+					<div class="flex items-center">
+						<span class="mx-2 text-gray-400">&gt;</span>
+						if i == len(crumbs)-1 {
+							<span class="ml-2 font-medium text-gray-700">{ crumb.Name }</span>
+						} else {
+							<a href={ templ.SafeURL(fmt.Sprintf("/categories/%d", crumb.ID)) } class="ml-2 text-gray-500 hover:text-gray-700">{ crumb.Name }</a>
+						}
+					</div>
+				</li>
+			}
+		</ol>
+	</nav>
+}

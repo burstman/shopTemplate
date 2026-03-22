@@ -6,151 +6,137 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"shopTemplate/app/config"
 	"shopTemplate/app/db"
 	"shopTemplate/app/models"
+	"shopTemplate/app/views/layouts"
 	"strconv"
-	"strings"
+	"time"
 
 	"shopTemplate/app/views/configuration"
 
 	"github.com/anthdm/superkit/kit"
+	"github.com/go-chi/chi/v5"
 )
 
-func HandleConfigurationIndex(kit *kit.Kit) error {
+func HandleAdminSettings(kit *kit.Kit) error {
 	user, ok := kit.Auth().(models.AuthUser)
 	if !ok || user.Role != "admin" {
 		return kit.Redirect(http.StatusSeeOther, "/")
 	}
 
-	defaultSettings := map[string]string{
-		"carousel_count":        "0",
-		"category_count":        "3",
-		"best_seller_count":     "4",
-		"favorite_plants_count": "4",
-		"category_products":     "",
+	section := chi.URLParam(kit.Request, "section")
+	if section == "" {
+		section = "site"
 	}
 
-	for key, value := range defaultSettings {
-		db.Get().Where(models.Setting{Key: key}).FirstOrCreate(&models.Setting{Key: key, Value: value})
+	cfg := config.Get()
+
+	var productsForSelector []models.Product
+	if section == "sections" {
+		db.Get().Order("name").Find(&productsForSelector)
 	}
-	// Fetch settings from DB after ensuring they exist
-	var settings []models.Setting
-	err := db.Get().Find(&settings).Error
-	if err != nil {
+
+	activePath := "/admin/" + section
+	sidebar := config.GetAdminSidebar()
+	content := configuration.Index(cfg, productsForSelector, section)
+	return RenderWithLayout(kit, layouts.AdminPage(sidebar, activePath, content))
+}
+
+func HandleAdminSettingsUpdate(kit *kit.Kit) error {
+	user, ok := kit.Auth().(models.AuthUser)
+	if !ok || user.Role != "admin" {
+		return kit.Redirect(http.StatusSeeOther, "/")
+	}
+
+	section := chi.URLParam(kit.Request, "section")
+	if err := kit.Request.ParseMultipartForm(32 << 20); err != nil { // 32MB max
 		return err
 	}
 
-	// Convert to map for easy access in view
-	configMap := make(map[string]string)
-	for _, s := range settings {
-		configMap[s.Key] = s.Value
-	}
+	cfg := config.Get()
 
-	isHTMX := kit.Request.Header.Get("HX-Request") == "true"
-	requestedCount := kit.Request.URL.Query().Get("category_count")
+	switch section {
+	case "site":
+		cfg.Site.Name = kit.Request.FormValue("site_name")
+		cfg.Site.SupportEmail = kit.Request.FormValue("support_email")
 
-	var selectedIDs []string
+	case "hero":
+		cfg.Hero.Enabled = kit.Request.FormValue("hero_enabled") == "on"
+		cfg.Hero.Title = kit.Request.FormValue("hero_title")
+		cfg.Hero.Subtitle = kit.Request.FormValue("hero_subtitle")
+		cfg.Hero.ButtonText = kit.Request.FormValue("hero_button_text")
+		cfg.Hero.ButtonLink = kit.Request.FormValue("hero_button_link")
 
-	if isHTMX {
-		// If HTMX, preserve the current selection from the UI (hx-include)
-		selectedIDs = kit.Request.URL.Query()["category_products"]
-		if requestedCount != "" {
-			configMap["category_count"] = requestedCount
+		// Process Existing Slides
+		var updatedSlides []config.HeroSlide
+		for i, slide := range cfg.Hero.Slides {
+			prefix := fmt.Sprintf("slide_%d_", i)
+			if kit.Request.FormValue(prefix+"delete") == "on" {
+				if len(slide.Image) > 0 && slide.Image[0] == '/' {
+					os.Remove(slide.Image[1:])
+				}
+				continue
+			}
+			slide.Title = kit.Request.FormValue(prefix + "title")
+			slide.Subtitle = kit.Request.FormValue(prefix + "subtitle")
+			slide.ButtonText = kit.Request.FormValue(prefix + "button_text")
+			slide.ButtonLink = kit.Request.FormValue(prefix + "button_link")
+			updatedSlides = append(updatedSlides, slide)
 		}
-	} else {
-		// Initial load: fallback to DB
-		if val := configMap["category_products"]; val != "" {
-			selectedIDs = strings.Split(val, ",")
+
+		// Handle New Uploads
+		files := kit.Request.MultipartForm.File["carousel_images"]
+		if len(files) > 0 {
+			carouselPath := "public/images/carousel"
+			os.MkdirAll(carouselPath, 0755)
+			for _, fileHeader := range files {
+				file, err := fileHeader.Open()
+				if err != nil {
+					continue
+				}
+				defer file.Close()
+				ext := filepath.Ext(fileHeader.Filename)
+				dstName := fmt.Sprintf("slide_%d%s", time.Now().UnixNano(), ext)
+				dstPath := filepath.Join(carouselPath, dstName)
+				dst, err := os.Create(dstPath)
+				if err != nil {
+					continue
+				}
+				defer dst.Close()
+				io.Copy(dst, file)
+				updatedSlides = append(updatedSlides, config.HeroSlide{Image: "/" + dstPath})
+			}
 		}
+		cfg.Hero.Slides = updatedSlides
+
+	case "sections":
+		for i := range cfg.Sections {
+			secType := cfg.Sections[i].Type
+			cfg.Sections[i].Enabled = kit.Request.FormValue(secType+"_enabled") == "on"
+			cfg.Sections[i].Title = kit.Request.FormValue(secType + "_title")
+			if limit, err := strconv.Atoi(kit.Request.FormValue(secType + "_limit")); err == nil {
+				cfg.Sections[i].Limit = limit
+			}
+			if secType == "featured_products" {
+				cfg.Sections[i].ProductIDs = kit.Request.MultipartForm.Value["featured_products_product_ids"]
+			}
+		}
+
+	case "theme":
+		cfg.Theme.PrimaryColor = kit.Request.FormValue("theme_primary_color")
+		cfg.Theme.SecondaryColor = kit.Request.FormValue("theme_secondary_color")
 	}
 
-	// Update map so template shows correct selections
-	configMap["category_products"] = strings.Join(selectedIDs, ",")
+	config.Save(cfg)
 
-	var productsForSelector []models.Product
-	db.Get().Order("category, name").Find(&productsForSelector)
+	return kit.Redirect(http.StatusSeeOther, "/admin/"+section)
+}
 
-	// If this is an HTMX request for the selector, render only that component
-	if isHTMX {
-		return kit.Render(configuration.CategoryProductSelector(productsForSelector, configMap["category_products"], configMap["category_count"]))
-	}
-
-	return RenderWithLayout(kit, configuration.Index(configMap, productsForSelector))
+func HandleConfigurationIndex(kit *kit.Kit) error {
+	return kit.Redirect(http.StatusSeeOther, "/admin/site")
 }
 
 func HandleConfigurationUpdate(kit *kit.Kit) error {
-	user, ok := kit.Auth().(models.AuthUser)
-	if !ok || user.Role != "admin" {
-		return kit.Redirect(http.StatusSeeOther, "/")
-	}
-
-	// Parse form values
-	err := kit.Request.ParseMultipartForm(32 << 20) // 32MB max
-	if err != nil {
-		return err
-	}
-
-	// Handle Carousel Image Uploads
-	files := kit.Request.MultipartForm.File["carousel_images"]
-	if len(files) > 0 {
-		carouselPath := "public/images/carousel"
-		// Create directory if not exists
-		if err := os.MkdirAll(carouselPath, 0755); err != nil {
-			return err
-		}
-
-		for i, fileHeader := range files {
-			file, err := fileHeader.Open()
-			if err != nil {
-				return err
-			}
-			defer file.Close()
-
-			// Auto-rename to slide_1.ext, slide_2.ext, etc.
-			ext := filepath.Ext(fileHeader.Filename)
-			dstName := fmt.Sprintf("slide_%d%s", i+1, ext)
-			dstPath := filepath.Join(carouselPath, dstName)
-
-			dst, err := os.Create(dstPath)
-			if err != nil {
-				return err
-			}
-			defer dst.Close()
-
-			if _, err := io.Copy(dst, file); err != nil {
-				return err
-			}
-		}
-
-		// Update carousel_count setting
-		err = db.Get().Where(models.Setting{Key: "carousel_count"}).
-			Assign(models.Setting{Value: strconv.Itoa(len(files))}).
-			FirstOrCreate(&models.Setting{}).Error
-		if err != nil {
-			return err
-		}
-	}
-
-	// Handle category products selection
-	selectedIDs := kit.Request.MultipartForm.Value["category_products"]
-	productsValue := strings.Join(selectedIDs, ",")
-	err = db.Get().Where(models.Setting{Key: "category_products"}).
-		Assign(models.Setting{Value: productsValue}).
-		FirstOrCreate(&models.Setting{}).Error
-	if err != nil {
-		return err
-	}
-
-	// Iterate over posted values and update/create settings
-	for key, values := range kit.Request.MultipartForm.Value {
-		if len(values) > 0 && key != "carousel_images" && key != "category_products" {
-			// Upsert logic: Save key-value pair
-			err = db.Get().Where(models.Setting{Key: key}).Assign(models.Setting{Value: values[0]}).FirstOrCreate(&models.Setting{}).Error
-			if err != nil {
-				return err
-			}
-		}
-	}
-
-	return kit.Redirect(http.StatusSeeOther, "/configuration")
+	return kit.Redirect(http.StatusSeeOther, "/admin/site")
 }

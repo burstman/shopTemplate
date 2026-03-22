@@ -9,10 +9,13 @@ import (
 	"os"
 	"path/filepath"
 	"strconv"
+	"strings"
 	"time"
 
+	"shopTemplate/app/config"
 	"shopTemplate/app/db"
 	"shopTemplate/app/models"
+	"shopTemplate/app/views/layouts"
 	"shopTemplate/app/views/products"
 
 	"github.com/anthdm/superkit/kit"
@@ -25,9 +28,16 @@ func HandleProductNew(kit *kit.Kit) error {
 	if !ok || user.Role != "admin" {
 		return kit.Redirect(http.StatusSeeOther, "/")
 	}
-	return kit.Render(products.CreateModal(products.CreateForm{
-		Errors: make(validate.Errors),
-	}))
+
+	categories := getCategoryTree()
+
+	activePath := "/products/new"
+	sidebar := config.GetAdminSidebar()
+	content := products.New(categories, products.CreateForm{
+		Errors:     make(validate.Errors),
+		Categories: categories,
+	})
+	return RenderWithLayout(kit, layouts.AdminPage(sidebar, activePath, content))
 }
 
 func HandleProductCreate(kit *kit.Kit) error {
@@ -46,8 +56,8 @@ func HandleProductCreate(kit *kit.Kit) error {
 	errors := make(validate.Errors)
 	name := kit.Request.FormValue("name")
 	priceStr := kit.Request.FormValue("price")
-	category := kit.Request.FormValue("category")
 	file, header, err := kit.Request.FormFile("image")
+	categoryIDs := kit.Request.MultipartForm.Value["categories"]
 	if name == "" {
 		errors.Add("name", "Name is required")
 	}
@@ -61,22 +71,28 @@ func HandleProductCreate(kit *kit.Kit) error {
 			errors.Add("price", "Price must be a valid number")
 		}
 	}
-	if category == "" {
-		errors.Add("category", "Category is required")
-	}
 	if err != nil {
 		errors.Add("image", "Image is required")
 	}
+	if len(categoryIDs) == 0 {
+		errors.Add("categories", "Please select at least one category")
+	}
 
 	if len(errors) > 0 {
-		return kit.Render(products.CreateModal(products.CreateForm{
+		categories := getCategoryTree()
+		activePath := "/products/new"
+		sidebar := config.GetAdminSidebar()
+		form := products.CreateForm{
 			Values: map[string]string{
-				"name":     name,
-				"price":    priceStr,
-				"category": category,
+				"name":  name,
+				"price": priceStr,
 			},
-			Errors: errors,
-		}))
+			Categories:          categories,
+			SelectedCategoryIDs: categoryIDs,
+			Errors:              errors,
+		}
+		content := products.New(categories, form)
+		return RenderWithLayout(kit, layouts.AdminPage(sidebar, activePath, content))
 	}
 
 	// Handle Image Upload
@@ -102,15 +118,25 @@ func HandleProductCreate(kit *kit.Kit) error {
 
 	// 2. Save Product to DB
 	product := models.Product{
-		Name:     name,
-		Price:    price,
-		Image:    "/" + fullPath,
-		Category: category,
+		Name:  name,
+		Price: price,
+		Image: "/" + fullPath,
 	}
-	db.Get().Create(&product)
+
+	if err := db.Get().Create(&product).Error; err != nil {
+		return err
+	}
+
+	// Associate categories
+	if len(categoryIDs) > 0 {
+		var categoriesToAssign []models.Category
+		if err := db.Get().Find(&categoriesToAssign, categoryIDs).Error; err == nil {
+			db.Get().Model(&product).Association("Categories").Replace(categoriesToAssign)
+		}
+	}
 
 	// Redirect to refresh the page (or you could return an OOB swap for the grid)
-	return kit.Redirect(http.StatusSeeOther, "/plants")
+	return kit.Redirect(http.StatusSeeOther, "/products")
 }
 
 // HandleProductDelete handles the deletion of a product by its ID.
@@ -172,7 +198,12 @@ func HandleProductEdit(kit *kit.Kit) error {
 		return err
 	}
 
-	return kit.Render(products.EditModal(product))
+	allCategories := getCategoryTree()
+
+	// Preload existing categories for the product
+	db.Get().Model(&product).Association("Categories").Find(&product.Categories)
+
+	return RenderWithLayout(kit, products.EditModal(product, allCategories))
 }
 
 // HandleProductUpdate handles the update of a product by an admin user.
@@ -201,7 +232,6 @@ func HandleProductUpdate(kit *kit.Kit) error {
 	kit.Request.ParseMultipartForm(10 << 20)
 
 	product.Name = kit.Request.FormValue("name")
-	product.Category = kit.Request.FormValue("category")
 	if price, err := strconv.ParseFloat(kit.Request.FormValue("price"), 64); err == nil {
 		product.Price = price
 	}
@@ -221,12 +251,26 @@ func HandleProductUpdate(kit *kit.Kit) error {
 			if err == nil {
 				defer dst.Close()
 				io.Copy(dst, file)
+				// remove old image if it exists
+				if len(product.Image) > 1 && product.Image[0] == '/' {
+					if _, err := os.Stat(product.Image[1:]); err == nil {
+						os.Remove(strings.TrimPrefix(product.Image, "/"))
+					}
+				}
 				product.Image = "/" + fullPath
 			}
 		}
 	}
 
+	// Update categories
+	categoryIDs := kit.Request.Form["categories"]
+	if len(categoryIDs) > 0 {
+		var categoriesToAssign []models.Category
+		db.Get().Find(&categoriesToAssign, categoryIDs)
+		db.Get().Model(&product).Association("Categories").Replace(categoriesToAssign)
+	}
+
 	db.Get().Save(&product)
 
-	return kit.Redirect(http.StatusSeeOther, "/plants")
+	return kit.Redirect(http.StatusSeeOther, "/products")
 }

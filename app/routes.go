@@ -43,7 +43,9 @@ func InitializeRoutes(router *chi.Mux) {
 
 		// Routes
 		app.Get("/", kit.Handler(handlers.HandleLandingIndex))
-		app.Get("/plants", kit.Handler(handlers.HandlePlantsIndex))
+		app.Get("/products", kit.Handler(handlers.HandleStoreIndex))
+		app.Get("/categories/{id}", kit.Handler(handlers.HandleCategoryShow))
+		app.Get("/contact", kit.Handler(handlers.HandleContactIndex))
 	})
 
 	// Authenticated routes
@@ -55,8 +57,14 @@ func InitializeRoutes(router *chi.Mux) {
 		app.Use(kit.WithAuthentication(authConfig, true)) // strict set to true
 
 		// Routes
+		app.Get("/admin/categories", kit.Handler(handlers.HandleAdminCategoriesIndex))
+		app.Post("/admin/categories", kit.Handler(handlers.HandleAdminCategoryCreate))
+		app.Delete("/admin/categories/{id}", kit.Handler(handlers.HandleAdminCategoryDelete))
+		app.Post("/admin/categories/reorder", kit.Handler(handlers.HandleAdminCategoryReorder))
+
 		app.Get("/configuration", kit.Handler(handlers.HandleConfigurationIndex))
-		app.Post("/configuration", kit.Handler(handlers.HandleConfigurationUpdate))
+		app.Get("/admin/{section}", kit.Handler(handlers.HandleAdminSettings))
+		app.Post("/admin/{section}", kit.Handler(handlers.HandleAdminSettingsUpdate))
 		app.Get("/products/new", kit.Handler(handlers.HandleProductNew))
 		app.Post("/products", kit.Handler(handlers.HandleProductCreate))
 		app.Get("/products/{id}/edit", kit.Handler(handlers.HandleProductEdit))

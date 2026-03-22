@@ -1,0 +1,108 @@
+{
+  "site": {
+    "name": "Botanica",
+    "support_email": "support@botanica.com"
+  },
+  "hero": {
+    "enabled": true,
+    "title": "Nature's Masterpiece",
+    "subtitle": "Discover our indoor plants",
+    "button_text": "Shop Now",
+    "button_link": "/shop",
+    "slides": []
+  },
+  "sections": [
+    {
+      "type": "featured_products",
+      "title": "Featured Collection",
+      "limit": 4,
+      "enabled": true
+    },
+    {
+      "type": "best_sellers",
+      "title": "Best Sellers",
+      "limit": 4,
+      "enabled": true
+    },
+    {
+      "type": "new_arrivals",
+      "title": "New Arrivals",
+      "limit": 4,
+      "enabled": true
+    }
+  ],
+  "theme": {
+    "primary_color": "#2E7D32",
+    "secondary_color": "#F5F5F5"
+  },
+  "storefront_sidebar": [],
+  "footer": {
+    "copyright": "© 2026 Botanica. All rights reserved.",
+    "social_links": [
+      {
+        "platform": "Twitter",
+        "url": "https://twitter.com",
+        "icon": "twitter"
+      },
+      {
+        "platform": "Facebook",
+        "url": "https://facebook.com",
+        "icon": "facebook"
+      },
+      {
+        "platform": "Instagram",
+        "url": "https://instagram.com",
+        "icon": "instagram"
+      }
+    ],
+    "link_columns": [
+      {
+        "title": "Shop",
+        "links": [
+          {
+            "title": "Products",
+            "link": "/products"
+          },
+          {
+            "title": "Best Sellers",
+            "link": "/best-sellers"
+          },
+          {
+            "title": "New Arrivals",
+            "link": "/new-arrivals"
+          }
+        ]
+      },
+      {
+        "title": "About",
+        "links": [
+          {
+            "title": "Our Story",
+            "link": "/about"
+          },
+          {
+            "title": "Contact Us",
+            "link": "/contact"
+          },
+          {
+            "title": "FAQs",
+            "link": "/faq"
+          }
+        ]
+      },
+      {
+        "title": "Legal",
+        "links": [
+          {
+            "title": "Privacy Policy",
+            "link": "/privacy"
+          },
+          {
+            "title": "Terms of Service",
+            "link": "/terms"
+          }
+        ]
+      }
+    ]
+  }
+}

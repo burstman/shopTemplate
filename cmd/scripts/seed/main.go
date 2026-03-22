@@ -84,6 +84,40 @@ func main() {
 		}
 	}
 
+	// Seed Categories
+	fmt.Println("Seeding categories...")
+
+	// Top-level categories
+	indoor := models.Category{Name: "Indoor Plants"}
+	db.Get().FirstOrCreate(&indoor, models.Category{Name: "Indoor Plants"})
+
+	outdoor := models.Category{Name: "Outdoor Plants"}
+	db.Get().FirstOrCreate(&outdoor, models.Category{Name: "Outdoor Plants"})
+
+	accessories := models.Category{Name: "Pots & Accessories"}
+	db.Get().FirstOrCreate(&accessories, models.Category{Name: "Pots & Accessories"})
+
+	// Sub-categories for Indoor Plants
+	if indoor.ID > 0 {
+		lowLight := models.Category{Name: "Low Light", ParentID: &indoor.ID}
+		db.Get().FirstOrCreate(&lowLight, models.Category{Name: "Low Light", ParentID: &indoor.ID})
+
+		petFriendly := models.Category{Name: "Pet Friendly", ParentID: &indoor.ID}
+		db.Get().FirstOrCreate(&petFriendly, models.Category{Name: "Pet Friendly", ParentID: &indoor.ID})
+
+		flowering := models.Category{Name: "Flowering", ParentID: &indoor.ID}
+		db.Get().FirstOrCreate(&flowering, models.Category{Name: "Flowering", ParentID: &indoor.ID})
+	}
+
+	// Sub-categories for Pots & Accessories
+	if accessories.ID > 0 {
+		ceramic := models.Category{Name: "Ceramic Pots", ParentID: &accessories.ID}
+		db.Get().FirstOrCreate(&ceramic, models.Category{Name: "Ceramic Pots", ParentID: &accessories.ID})
+
+		stands := models.Category{Name: "Plant Stands", ParentID: &accessories.ID}
+		db.Get().FirstOrCreate(&stands, models.Category{Name: "Plant Stands", ParentID: &accessories.ID})
+	}
+
 	log.Println("Database seeding finished.")
 
 }

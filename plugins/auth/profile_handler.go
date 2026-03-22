@@ -2,6 +2,7 @@ package auth
 
 import (
 	"fmt"
+	"shopTemplate/app/config"
 	"shopTemplate/app/db"
 	"shopTemplate/app/models"
 	"shopTemplate/app/views/layouts"
@@ -38,7 +39,7 @@ func HandleProfileShow(kit *kit.Kit) error {
 		Email:     user.Email,
 	}
 
-	return kit.Render(layouts.App(pluginAuth, ProfileShow(formValues)))
+	return kit.Render(layouts.App(pluginAuth, config.Get(), []models.Category{}, ProfileShow(formValues)))
 }
 
 func HandleProfileUpdate(kit *kit.Kit) error {

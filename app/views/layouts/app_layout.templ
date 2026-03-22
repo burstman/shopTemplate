@@ -1,12 +1,12 @@
 package layouts
 
 import (
-	
+	"shopTemplate/app/config"
 	"shopTemplate/app/models"
 )
 
-templ App(user models.AuthUser, content templ.Component) {
-	@BaseLayout(user) {
+templ App(user models.AuthUser, cfg *config.Config, categories []models.Category, content templ.Component) {
+	@BaseLayout(user, cfg, categories) {
 		@content
 	}
 }

@@ -3,11 +3,12 @@ package errors
 import (
 	"shopTemplate/app/views/layouts"
 	"shopTemplate/app/models"
+	"shopTemplate/app/config"
 )
 
 
 templ Error500() {
-	@layouts.BaseLayout(models.AuthUser{}) {
+	@layouts.BaseLayout(models.AuthUser{}, config.Get(),nil) {
 		<div class="h-screen w-full flex flex-col justify-center align-middle items-center gap-4">
 			<div class="text-muted-foreground text-5xl font-bold">500</div>
 			<div class="text-lg">An unexpected error occured</div>
