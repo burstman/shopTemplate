@@ -1,0 +1,151 @@
+package layouts
+
+import (
+	"fmt"
+	"shopTemplate/app/config"
+	"shopTemplate/app/models"
+	"shopTemplate/app/views/components"
+
+)
+
+script initFacebookPixel(id string) {
+    console.log('FB Pixel: Initializing with ID', id);
+    fbq('init', id);
+    fbq('track', 'PageView');
+}
+
+templ App(user models.AuthUser, cfg *config.Config, categories []models.Category, cartCount int, content templ.Component) {
+	<!DOCTYPE html>
+	<html lang="en" class="h-full">
+		<head>
+			<meta charset="UTF-8"/>
+			<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+			<title>{ cfg.Site.Name }</title>
+			if cfg.FacebookPixel.PixelID != "" {
+				<!-- Facebook Pixel Code -->
+				<script>
+					!function(f,b,e,v,n,t,s)
+					{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+					n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+					if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+					n.queue=[];t=b.createElement(e);t.async=!0;
+					t.src=v;s=b.getElementsByTagName(e)[0];
+					s.parentNode.insertBefore(t,s)}(window, document,'script',
+					'https://connect.facebook.net/en_US/fbevents.js');
+				</script>
+				@initFacebookPixel(cfg.FacebookPixel.PixelID)
+				<noscript><img height="1" width="1" style="display:none"
+				src={ fmt.Sprintf("https://www.facebook.com/tr?id=%s&ev=PageView&noscript=1", cfg.FacebookPixel.PixelID) }/></noscript>
+				<!-- End Facebook Pixel Code -->
+			}
+			<link rel="stylesheet" href="/public/assets/styles.css"/>
+			<script src="https://unpkg.com/htmx.org@1.9.10"></script>
+			<script src="/public/assets/index.js"></script>
+			<style>
+				[x-cloak] {
+					display: none !important;
+				}
+			</style>
+			<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.3/dist/cdn.min.js"></script>
+		</head>
+		<body class="h-full flex flex-col font-sans antialiased text-gray-900 pt-16 sm:pt-28" style={ getPageStyle(cfg) }>
+			@components.Navigation(user, cfg, categories, cartCount, nil)
+			<main class="flex-grow">
+				@content
+			</main>
+			@components.Footer(cfg)
+		</body>
+	</html>
+}
+
+func getPageStyle(cfg *config.Config) string {
+	return fmt.Sprintf("background-color: %s;", cfg.Theme.PageBgColor)
+}
+
+func GetContentStyle(cfg *config.Config) string {
+	if !cfg.Theme.ContentBgColorEnabled {
+		return ""
+	}
+	if cfg.Theme.ContentBgGradientEnabled {
+		return fmt.Sprintf("background: linear-gradient(%ddeg, %s, %s);", 
+			cfg.Theme.ContentBgGradientAngle, cfg.Theme.ContentBgGradientStart, cfg.Theme.ContentBgGradientEnd)
+	}
+	return fmt.Sprintf("background-color: %s;", cfg.Theme.ContentBgColor)
+}
+
+templ AdminPage(sidebar []config.MenuItem, activePath string, content templ.Component) {
+	<!DOCTYPE html>
+	<html lang="en" class="h-full bg-gray-100">
+		<head>
+			<meta charset="UTF-8"/>
+			<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+			<title>Admin Dashboard</title>
+			<link rel="stylesheet" href="/public/assets/styles.css"/>
+			<script src="https://unpkg.com/htmx.org@1.9.10"></script>
+			<script src="/public/assets/index.js"></script>
+			<script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
+			<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.3/dist/cdn.min.js"></script>
+			<style>
+				[x-cloak] {
+					display: none !important;
+				}
+			</style>
+		</head>
+		<body class="h-full">
+			<div class="min-h-full lg:flex" x-data="{ mobileMenuOpen: false }">
+				<!-- Mobile Header -->
+				<div class="lg:hidden flex items-center justify-between bg-indigo-700 px-4 py-4 text-white">
+					<span class="font-bold text-xl">Admin</span>
+					<button @click="mobileMenuOpen = true" class="p-2 rounded-md hover:bg-indigo-600 focus:outline-none">
+						<svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+						</svg>
+					</button>
+				</div>
+
+				<!-- Sidebar Overlay -->
+				<div x-show="mobileMenuOpen" x-cloak class="fixed inset-0 z-40 lg:hidden" @click="mobileMenuOpen = false">
+					<div class="absolute inset-0 bg-gray-600 opacity-75"></div>
+				</div>
+
+				<!-- Sidebar -->
+				<div 
+					:class="mobileMenuOpen ? 'translate-x-0' : '-translate-x-full'"
+					class="fixed inset-y-0 left-0 z-50 flex w-64 flex-col bg-indigo-700 pt-5 pb-4 overflow-y-auto transform transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-0 lg:flex"
+				>
+					<!-- Close button for mobile -->
+					<div class="lg:hidden absolute top-0 right-0 -mr-12 pt-2" x-show="mobileMenuOpen" x-cloak>
+						<button @click="mobileMenuOpen = false" class="ml-1 flex items-center justify-center h-10 w-10 rounded-full focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white">
+							<svg class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+							</svg>
+						</button>
+					</div>
+
+					<div class="flex items-center flex-shrink-0 px-4">
+						<span class="text-white font-bold text-xl">Admin</span>
+					</div>
+					<nav class="mt-5 flex-1 flex flex-col divide-y divide-indigo-800 overflow-y-auto" aria-label="Sidebar">
+						<div class="px-2 space-y-1">
+							for _, item := range sidebar {
+								<a href={ templ.SafeURL(item.Link) } class={ "group flex items-center px-2 py-2 text-sm leading-6 font-medium rounded-md text-white hover:bg-indigo-600", templ.KV("bg-indigo-800", item.Link == activePath) }>
+									{ item.Title }
+								</a>
+							}
+						</div>
+					</nav>
+				</div>
+				<div class="flex-1">
+					<main class="flex-1 pb-8">
+						<div class="mt-8">
+							<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+								@content
+							</div>
+						</div>
+					</main>
+				</div>
+			</div>
+			<!-- Global Toast Container -->
+		</body>
+	</html>
+}

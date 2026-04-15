@@ -15,7 +15,7 @@ templ New(categories []models.Category, form CreateForm) {
 				SelectedCatIDs: stringsToUintMap(form.SelectedCategoryIDs),
 			})
 			<div class="mt-6 flex justify-end gap-3">
-				<a href="/products" class="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300">Cancel</a>
+				<a href="/admin/products" class="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300">Cancel</a>
 				<button type="submit" class="px-4 py-2 bg-primary text-white rounded-md hover:bg-primary/90">Create Product</button>
 			</div>
 		</form>

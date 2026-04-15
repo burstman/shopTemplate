@@ -1,11 +1,13 @@
 package handlers
 
 import (
+	"fmt"
 	"shopTemplate/app/config"
 	"shopTemplate/app/db"
 	"shopTemplate/app/models"
 	"shopTemplate/app/views/components"
 	"shopTemplate/app/views/landing"
+	"strconv"
 
 	"github.com/anthdm/superkit/kit"
 )
@@ -14,34 +16,50 @@ func HandleLandingIndex(kit *kit.Kit) error {
 	// 1. Fetch all settings
 	cfg := config.Get()
 
-	// 2. Fetch the specific products selected for the category section
-	var categoryProducts []models.Product
-	var featuredSection *config.SectionConfig
-	for i := range cfg.Sections {
-		if cfg.Sections[i].Type == "featured_products" {
-			featuredSection = &cfg.Sections[i]
-			break
-		}
-	}
+	// 2. Fetch products for each configured section
+	sectionProducts := make(map[int][]models.Product)
 
-	if featuredSection != nil && featuredSection.Enabled && len(featuredSection.ProductIDs) > 0 {
+	for i, section := range cfg.Sections {
+		if !section.Enabled {
+			continue
+		}
+
+		if section.Type == "category_banner" {
+			continue
+		}
+
+		// Filter empty IDs
 		var validIDs []string
-		for _, id := range featuredSection.ProductIDs {
+		for _, id := range section.ProductIDs {
 			if id != "" {
 				validIDs = append(validIDs, id)
 			}
 		}
-		if len(validIDs) > 0 {
-			if err := db.Get().Where("id IN ?", validIDs).Preload("Categories").Find(&categoryProducts).Error; err != nil {
-				return err
+
+		if len(validIDs) == 0 {
+			continue
+		}
+
+		var products []models.Product
+		if err := db.Get().Where("id IN ?", validIDs).Preload("Categories").Find(&products).Error; err != nil {
+			return err
+		}
+
+		// Sort products according to the order in ProductIDs
+		productMap := make(map[uint]models.Product)
+		for _, p := range products {
+			productMap[p.ID] = p
+		}
+
+		var orderedProducts []models.Product
+		for _, idStr := range validIDs {
+			id, _ := strconv.Atoi(idStr)
+			if p, ok := productMap[uint(id)]; ok {
+				orderedProducts = append(orderedProducts, p)
 			}
 		}
-	}
 
-	// 3. Fetch all products for the main shop display, ordered by newest first
-	var allProducts []models.Product
-	if err := db.Get().Order("created_at desc").Preload("Categories").Find(&allProducts).Error; err != nil {
-		return err
+		sectionProducts[i] = orderedProducts
 	}
 
 	// 4. Prepare Carousel Items
@@ -64,15 +82,22 @@ func HandleLandingIndex(kit *kit.Kit) error {
 			if btnLink == "" {
 				btnLink = cfg.Hero.ButtonLink
 			}
+
+			// If a product ID is linked, override the ButtonLink
+			if slide.ProductID != nil && *slide.ProductID != 0 {
+				btnLink = fmt.Sprintf("/products/%d", *slide.ProductID)
+			}
+
 			carouselItems = append(carouselItems, components.CarouselItem{
 				Image:       slide.Image,
 				Title:       title,
 				Description: subtitle,
 				ButtonText:  btnText,
 				ButtonLink:  btnLink,
+				ProductID:   slide.ProductID,
 			})
 		}
 	}
 
-	return RenderWithLayout(kit, landing.Index(cfg, categoryProducts, allProducts, carouselItems))
+	return RenderWithLayout(kit, landing.Index(cfg, sectionProducts, carouselItems))
 }

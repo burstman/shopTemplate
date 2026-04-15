@@ -8,7 +8,10 @@ CREATE TABLE products (
   name text,
   price real,
   image text,
-  category text
+  category text,
+  stock integer DEFAULT 0,
+  promotion_price real DEFAULT 0,
+  description text
 );
 CREATE INDEX idx_products_deleted_at ON products(deleted_at);
 -- +goose StatementEnd

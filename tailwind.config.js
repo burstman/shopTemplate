@@ -1,8 +1,8 @@
-import { fontFamily } from "tailwindcss/defaultTheme";
+const { fontFamily } = require("tailwindcss/defaultTheme");
 
 module.exports = {
  	content: [ "./**/*.html", "./**/*.templ", "./**/*.go", ],
-	safelist: [],
+	safelist: [], // Removed toast-related safelist entries
 	theme: {
 		container: {
 			center: true,

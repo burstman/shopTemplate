@@ -1,21 +1,25 @@
 package app
 
 import (
-	"shopTemplate/app/events"
-	"shopTemplate/plugins/auth"
+	"context"
+	"shopTemplate/app/models"
+	"shopTemplate/app/services"
 
 	"github.com/anthdm/superkit/event"
 )
 
-// Events are functions that are handled in separate goroutines.
-// They are the perfect fit for offloading work in your handlers
-// that otherwise would take up response time.
-// - sending email
-// - sending notifications (Slack, Telegram, Discord)
-// - analytics..
-
-// Register your events here.
+// RegisterEvents configures the global event listeners for the application.
 func RegisterEvents() {
-	event.Subscribe(auth.UserSignupEvent, events.OnUserSignup)
-	event.Subscribe(auth.ResendVerificationEvent, events.OnResendVerificationToken)
+	// Initialize the notification service and register providers.
+	notificationSvc := services.NewNotificationService()
+	notificationSvc.Register(services.NewEmailNotifier())
+	notificationSvc.Register(services.NewTelegramNotifier())
+
+	// Listen for the order.placed event emitted during checkout.
+	event.Subscribe("order.placed", func(ctx context.Context, data any) {
+		order, ok := data.(models.Order)
+		if ok {
+			notificationSvc.NotifyAll(order)
+		}
+	})
 }

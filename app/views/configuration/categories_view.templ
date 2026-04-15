@@ -52,10 +52,20 @@ templ CategoriesIndex(categories []models.Category, allCategories []models.Categ
 
 
 templ CategoryItem(category models.Category) {
-	<div class="bg-white p-4 rounded-lg shadow" data-id={ fmt.Sprint(category.ID) }>
+	<div class="bg-white p-4 rounded-lg shadow" data-id={ fmt.Sprint(category.ID) } x-data="{ open: true }">
 		<div class="flex items-center justify-between">
 			<div class="flex items-center space-x-2">
 				<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400 cursor-grab handle" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+				if len(category.SubCategories) > 0 {
+					<button type="button" @click="open = !open" class="text-gray-500 hover:text-gray-700 focus:outline-none">
+						<svg x-show="!open" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+						</svg>
+						<svg x-show="open" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"/>
+						</svg>
+					</button>
+				}
 				<span class="font-semibold">{ category.Name }</span>
 			</div>
 			<div class="flex items-center space-x-2">
@@ -77,7 +87,7 @@ templ CategoryItem(category models.Category) {
 			</div>
 		</div>
 		if len(category.SubCategories) > 0 {
-			<div class="ml-6 mt-2 space-y-2 border-l-2 pl-4" x-data="sortableList">
+			<div class="ml-6 mt-2 space-y-2 border-l-2 pl-4" x-data="sortableList" x-show="open" x-transition>
 				for _, sub := range category.SubCategories {
 					@CategoryItem(sub)
 				}

@@ -2,14 +2,20 @@ package components
 
 import (
 	"shopTemplate/app/config"
+	"fmt"
 )
 
 templ Footer(cfg *config.Config) {
-	<footer class="bg-gray-900 text-white mt-auto">
+	<footer class="text-white mt-auto" style={ fmt.Sprintf("background-color: %s;", cfg.Theme.FooterBgColor) }>
 		<div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
 			<div class="grid grid-cols-1 md:grid-cols-4 gap-8">
 				<div class="col-span-1 md:col-span-1">
-					<span class="text-2xl font-bold tracking-wider uppercase">{ cfg.Site.Name }</span>
+					<div class="flex items-center gap-3">
+						if cfg.Site.Logo != "" {
+							<img src={ cfg.Site.Logo } alt="Logo" class="h-8 md:h-12 w-auto transition-all"/>
+						}
+						<span class="text-2xl font-bold tracking-wider uppercase">{ cfg.Site.Name }</span>
+					</div>
 					<div class="flex space-x-6 mt-4">
 						for _, social := range cfg.Footer.SocialLinks {
 							<a href={ templ.SafeURL(social.URL) } class="text-gray-400 hover:text-gray-300">

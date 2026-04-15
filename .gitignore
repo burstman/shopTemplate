@@ -5,3 +5,18 @@ node_modules
 tmp
 .env
 app_db
+
+# Ignore uploaded images
+public/images/site/
+public/images/carousel/
+public/images/sections/
+public/images/products/
+
+# Ignore common image extensions
+*.[jJ][pP][gG]
+*.[jJ][pP][eE][gG]
+*.[pP][nN][gG]
+*.[gG][iI][fF]
+*.[sS][vV][gG]
+*.[iI][cC][oO]
+*.[wW][eE][bB][pP]

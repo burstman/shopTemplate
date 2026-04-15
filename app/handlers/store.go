@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"net/http"
+	"shopTemplate/app/config"
 	"strconv"
 
 	"shopTemplate/app/db"
@@ -11,14 +12,6 @@ import (
 	"github.com/anthdm/superkit/kit"
 	"github.com/go-chi/chi/v5"
 )
-
-func HandleStoreIndex(kit *kit.Kit) error {
-	var items []models.Product
-	if err := db.Get().Preload("Categories").Find(&items).Error; err != nil {
-		return err
-	}
-	return RenderWithLayout(kit, products.Index(items))
-}
 
 func HandleCategoryShow(kit *kit.Kit) error {
 	idStr := chi.URLParam(kit.Request, "id")
@@ -55,5 +48,6 @@ func HandleCategoryShow(kit *kit.Kit) error {
 		return err
 	}
 
-	return RenderWithLayout(kit, products.CategoryShow(category, items, breadcrumbs))
+	cfg := config.Get()
+	return RenderWithLayout(kit, products.CategoryShow(category, items, breadcrumbs, cfg))
 }

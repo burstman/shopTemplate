@@ -1,7 +1,20 @@
 {
   "site": {
-    "name": "Botanica",
-    "support_email": "support@botanica.com"
+    "name": "My Best Shop",
+    "support_email": "support@botanica.com",
+    "name_bg_color": "",
+    "name_text_color": "",
+    "logo": "/public/images/site/logo_1776215320056633174.jpg"
+  },
+  "notification": {
+    "admin_email_recipient": "topdeals.est.2025@gmail.com",
+    "telegram_bot_token": "8531699497:AAED_3RDEXxs4hUP0OM204-EAPCe_gBkyRM",
+    "telegram_chat_id": "6143267777"
+  },
+  "facebook_pixel": {
+    "pixel_id": "487066380904129",
+    "currency": "TND",
+    "track_purchase_value": true
   },
   "hero": {
     "enabled": true,
@@ -9,31 +22,100 @@
     "subtitle": "Discover our indoor plants",
     "button_text": "Shop Now",
     "button_link": "/shop",
-    "slides": []
+    "slides": [
+      {
+        "image": "/public/images/carousel/slide_1776207680880155155.jpg",
+        "title": "New season arrival ",
+        "subtitle": "Discover our curated collection of premium products",
+        "button_text": "Shop Now",
+        "button_link": "#",
+        "product_id": 3
+      },
+      {
+        "image": "/public/images/carousel/slide_1775234462652238674.png",
+        "title": "New Slide Title parfum ",
+        "subtitle": "New Slide Subtitle parfum",
+        "button_text": "Shop Now",
+        "button_link": "#",
+        "product_id": 2
+      },
+      {
+        "image": "/public/images/carousel/slide_1776207717080249438.jpg",
+        "title": "Elegance Redefined",
+        "subtitle": "Fresh selections handpicked just for you",
+        "button_text": "Shop Now",
+        "button_link": "#",
+        "product_id": 3
+      }
+    ]
   },
   "sections": [
     {
       "type": "featured_products",
       "title": "Featured Collection",
       "limit": 4,
-      "enabled": true
+      "enabled": true,
+      "product_ids": [
+        "5",
+        "6",
+        "3",
+        "2",
+        "4"
+      ],
+      "title_bg_color": "#0d7d66",
+      "title_text_color": "#ffffff"
     },
     {
-      "type": "best_sellers",
-      "title": "Best Sellers",
+      "type": "featured_products",
+      "title": "Best Sellerssss",
       "limit": 4,
-      "enabled": true
+      "enabled": true,
+      "title_bg_color": "#16da19",
+      "title_text_color": "#000000"
     },
     {
-      "type": "new_arrivals",
+      "type": "featured_products",
       "title": "New Arrivals",
       "limit": 4,
-      "enabled": true
+      "enabled": true,
+      "title_bg_color": "#000000",
+      "title_text_color": "#000000"
+    },
+    {
+      "type": "category_banner",
+      "title": "New test section (Copy)",
+      "limit": 5,
+      "enabled": true,
+      "image": "/public/images/sections/section_4_1774661486812526123.jpg",
+      "category_items": [
+        {
+          "title": "Fragrances",
+          "category_id": "9",
+          "image": "/public/images/sections/section_4_item_0_1776215680826979715.jpg"
+        },
+        {
+          "title": "Home Decor",
+          "category_id": "8",
+          "image": "/public/images/sections/section_3_item_1_1776215789688239868.jpg"
+        }
+      ],
+      "title_bg_color": "#332bab",
+      "title_text_color": "#f7f7f7"
     }
   ],
   "theme": {
-    "primary_color": "#2E7D32",
-    "secondary_color": "#F5F5F5"
+    "primary_color": "#2e7d32",
+    "secondary_color": "#18318c",
+    "header_bg_color": "#85dbaf",
+    "header_bg_opacity": 62,
+    "page_bg_color": "#ffffff",
+    "footer_bg_color": "#0f575c",
+    "content_bg_gradient_enabled": false,
+    "content_bg_gradient_start": "#cbf0e9",
+    "content_bg_gradient_end": "#3a57e9",
+    "content_bg_gradient_angle": 10,
+    "content_bg_color_enabled": false,
+    "content_bg_color": "#ade3f0"
   },
   "storefront_sidebar": [],
   "footer": {

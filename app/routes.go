@@ -33,7 +33,7 @@ func InitializeRoutes(router *chi.Mux) {
 	//  }
 	auth.InitializeRoutes(router)
 	authConfig := kit.AuthenticationConfig{
-		AuthFunc:    auth.AuthenticateUser,
+		AuthFunc:    handlers.HandleAuthentication,
 		RedirectURL: "/login",
 	}
 
@@ -43,8 +43,17 @@ func InitializeRoutes(router *chi.Mux) {
 
 		// Routes
 		app.Get("/", kit.Handler(handlers.HandleLandingIndex))
-		app.Get("/products", kit.Handler(handlers.HandleStoreIndex))
+		app.Get("/products", kit.Handler(handlers.HandleProductsIndex))
+		app.Get("/health", kit.Handler(handlers.HandleHealthCheck)) // Health check endpoint
+		app.Get("/products/{id}", kit.Handler(handlers.HandleProductShow))
 		app.Get("/categories/{id}", kit.Handler(handlers.HandleCategoryShow))
+		app.Get("/products/{id}/quick-view", kit.Handler(handlers.HandleProductQuickView))
+		app.Post("/cart/add/{id}", kit.Handler(handlers.HandleCartAdd))
+		app.Delete("/cart/remove/{id}", kit.Handler(handlers.HandleCartRemove))
+		app.Get("/cart", kit.Handler(handlers.HandleCartShow))
+		app.Get("/checkout", kit.Handler(handlers.HandleCheckoutIndex))
+		app.Get("/checkout/success", kit.Handler(handlers.HandleCheckoutSuccess))
+		app.Post("/checkout", kit.Handler(handlers.HandleCheckoutCreate))
 		app.Get("/contact", kit.Handler(handlers.HandleContactIndex))
 	})
 
@@ -61,14 +70,24 @@ func InitializeRoutes(router *chi.Mux) {
 		app.Post("/admin/categories", kit.Handler(handlers.HandleAdminCategoryCreate))
 		app.Delete("/admin/categories/{id}", kit.Handler(handlers.HandleAdminCategoryDelete))
 		app.Post("/admin/categories/reorder", kit.Handler(handlers.HandleAdminCategoryReorder))
+		app.Get("/admin/orders", kit.Handler(handlers.HandleAdminOrdersIndex))
+		app.Get("/admin/orders/{id}", kit.Handler(handlers.HandleAdminOrderShow))
+		app.Post("/admin/orders/{id}/status", kit.Handler(handlers.HandleAdminOrderUpdateStatus))
+		app.Get("/admin/products", kit.Handler(handlers.HandleAdminProductsIndex))
 
 		app.Get("/configuration", kit.Handler(handlers.HandleConfigurationIndex))
 		app.Get("/admin/{section}", kit.Handler(handlers.HandleAdminSettings))
 		app.Post("/admin/{section}", kit.Handler(handlers.HandleAdminSettingsUpdate))
+		app.Post("/admin/notifications/test", kit.Handler(handlers.HandleAdminNotificationsTest))
+		app.Post("/admin/notifications/test/telegram", kit.Handler(handlers.HandleAdminTelegramNotificationsTest))
+		app.Post("/admin/sections/add", kit.Handler(handlers.HandleAdminSectionAdd))
+		app.Post("/admin/sections/{index}/delete", kit.Handler(handlers.HandleAdminSectionDelete))
+		app.Post("/admin/sections/{index}/duplicate", kit.Handler(handlers.HandleAdminSectionDuplicate))
 		app.Get("/products/new", kit.Handler(handlers.HandleProductNew))
 		app.Post("/products", kit.Handler(handlers.HandleProductCreate))
 		app.Get("/products/{id}/edit", kit.Handler(handlers.HandleProductEdit))
 		app.Put("/products/{id}", kit.Handler(handlers.HandleProductUpdate))
+		app.Get("/products/{id}/delete", kit.Handler(handlers.HandleProductDeleteConfirm))
 		app.Delete("/products/{id}", kit.Handler(handlers.HandleProductDelete))
 		// app.Get("/path", kit.Handler(myHandler.HandleIndex))
 	})
@@ -77,6 +96,12 @@ func InitializeRoutes(router *chi.Mux) {
 // NotFoundHandler that will be called when the requested path could
 // not be found.
 func NotFoundHandler(kit *kit.Kit) error {
+	// Silence warnings for templ live-reload endpoint during development
+	if kit.Request.URL.Path == "/_templ/reload" {
+		return nil
+	}
+
+	slog.Warn("not found", "path", kit.Request.URL.Path)
 	return kit.Render(errors.Error404())
 }
 

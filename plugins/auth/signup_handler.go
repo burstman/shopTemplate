@@ -1,10 +1,12 @@
 package auth
 
 import (
-	"shopTemplate/app/db"
 	"fmt"
 	"net/http"
 	"os"
+	"shopTemplate/app/db"
+	"shopTemplate/app/helpers"
+	"shopTemplate/app/models"
 	"strconv"
 	"time"
 
@@ -27,7 +29,13 @@ var signupSchema = v.Schema{
 }
 
 func HandleSignupIndex(kit *kit.Kit) error {
-	return kit.Render(SignupIndex(SignupIndexPageData{}))
+	categories := helpers.GetCategoryTree()
+	cart := helpers.GetCart(kit)
+	user := models.AuthUser{}
+	if u, ok := kit.Auth().(models.AuthUser); ok {
+		user = u
+	}
+	return kit.Render(SignupIndex(user, SignupIndexPageData{}, categories, cart.Total))
 }
 
 func HandleSignupCreate(kit *kit.Kit) error {

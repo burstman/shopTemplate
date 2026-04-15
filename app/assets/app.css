@@ -7,6 +7,16 @@
   display: none !important; 
 }
 
+@layer utilities {
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}
+
 @layer base {
   * {
 		@apply border-border;
@@ -62,4 +72,3 @@
     --ring: 240 4.9% 83.9%;
   }
 }
-

@@ -10,7 +10,7 @@ templ EditModal(product models.Product, allCategories []models.Category) {
 		<div class="bg-white rounded-lg shadow-xl p-6 w-full max-w-md" role="dialog" aria-modal="true">
 			<div class="flex justify-between items-center mb-4">
 				<h2 class="text-xl font-bold">Edit Product</h2>
-				<button hx-get="/products" hx-target="body" hx-swap="outerHTML" class="text-gray-400 hover:text-gray-600">&times;</button>
+				<a href="/admin/products" class="text-gray-400 hover:text-gray-600">&times;</a>
 			</div>
 			<form
 				hx-put={ fmt.Sprintf("/products/%d", product.ID) }
@@ -20,13 +20,15 @@ templ EditModal(product models.Product, allCategories []models.Category) {
 				@ProductFormFields(FormParams{
 					AllCategories: allCategories,
 					Values: map[string]string{
-						"name":  product.Name,
-						"price": fmt.Sprintf("%.2f", product.Price),
+						"name":        product.Name,
+						"description": product.Description,
+						"price":       fmt.Sprintf("%.2f", product.Price),
+						"stock":       fmt.Sprint(product.Stock),
 					},
 					SelectedCatIDs: getSelectedCategoryIDs(product.Categories),
 				})
 				<div class="mt-6 flex justify-end gap-3">
-					<button type="button" hx-get="/products" hx-target="body" class="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300">Cancel</button>
+					<a href="/admin/products" class="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300">Cancel</a>
 					<button type="submit" class="px-4 py-2 bg-primary text-white rounded-md hover:bg-primary/90">Save Changes</button>
 				</div>
 			</form>

@@ -18,17 +18,34 @@ var (
 )
 
 type Config struct {
-	Site              SiteConfig      `json:"site"`
-	Hero              HeroConfig      `json:"hero"`
-	Sections          []SectionConfig `json:"sections"`
-	Theme             ThemeConfig     `json:"theme"`
-	StorefrontSidebar []MenuItem      `json:"storefront_sidebar"`
-	Footer            FooterConfig    `json:"footer"`
+	Site              SiteConfig          `json:"site"`
+	Notification      NotificationConfig  `json:"notification"`
+	FacebookPixel     FacebookPixelConfig `json:"facebook_pixel"`
+	Hero              HeroConfig          `json:"hero"`
+	Sections          []SectionConfig     `json:"sections"`
+	Theme             ThemeConfig         `json:"theme"`
+	StorefrontSidebar []MenuItem          `json:"storefront_sidebar"`
+	Footer            FooterConfig        `json:"footer"`
+}
+
+type NotificationConfig struct {
+	AdminEmailRecipient string `json:"admin_email_recipient"`
+	TelegramBotToken    string `json:"telegram_bot_token"`
+	TelegramChatID      string `json:"telegram_chat_id"`
+}
+
+type FacebookPixelConfig struct {
+	PixelID            string `json:"pixel_id"`
+	Currency           string `json:"currency"`
+	TrackPurchaseValue bool   `json:"track_purchase_value"`
 }
 
 type SiteConfig struct {
-	Name         string `json:"name"`
-	SupportEmail string `json:"support_email"`
+	Name          string `json:"name"`
+	SupportEmail  string `json:"support_email"`
+	NameBgColor   string `json:"name_bg_color"`
+	NameTextColor string `json:"name_text_color"`
+	Logo          string `json:"logo"`
 }
 
 type HeroConfig struct {
@@ -46,19 +63,41 @@ type HeroSlide struct {
 	Subtitle   string `json:"subtitle,omitempty"`
 	ButtonText string `json:"button_text,omitempty"`
 	ButtonLink string `json:"button_link,omitempty"`
+	ProductID  *uint  `json:"product_id,omitempty"`
+}
+
+type CategorySectionItem struct {
+	Title      string `json:"title"`
+	CategoryID string `json:"category_id"`
+	Image      string `json:"image"`
 }
 
 type SectionConfig struct {
-	Type       string   `json:"type"`
-	Title      string   `json:"title"`
-	Limit      int      `json:"limit"`
-	Enabled    bool     `json:"enabled"`
-	ProductIDs []string `json:"product_ids,omitempty"`
+	Type           string                `json:"type"`
+	Title          string                `json:"title"`
+	Limit          int                   `json:"limit"`
+	Enabled        bool                  `json:"enabled"`
+	ProductIDs     []string              `json:"product_ids,omitempty"`
+	CategoryID     string                `json:"category_id,omitempty"`
+	Image          string                `json:"image,omitempty"`
+	CategoryItems  []CategorySectionItem `json:"category_items,omitempty"`
+	TitleBgColor   string                `json:"title_bg_color"`
+	TitleTextColor string                `json:"title_text_color"`
 }
 
 type ThemeConfig struct {
-	PrimaryColor   string `json:"primary_color"`
-	SecondaryColor string `json:"secondary_color"`
+	PrimaryColor             string `json:"primary_color"`
+	SecondaryColor           string `json:"secondary_color"`
+	HeaderBgColor            string `json:"header_bg_color"`
+	HeaderBgOpacity          int    `json:"header_bg_opacity"`
+	PageBgColor              string `json:"page_bg_color"`
+	FooterBgColor            string `json:"footer_bg_color"`
+	ContentBgGradientEnabled bool   `json:"content_bg_gradient_enabled"`
+	ContentBgGradientStart   string `json:"content_bg_gradient_start"`
+	ContentBgGradientEnd     string `json:"content_bg_gradient_end"`
+	ContentBgGradientAngle   int    `json:"content_bg_gradient_angle"`
+	ContentBgColorEnabled    bool   `json:"content_bg_color_enabled"`
+	ContentBgColor           string `json:"content_bg_color"`
 }
 
 type FooterConfig struct {
@@ -90,49 +129,83 @@ func GetAdminSidebar() []MenuItem {
 		{Title: "Hero Section", Link: "/admin/hero", Icon: "image"},
 		{Title: "Homepage Sections", Link: "/admin/sections", Icon: "layout-grid"},
 		{Title: "Theme", Link: "/admin/theme", Icon: "palette"},
+		{Title: "Notifications", Link: "/admin/notifications", Icon: "bell"},
+		{Title: "Facebook Pixel", Link: "/admin/facebook_pixel", Icon: "facebook"},
 		{Title: "Categories", Link: "/admin/categories", Icon: "folder-tree"},
-		{Title: "Add Product", Link: "/products/new", Icon: "plus-circle"},
+		{Title: "Products", Link: "/admin/products", Icon: "shopping-bag"},
+		{Title: "Orders", Link: "/admin/orders", Icon: "clipboard-list"},
 	}
 }
 
 func defaultConfig() *Config {
 	return &Config{
 		Site: SiteConfig{
-			Name:         "Botanica",
-			SupportEmail: "support@botanica.com",
+			Name:          "Botanica",
+			SupportEmail:  "support@botanica.com",
+			NameBgColor:   "#2E7D32",
+			NameTextColor: "#FFFFFF",
+			Logo:          "",
+		},
+		Notification: NotificationConfig{
+			AdminEmailRecipient: "admin@botanica.com",
+			TelegramBotToken:    "",
+			TelegramChatID:      "",
+		},
+		FacebookPixel: FacebookPixelConfig{
+			PixelID:            "",
+			Currency:           "TND",
+			TrackPurchaseValue: true,
 		},
 		Hero: HeroConfig{
 			Enabled:    true,
 			Title:      "Nature's Masterpiece",
 			Subtitle:   "Discover our indoor plants",
 			ButtonText: "Shop Now",
-			ButtonLink: "/shop",
+			ButtonLink: "/",
 			Slides:     []HeroSlide{},
 		},
 		Sections: []SectionConfig{
 			{
-				Type:       "featured_products",
-				Title:      "Featured Collection",
-				Limit:      4,
-				Enabled:    true,
-				ProductIDs: []string{},
+				Type:           "featured_products",
+				Title:          "Featured Collection",
+				Limit:          4,
+				Enabled:        true,
+				ProductIDs:     []string{},
+				TitleBgColor:   "#2E7D32",
+				TitleTextColor: "#FFFFFF",
 			},
 			{
-				Type:    "best_sellers",
-				Title:   "Best Sellers",
-				Limit:   4,
-				Enabled: true,
+				Type:           "best_sellers",
+				Title:          "Best Sellers",
+				Limit:          4,
+				Enabled:        true,
+				ProductIDs:     []string{},
+				TitleBgColor:   "#2E7D32",
+				TitleTextColor: "#FFFFFF",
 			},
 			{
-				Type:    "new_arrivals",
-				Title:   "New Arrivals",
-				Limit:   4,
-				Enabled: true,
+				Type:           "new_arrivals",
+				Title:          "New Arrivals",
+				Limit:          4,
+				Enabled:        true,
+				ProductIDs:     []string{},
+				TitleBgColor:   "#2E7D32",
+				TitleTextColor: "#FFFFFF",
 			},
 		},
 		Theme: ThemeConfig{
-			PrimaryColor:   "#2E7D32",
-			SecondaryColor: "#F5F5F5",
+			PrimaryColor:             "#2E7D32",
+			SecondaryColor:           "#F5F5F5",
+			HeaderBgColor:            "#FFFFFF",
+			HeaderBgOpacity:          100,
+			PageBgColor:              "#FFFFFF",
+			FooterBgColor:            "#F9FAFB",
+			ContentBgGradientEnabled: false,
+			ContentBgGradientStart:   "#FFFFFF",
+			ContentBgGradientEnd:     "#F3F4F6",
+			ContentBgGradientAngle:   180,
+			ContentBgColorEnabled:    false,
+			ContentBgColor:           "#FFFFFF",
 		},
 		StorefrontSidebar: []MenuItem{},
 		Footer: FooterConfig{

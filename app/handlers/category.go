@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"shopTemplate/app/config"
 	"shopTemplate/app/db"
+	"shopTemplate/app/helpers"
 	"shopTemplate/app/models"
 	"shopTemplate/app/views/components"
 	conf "shopTemplate/app/views/configuration"
@@ -21,7 +22,7 @@ func HandleAdminCategoriesIndex(kit *kit.Kit) error {
 		return kit.Redirect(http.StatusSeeOther, "/")
 	}
 
-	categories := getCategoryTree()
+	categories := helpers.GetCategoryTree()
 
 	var allCategories []models.Category
 	db.Get().Order("name asc").Find(&allCategories)
@@ -104,13 +105,14 @@ func HandleAdminCategoryReorder(kit *kit.Kit) error {
 	}
 
 	// Fetch updated categories to update the navigation bar out-of-band
-	categories := getCategoryTree()
+	categories := helpers.GetCategoryTree()
 
 	cfg := config.Get()
+	cart := helpers.GetCart(kit)
 
 	// Render the Navigation component with OOB swap targeting the #main-navigation element
 	attrs := templ.Attributes{"hx-swap-oob": "true"}
-	return kit.Render(components.Navigation(cfg, categories, attrs))
+	return kit.Render(components.Navigation(user, cfg, categories, cart.Total, attrs))
 }
 
 func HandleAdminCategoryDelete(kit *kit.Kit) error {

@@ -1,6 +1,8 @@
 package layouts
 
-import ("github.com/anthdm/superkit/view"
+import (
+	
+	"github.com/anthdm/superkit/view"
 
  "shopTemplate/app/views/components"
  "shopTemplate/app/config"
@@ -11,7 +13,7 @@ var (
 	imagePlaceholder = "public/images/No_Image_Available.jpg"
 )
 
-templ BaseLayout(user models.AuthUser, cfg *config.Config, categories []models.Category) {
+templ BaseLayout(user models.AuthUser, cfg *config.Config, categories []models.Category, cartCount int) {
 	<!DOCTYPE html>
 	<html lang="en">
 		<head>
@@ -27,72 +29,14 @@ templ BaseLayout(user models.AuthUser, cfg *config.Config, categories []models.C
 			<!-- HTMX -->
 			<script src="https://unpkg.com/htmx.org@1.9.9" defer></script>
 		</head>
-		<body x-data="{theme: 'light'}" :class="theme" class="bg-background text-foreground font-sans antialiased">
-			@Header(user, cfg, categories)
+		<body x-data="{theme: 'light'}" :class="theme" class="bg-background text-foreground font-sans antialiased pt-16 sm:pt-28">
+			@components.Navigation(user, cfg, categories, cartCount, nil)
 			{ children... }
 			@components.Footer(cfg)
 
 		</body>
 	</html>
 }
-
-templ Header(user models.AuthUser, cfg *config.Config, categories []models.Category) {
-	<!-- Header -->
-	<header class="sticky top-0 z-50 bg-background/95 backdrop-blur-md border-b border-border">
-		<div class="w-full mx-auto px-4 sm:px-6 lg:px-14">
-			<!-- Top Row -->
-			<div class="flex items-center justify-between h-12">
-				<!-- Logo -->
-				<a href="/" class="font-serif text-3xl font-semibold text-foreground tracking-tight">
-					{ cfg.Site.Name }
-				</a>
-				<!-- Welcome Message -->
-				<div class="text-sm text-muted-foreground">
-					if user.LoggedIn {
-						<span>Welcome, { user.Email }</span>
-						if user.Role == "admin" {
-							<a href="/configuration" class="underline ml-4 font-medium text-primary hover:text-primary/80">Admin Settings</a>
-						}
-						<a href="/profile" class="underline ml-4 hover:text-foreground">My Account</a>
-						<button hx-delete="/logout" class="underline ml-2 hover:text-foreground">Sign Out</button>
-					} else {
-						<span>Welcome</span>
-						<a href="/login" class="underline ml-2 hover:text-foreground">Connect</a>
-						<span>/</span>
-						<a href="/signup" class="underline hover:text-foreground">create an account</a>
-					}
-				</div>
-			</div>
-			<!-- Bottom Row (Navigation) -->
-			<div class="relative flex items-center justify-center h-12 border-t border-border">
-				@components.Navigation(cfg, categories, nil)
-				<!-- Icons -->
-				<div class="absolute right-0 flex items-center gap-4">
-					<button class="p-2 text-muted-foreground hover:text-foreground transition-colors" aria-label="Search">
-						<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-						</svg>
-					</button>
-					<button class="p-2 text-muted-foreground hover:text-foreground transition-colors relative" aria-label="Cart">
-						<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
-						</svg>
-						<span class="absolute -top-1 -right-1 w-4 h-4 bg-primary text-primary-foreground text-xs rounded-full flex items-center justify-center">2</span>
-					</button>
-					<button class="md:hidden p-2 text-muted-foreground" aria-label="Menu">
-						<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 6h16M4 12h16M4 18h16"></path>
-						</svg>
-					</button>
-				</div>
-			</div>
-		</div>
-	</header>
-	}
-
-	
-
-
 
 templ Hero() {
 	<!-- Hero Section -->

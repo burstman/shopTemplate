@@ -1,0 +1,11 @@
+package components
+
+import (
+	"shopTemplate/app/config"
+)
+
+templ FacebookPixelAddToCart(pixelCfg config.FacebookPixelConfig, productID uint, productName string, productPrice float64) {
+	if pixelCfg.PixelID != "" {
+		<div x-init={ templ.JSFuncCall("trackAddToCart", productID, productName, productPrice, pixelCfg.Currency).Call }></div>
+	}
+}

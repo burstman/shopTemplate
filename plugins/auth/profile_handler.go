@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"shopTemplate/app/config"
 	"shopTemplate/app/db"
+	"shopTemplate/app/helpers"
 	"shopTemplate/app/models"
 	"shopTemplate/app/views/layouts"
 
@@ -39,7 +40,10 @@ func HandleProfileShow(kit *kit.Kit) error {
 		Email:     user.Email,
 	}
 
-	return kit.Render(layouts.App(pluginAuth, config.Get(), []models.Category{}, ProfileShow(formValues)))
+	categories := helpers.GetCategoryTree()
+	cart := helpers.GetCart(kit)
+
+	return kit.Render(layouts.App(pluginAuth, config.Get(), categories, cart.Total, ProfileShow(formValues)))
 }
 
 func HandleProfileUpdate(kit *kit.Kit) error {

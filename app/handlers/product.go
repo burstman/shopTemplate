@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"log"
+	"math"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -14,14 +15,74 @@ import (
 
 	"shopTemplate/app/config"
 	"shopTemplate/app/db"
+	"shopTemplate/app/helpers"
 	"shopTemplate/app/models"
+	viewerrors "shopTemplate/app/views/errors"
 	"shopTemplate/app/views/layouts"
 	"shopTemplate/app/views/products"
 
 	"github.com/anthdm/superkit/kit"
 	"github.com/anthdm/superkit/validate"
 	"github.com/go-chi/chi/v5"
+	"gorm.io/gorm"
 )
+
+func HandleAdminProductsIndex(kit *kit.Kit) error {
+	user, ok := kit.Auth().(models.AuthUser)
+	if !ok || user.Role != "admin" {
+		return kit.Redirect(http.StatusSeeOther, "/")
+	}
+
+	pageStr := kit.Request.URL.Query().Get("page")
+	page, _ := strconv.Atoi(pageStr)
+	if page < 1 {
+		page = 1
+	}
+	perPage := 10
+
+	var total int64
+	err := db.Get().Model(&models.Product{}).Count(&total).Error
+	if err != nil {
+		return err
+	}
+	totalPages := int(math.Ceil(float64(total) / float64(perPage)))
+	offset := (page - 1) * perPage
+
+	var productsList []models.Product
+	db.Get().Preload("Categories").Order("created_at desc").Limit(perPage).Offset(offset).Find(&productsList)
+
+	activePath := "/admin/products"
+	sidebar := config.GetAdminSidebar()
+	// successMsg is no longer used as toast messages are removed
+	content := products.AdminList(productsList, page, totalPages)
+	return RenderWithLayout(kit, layouts.AdminPage(sidebar, activePath, content))
+}
+
+// HandleProductsIndex renders the public product listing page.
+func HandleProductsIndex(kit *kit.Kit) error {
+	pageStr := kit.Request.URL.Query().Get("page")
+	page, _ := strconv.Atoi(pageStr)
+	if page < 1 {
+		page = 1
+	}
+	perPage := 12
+
+	var total int64
+	err := db.Get().Model(&models.Product{}).Count(&total).Error
+	if err != nil {
+		return err
+	}
+	totalPages := int(math.Ceil(float64(total) / float64(perPage)))
+	offset := (page - 1) * perPage
+
+	var productsList []models.Product
+	if err := db.Get().Preload("Categories").Order("created_at desc").Limit(perPage).Offset(offset).Find(&productsList).Error; err != nil {
+		return err
+	}
+
+	cfg := config.Get()
+	return RenderWithLayout(kit, products.Index(productsList, page, totalPages, cfg))
+}
 
 func HandleProductNew(kit *kit.Kit) error {
 	user, ok := kit.Auth().(models.AuthUser)
@@ -29,7 +90,7 @@ func HandleProductNew(kit *kit.Kit) error {
 		return kit.Redirect(http.StatusSeeOther, "/")
 	}
 
-	categories := getCategoryTree()
+	categories := helpers.GetCategoryTree()
 
 	activePath := "/products/new"
 	sidebar := config.GetAdminSidebar()
@@ -56,6 +117,9 @@ func HandleProductCreate(kit *kit.Kit) error {
 	errors := make(validate.Errors)
 	name := kit.Request.FormValue("name")
 	priceStr := kit.Request.FormValue("price")
+	description := kit.Request.FormValue("description")
+	promotionPriceStr := kit.Request.FormValue("promotion_price")
+	stockStr := kit.Request.FormValue("stock")
 	file, header, err := kit.Request.FormFile("image")
 	categoryIDs := kit.Request.MultipartForm.Value["categories"]
 	if name == "" {
@@ -71,21 +135,48 @@ func HandleProductCreate(kit *kit.Kit) error {
 			errors.Add("price", "Price must be a valid number")
 		}
 	}
+	var promotionPrice float64
+	if promotionPriceStr != "" {
+		p, err := strconv.ParseFloat(promotionPriceStr, 64)
+		if err != nil {
+			errors.Add("promotion_price", "Promotion price must be a valid number")
+		} else {
+			promotionPrice = p
+		}
+	}
 	if err != nil {
 		errors.Add("image", "Image is required")
 	}
-	if len(categoryIDs) == 0 {
+	var stock int
+	if stockStr != "" {
+		stock, err = strconv.Atoi(stockStr)
+		if err != nil {
+			errors.Add("stock", "Stock must be a valid integer")
+		}
+	}
+
+	hasCategory := false
+	for _, id := range categoryIDs {
+		if id != "" {
+			hasCategory = true
+			break
+		}
+	}
+	if !hasCategory {
 		errors.Add("categories", "Please select at least one category")
 	}
 
 	if len(errors) > 0 {
-		categories := getCategoryTree()
+		categories := helpers.GetCategoryTree()
 		activePath := "/products/new"
 		sidebar := config.GetAdminSidebar()
 		form := products.CreateForm{
 			Values: map[string]string{
-				"name":  name,
-				"price": priceStr,
+				"name":            name,
+				"price":           priceStr,
+				"description":     description,
+				"promotion_price": promotionPriceStr,
+				"stock":           stockStr,
 			},
 			Categories:          categories,
 			SelectedCategoryIDs: categoryIDs,
@@ -118,9 +209,12 @@ func HandleProductCreate(kit *kit.Kit) error {
 
 	// 2. Save Product to DB
 	product := models.Product{
-		Name:  name,
-		Price: price,
-		Image: "/" + fullPath,
+		Name:           name,
+		Description:    description,
+		Price:          price,
+		PromotionPrice: promotionPrice,
+		Stock:          stock,
+		Image:          "/" + fullPath,
 	}
 
 	if err := db.Get().Create(&product).Error; err != nil {
@@ -136,7 +230,31 @@ func HandleProductCreate(kit *kit.Kit) error {
 	}
 
 	// Redirect to refresh the page (or you could return an OOB swap for the grid)
-	return kit.Redirect(http.StatusSeeOther, "/products")
+	return kit.Redirect(http.StatusSeeOther, "/admin/products")
+}
+
+// HandleProductDeleteConfirm renders a confirmation modal for product deletion.
+func HandleProductDeleteConfirm(kit *kit.Kit) error {
+	user, ok := kit.Auth().(models.AuthUser)
+	if !ok || user.Role != "admin" {
+		return kit.Redirect(http.StatusSeeOther, "/")
+	}
+
+	idStr := chi.URLParam(kit.Request, "id")
+	id, err := strconv.Atoi(idStr)
+	if err != nil {
+		return errors.New("invalid product ID")
+	}
+
+	var product models.Product
+	if err := db.Get().First(&product, id).Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return kit.Render(viewerrors.Error404())
+		}
+		return err
+	}
+
+	return kit.Render(products.DeleteModal(product))
 }
 
 // HandleProductDelete handles the deletion of a product by its ID.
@@ -167,14 +285,13 @@ func HandleProductDelete(kit *kit.Kit) error {
 		os.Remove(product.Image[1:])
 	}
 
-	// Soft delete the product
-	result := db.Get().Delete(&models.Product{}, id)
-	result = db.Get().Delete(&product)
-	if result.Error != nil {
-		return result.Error
+	if err := db.Get().Delete(&product).Error; err != nil {
+		return err
 	}
 
-	return kit.Text(http.StatusOK, "")
+	// Toast message removed as per user request.
+	// HTMX on the client side should handle removing the element from the DOM.
+	return nil
 }
 
 // HandleProductEdit handles the editing of a product by an admin user.
@@ -195,15 +312,26 @@ func HandleProductEdit(kit *kit.Kit) error {
 
 	var product models.Product
 	if err := db.Get().First(&product, id).Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return kit.Render(viewerrors.Error404())
+		}
 		return err
 	}
 
-	allCategories := getCategoryTree()
+	allCategories := helpers.GetCategoryTree()
 
 	// Preload existing categories for the product
 	db.Get().Model(&product).Association("Categories").Find(&product.Categories)
 
-	return RenderWithLayout(kit, products.EditModal(product, allCategories))
+	modal := products.EditModal(product, allCategories)
+
+	if kit.Request.Header.Get("HX-Request") == "true" {
+		return kit.Render(modal)
+	}
+
+	activePath := "/admin/products"
+	sidebar := config.GetAdminSidebar()
+	return RenderWithLayout(kit, layouts.AdminPage(sidebar, activePath, modal))
 }
 
 // HandleProductUpdate handles the update of a product by an admin user.
@@ -225,6 +353,9 @@ func HandleProductUpdate(kit *kit.Kit) error {
 
 	var product models.Product
 	if err := db.Get().First(&product, id).Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return kit.Render(viewerrors.Error404())
+		}
 		return err
 	}
 
@@ -232,8 +363,18 @@ func HandleProductUpdate(kit *kit.Kit) error {
 	kit.Request.ParseMultipartForm(10 << 20)
 
 	product.Name = kit.Request.FormValue("name")
+	product.Description = kit.Request.FormValue("description")
 	if price, err := strconv.ParseFloat(kit.Request.FormValue("price"), 64); err == nil {
 		product.Price = price
+	}
+	promPriceStr := kit.Request.FormValue("promotion_price")
+	if promPriceStr == "" {
+		product.PromotionPrice = 0
+	} else if promPrice, err := strconv.ParseFloat(promPriceStr, 64); err == nil {
+		product.PromotionPrice = promPrice
+	}
+	if stock, err := strconv.Atoi(kit.Request.FormValue("stock")); err == nil {
+		product.Stock = stock
 	}
 
 	// Handle optional image update
@@ -272,5 +413,44 @@ func HandleProductUpdate(kit *kit.Kit) error {
 
 	db.Get().Save(&product)
 
-	return kit.Redirect(http.StatusSeeOther, "/products")
+	return kit.Redirect(http.StatusSeeOther, "/admin/products")
+}
+
+// HandleProductQuickView renders the quick view modal for a product.
+func HandleProductQuickView(kit *kit.Kit) error {
+	idStr := chi.URLParam(kit.Request, "id")
+	id, err := strconv.Atoi(idStr)
+	if err != nil {
+		return errors.New("invalid product ID")
+	}
+
+	var product models.Product
+	if err := db.Get().Preload("Categories").First(&product, id).Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return kit.Render(viewerrors.Error404())
+		}
+		return err
+	}
+
+	return kit.Render(products.QuickViewModal(product))
+}
+
+// HandleProductShow renders the standalone product detail page.
+func HandleProductShow(kit *kit.Kit) error {
+	idStr := chi.URLParam(kit.Request, "id")
+	id, err := strconv.Atoi(idStr)
+	if err != nil {
+		return errors.New("invalid product ID")
+	}
+
+	var product models.Product
+	if err := db.Get().Preload("Categories").First(&product, id).Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return kit.Render(viewerrors.Error404())
+		}
+		return err
+	}
+
+	cfg := config.Get()
+	return RenderWithLayout(kit, products.Show(product, cfg))
 }

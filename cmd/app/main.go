@@ -27,21 +27,29 @@ func main() {
 	}
 
 	kit.UseErrorHandler(app.ErrorHandler)
-	router.HandleFunc("/*", kit.Handler(app.NotFoundHandler))
-
 	app.InitializeRoutes(router)
+	router.NotFound(kit.Handler(app.NotFoundHandler))
 	app.RegisterEvents()
 
 	listenAddr := os.Getenv("HTTP_LISTEN_ADDR")
-	// In development link the full Templ proxy url.
-	url := "http://localhost:7331"
-	if kit.IsProduction() {
-		url = fmt.Sprintf("http://localhost%s", listenAddr)
+	if listenAddr == "" {
+		listenAddr = ":3000"
 	}
 
-	fmt.Printf("application running in %s at %s\n", kit.Env(), url)
+	// The URL to display to the user. In development, this is the Templ proxy.
+	// In production, it's the application's direct address.
+	displayURL := "http://localhost:7331"
+	if kit.IsProduction() {
+		// For production, display the actual address the server is binding to.
+		// If listenAddr is ":3000", it binds to 0.0.0.0:3000, so localhost is fine for display.
+		displayURL = fmt.Sprintf("http://localhost%s", listenAddr)
+	}
 
-	http.ListenAndServe(listenAddr, router)
+	fmt.Printf("application running in %s\n", kit.Env())
+	fmt.Printf("backend listening on: %s\n", listenAddr)
+	fmt.Printf("access application via: %s\n", displayURL)
+
+	log.Fatal(http.ListenAndServe(listenAddr, router))
 }
 
 func staticDev() http.Handler {
@@ -61,6 +69,7 @@ func disableCache(next http.Handler) http.Handler {
 
 func init() {
 	if err := godotenv.Load(); err != nil {
-		log.Fatal(err)
+		// Do not use log.Fatal here, as .env might be missing in production
+		fmt.Println("Warning: .env file not found, using system environment variables")
 	}
 }

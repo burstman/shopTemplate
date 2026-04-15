@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"os"
 	"shopTemplate/app/db"
+	"shopTemplate/app/helpers"
 	"shopTemplate/app/models"
 	"strconv"
 	"time"
@@ -31,7 +32,13 @@ func HandleLoginIndex(kit *kit.Kit) error {
 		redirectURL := kit.Getenv("SUPERKIT_AUTH_REDIRECT_AFTER_LOGIN", "/profile")
 		return kit.Redirect(http.StatusSeeOther, redirectURL)
 	}
-	return kit.Render(LoginIndex(LoginIndexPageData{}))
+	categories := helpers.GetCategoryTree()
+	cart := helpers.GetCart(kit)
+	user := models.AuthUser{}
+	if u, ok := kit.Auth().(models.AuthUser); ok {
+		user = u
+	}
+	return kit.Render(LoginIndex(user, LoginIndexPageData{}, categories, cart.Total))
 }
 
 func HandleLoginCreate(kit *kit.Kit) error {
@@ -96,7 +103,8 @@ func HandleLoginDelete(kit *kit.Kit) error {
 	if err != nil {
 		return err
 	}
-	return kit.Redirect(http.StatusSeeOther, "/")
+	kit.Response.Header().Set("HX-Redirect", "/")
+	return nil
 }
 
 func HandleEmailVerify(kit *kit.Kit) error {

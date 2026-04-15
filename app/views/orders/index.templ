@@ -1,0 +1,99 @@
+package orders
+
+import (
+	"fmt"
+	"shopTemplate/app/models"
+)
+
+templ Index(orders []models.Order, page int, totalPages int) {
+	<div class="flex justify-between items-center mb-6">
+		<h1 class="text-2xl font-bold">Orders</h1>
+	</div>
+
+	<div class="bg-white shadow-md rounded-lg overflow-hidden">
+		<table class="min-w-full divide-y divide-gray-200">
+			<thead class="bg-gray-50">
+				<tr>
+					<th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
+					<th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Customer</th>
+					<th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+					<th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total</th>
+					<th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+					<th scope="col" class="relative px-6 py-3">
+						<span class="sr-only">Actions</span>
+					</th>
+				</tr>
+			</thead>
+			<tbody class="bg-white divide-y divide-gray-200">
+				for _, order := range orders {
+					<tr>
+						<td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+							#{ fmt.Sprint(order.ID) }
+						</td>
+						<td class="px-6 py-4 whitespace-nowrap">
+							<div class="text-sm font-medium text-gray-900">{ order.FirstName } { order.LastName }</div>
+							<div class="text-sm text-gray-500">{ order.Email }</div>
+						</td>
+						<td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+							{ order.CreatedAt.Format("Jan 02, 2006") }
+						</td>
+						<td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+							${ fmt.Sprintf("%.2f", order.Total) }
+						</td>
+						<td class="px-6 py-4 whitespace-nowrap">
+							<span class={ "px-2 inline-flex text-xs leading-5 font-semibold rounded-full", 
+								templ.KV("bg-yellow-100 text-yellow-800", order.Status == "pending"),
+								templ.KV("bg-blue-100 text-blue-800", order.Status == "shipped"),
+								templ.KV("bg-green-100 text-green-800", order.Status == "completed") }>
+								{ order.Status }
+							</span>
+						</td>
+						<td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+							<a href={ templ.SafeURL(fmt.Sprintf("/admin/orders/%d", order.ID)) } class="text-indigo-600 hover:text-indigo-900">View Details</a>
+						</td>
+					</tr>
+				}
+			</tbody>
+		</table>
+	</div>
+
+	if totalPages > 1 {
+		<div class="flex items-center justify-between border-t border-gray-200 bg-white px-4 py-3 sm:px-6 mt-4 rounded-lg shadow-sm">
+			<div class="flex flex-1 justify-between sm:hidden">
+				if page > 1 {
+					<a href={ templ.SafeURL(fmt.Sprintf("/admin/orders?page=%d", page-1)) } class="relative inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">Previous</a>
+				}
+				if page < totalPages {
+					<a href={ templ.SafeURL(fmt.Sprintf("/admin/orders?page=%d", page+1)) } class="relative ml-3 inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">Next</a>
+				}
+			</div>
+			<div class="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between">
+				<div>
+					<p class="text-sm text-gray-700">
+						Showing page <span class="font-medium">{ fmt.Sprint(page) }</span> of <span class="font-medium">{ fmt.Sprint(totalPages) }</span>
+					</p>
+				</div>
+				<div>
+					<nav class="isolate inline-flex -space-x-px rounded-md shadow-sm" aria-label="Pagination">
+						if page > 1 {
+							<a href={ templ.SafeURL(fmt.Sprintf("/admin/orders?page=%d", page-1)) } class="relative inline-flex items-center rounded-l-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0">
+								<span class="sr-only">Previous</span>
+								<svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+									<path fill-rule="evenodd" d="M12.79 5.23a.75.75 0 01-.02 1.06L8.832 10l3.938 3.71a.75.75 0 11-1.04 1.08l-4.5-4.25a.75.75 0 010-1.08l4.5-4.25a.75.75 0 011.06.02z" clip-rule="evenodd" />
+								</svg>
+							</a>
+						}
+						if page < totalPages {
+							<a href={ templ.SafeURL(fmt.Sprintf("/admin/orders?page=%d", page+1)) } class="relative inline-flex items-center rounded-r-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0">
+								<span class="sr-only">Next</span>
+								<svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+									<path fill-rule="evenodd" d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z" clip-rule="evenodd" />
+								</svg>
+							</a>
+						}
+					</nav>
+				</div>
+			</div>
+		</div>
+	}
+}
