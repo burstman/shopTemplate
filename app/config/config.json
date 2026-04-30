@@ -4,7 +4,11 @@
     "support_email": "support@botanica.com",
     "name_bg_color": "",
     "name_text_color": "",
-    "logo": "/public/images/site/logo_1776215320056633174.jpg"
+    "logo": "/public/images/site/logo_1776215320056633174.jpg",
+    "currency": "TND",
+    "show_quick_view": false,
+    "show_order_now": true,
+    "show_add_to_cart": true
   },
   "notification": {
     "admin_email_recipient": "topdeals.est.2025@gmail.com",
@@ -13,7 +17,6 @@
   },
   "facebook_pixel": {
     "pixel_id": "487066380904129",
-    "currency": "TND",
     "track_purchase_value": true
   },
   "hero": {
@@ -122,11 +125,6 @@
     "copyright": "© 2026 Botanica. All rights reserved.",
     "social_links": [
       {
-        "platform": "Twitter",
-        "url": "https://twitter.com",
-        "icon": "twitter"
-      },
-      {
         "platform": "Facebook",
         "url": "https://facebook.com",
         "icon": "facebook"
@@ -135,6 +133,16 @@
         "platform": "Instagram",
         "url": "https://instagram.com",
         "icon": "instagram"
+      },
+      {
+        "platform": "TikTok",
+        "url": "https://tiktok.com",
+        "icon": "tiktok"
+      },
+      {
+        "platform": "WhatsApp",
+        "url": "https://wa.me/21600000000",
+        "icon": "whatsapp"
       }
     ],
     "link_columns": [
@@ -163,10 +171,6 @@
             "link": "/about"
           },
           {
-            "title": "Contact Us",
-            "link": "/contact"
-          },
-          {
             "title": "FAQs",
             "link": "/faq"
           }
@@ -186,5 +190,21 @@
         ]
       }
     ]
+  },
+  "payment": {
+    "enable_cod": true,
+    "enable_flouci": false,
+    "flouci_public_key": "",
+    "flouci_app_token": ""
+  },
+  "chat": {
+    "primary_color": "#4a32a9",
+    "header_text_color": "#f0eff5",
+    "client_bubble_color": "#0f0174",
+    "client_text_color": "#bfbfc0",
+    "admin_bubble_color": "#066774",
+    "admin_text_color": "#fdf7f7",
+    "enable_popup": true,
+    "popup_timeout": 3
   }
 }

@@ -1,16 +1,16 @@
 -- +goose Up
 -- +goose StatementBegin
 CREATE TABLE products (
-  id integer PRIMARY KEY AUTOINCREMENT,
-  created_at datetime,
-  updated_at datetime,
-  deleted_at datetime,
+  id SERIAL PRIMARY KEY,
+  created_at timestamp,
+  updated_at timestamp,
+  deleted_at timestamp,
   name text,
-  price real,
+  price numeric(12, 2),
   image text,
   category text,
   stock integer DEFAULT 0,
-  promotion_price real DEFAULT 0,
+  promotion_price numeric(12, 2) DEFAULT 0,
   description text
 );
 CREATE INDEX idx_products_deleted_at ON products(deleted_at);

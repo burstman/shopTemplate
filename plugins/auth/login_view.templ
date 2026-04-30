@@ -19,11 +19,15 @@ type LoginFormValues struct {
 
 templ LoginIndex(user models.AuthUser, data LoginIndexPageData, categories []models.Category, cartCount int) {
 	@layouts.BaseLayout(user, config.Get(), categories, cartCount) {
-		<div class="w-full justify-center">
-			<div class="mt-10 lg:mt-20">
-				<div class="max-w-md mx-auto border rounded-md shadow-sm py-12 px-6 flex flex-col gap-8">
-					<h2 class="text-center text-2xl font-medium">Login</h2>
+		<div class="w-full flex justify-center px-4">
+			<div class="mt-10 lg:mt-20 mb-16 w-full max-w-md">
+				<div class="bg-white border border-gray-200 rounded-2xl shadow-lg py-10 px-8 flex flex-col gap-8">
+					<div class="text-center">
+						<h2 class="text-2xl font-bold text-gray-900">Welcome back</h2>
+						<p class="mt-1 text-sm text-gray-500">Sign in to your account</p>
+					</div>
 					@LoginForm(data.FormValues, data.FormErrors)
+					@SocialAuthButtons(config.Get())
 				</div>
 			</div>
 		</div>

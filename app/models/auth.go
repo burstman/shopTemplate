@@ -1,6 +1,8 @@
 package models
 
 import (
+	"database/sql"
+
 	"gorm.io/gorm"
 )
 
@@ -10,6 +12,7 @@ type AuthUser struct {
 	Email     string
 	LoggedIn  bool
 	FirstName string
+	LastName  string
 	Role      string
 }
 
@@ -30,8 +33,6 @@ type User struct {
 	LastName        string
 	Role            string
 	PasswordHash    string
-	EmailVerifiedAt string
-	CreatedAt       string
-	UpdatedAt       string
-	Password        string
+	EmailVerifiedAt sql.NullTime
+	Password        string `gorm:"-"`
 }

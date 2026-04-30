@@ -35,11 +35,11 @@ func (t *TelegramNotifier) Send(order models.Order) error {
 	text := fmt.Sprintf(
 		"🔔 *New Order Received #%d*\n\n"+
 			"*Customer:* %s %s (%s)\n"+
-			"*Total Amount:* $%.2f\n"+
+			"*Total Amount:* %.3f %s\n"+
 			"*Shipping Address:* %s, %s\n"+
 			"*Customer Phone:* %s\n\n"+
 			"Please log in to your admin panel to manage this order.",
-		order.ID, order.FirstName, order.LastName, order.Email, order.Total, order.Address, order.City, order.Phone,
+		order.ID, order.FirstName, order.LastName, order.Email, order.Total, cfg.Site.Currency, order.Address, order.City, order.Phone,
 	)
 
 	return t.sendMessage(token, chatID, text)

@@ -28,10 +28,10 @@ templ Index(cart *models.Cart) {
 							<div class="ml-6 flex-1 flex flex-col">
 								<div class="flex justify-between text-base font-medium text-gray-900">
 									<h3><a href={ templ.SafeURL(fmt.Sprintf("/products/%d", item.Product.ID)) }>{ item.Product.Name }</a></h3>
-									<p class="ml-4">{ fmt.Sprintf("$%.2f", item.Product.Price * float64(item.Quantity)) }</p>
+									<p class="ml-4">{  item.Product.Price.Multiply(item.Quantity).String()  }</p>
 								</div>
 								<div class="flex flex-1 items-end justify-between text-sm">
-									<p class="text-gray-500">Qty { fmt.Sprint(item.Quantity) } x { fmt.Sprintf("$%.2f", item.Product.Price) }</p>
+									<p class="text-gray-500">Qty { fmt.Sprint(item.Quantity) } x { item.Product.Price.String() }</p>
 								</div>
 							</div>
 						</li>
@@ -60,7 +60,7 @@ templ Index(cart *models.Cart) {
 func calculateTotal(cart *models.Cart) float64 {
 	var total float64
 	for _, item := range cart.Items {
-		total += item.Product.Price * float64(item.Quantity)
+		total += item.Product.Price.Multiply(item.Quantity).ToFloat()
 	}
 	return total
 }

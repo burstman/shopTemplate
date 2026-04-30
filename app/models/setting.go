@@ -5,5 +5,5 @@ import "gorm.io/gorm"
 type Setting struct {
 	gorm.Model
 	Key   string `gorm:"uniqueIndex"`
-	Value string
+	Value string `gorm:"type:jsonb"`
 }

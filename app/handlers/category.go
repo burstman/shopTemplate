@@ -8,7 +8,6 @@ import (
 	"shopTemplate/app/models"
 	"shopTemplate/app/views/components"
 	conf "shopTemplate/app/views/configuration"
-	"shopTemplate/app/views/layouts"
 	"strconv"
 
 	"github.com/a-h/templ"
@@ -30,7 +29,7 @@ func HandleAdminCategoriesIndex(kit *kit.Kit) error {
 	activePath := "/admin/categories"
 	sidebar := config.GetAdminSidebar()
 	content := conf.CategoriesIndex(categories, allCategories)
-	return RenderWithLayout(kit, layouts.AdminPage(sidebar, activePath, content))
+	return RenderAdminWithLayout(kit, sidebar, activePath, content)
 }
 
 func HandleAdminCategoryCreate(kit *kit.Kit) error {

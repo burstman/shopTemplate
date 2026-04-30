@@ -3,6 +3,7 @@ package products
 import (
 	"fmt"
 	"shopTemplate/app/models"
+	"shopTemplate/app/config"
 
 	"github.com/anthdm/superkit/validate"
 )
@@ -26,12 +27,12 @@ type fieldConfig struct {
 	required    bool
 }
 
-templ ProductFormFields(p FormParams) {
+templ ProductFormFields(p FormParams, cfg *config.Config) {
 	{{
 		fields := []fieldConfig{
 			{label: "Name", name: "name", inputType: "text", required: true},
-			{label: "Price", name: "price", inputType: "number", step: "0.01", min: "0.01", required: true},
-			{label: "Promotion Price", name: "promotion_price", inputType: "number", step: "0.01", placeholder: "0.00"},
+			{label: fmt.Sprintf("Price (%s)", cfg.Site.Currency), name: "price", inputType: "number", step: "0.001", min: "0.001", required: true},
+			{label: fmt.Sprintf("Promotion Price (%s)", cfg.Site.Currency), name: "promotion_price", inputType: "number", step: "0.001", placeholder: "0.000"},
 			{label: "Stock", name: "stock", inputType: "number"},
 		}
 	}}

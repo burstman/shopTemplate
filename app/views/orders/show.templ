@@ -35,9 +35,9 @@ templ Show(order models.Order) {
 							<div class="ml-4 flex-1">
 								<div class="flex justify-between text-sm font-medium text-gray-900">
 									<h3>{ item.ProductName }</h3>
-									<p>${ fmt.Sprintf("%.2f", item.Price * float64(item.Quantity)) }</p>
+									<p>${ item.Price.Multiply(item.Quantity).String() }</p>
 								</div>
-								<p class="mt-1 text-sm text-gray-500">Qty { fmt.Sprint(item.Quantity) } x ${ fmt.Sprintf("%.2f", item.Price) }</p>
+								<p class="mt-1 text-sm text-gray-500">Qty { fmt.Sprint(item.Quantity) } x ${ item.Price.String() }</p>
 							</div>
 						</li>
 					}
@@ -45,7 +45,7 @@ templ Show(order models.Order) {
 				<div class="px-6 py-4 border-t border-gray-200 bg-gray-50">
 					<div class="flex justify-between text-lg font-bold text-gray-900">
 						<span>Total</span>
-						<span>${ fmt.Sprintf("%.2f", order.Total) }</span>
+						<span>${ order.Total.String() }</span>
 					</div>
 				</div>
 			</div>

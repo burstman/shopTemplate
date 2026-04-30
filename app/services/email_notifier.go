@@ -59,10 +59,10 @@ func (e *EmailNotifier) Send(order models.Order) error {
 			"Thank you for your order! We have received it and are currently processing it.\n\n"+
 			"Order Summary:\n"+
 			"Order Number: #%d\n"+
-			"Total: $%.2f\n"+
+			"Total: %.3f %s\n"+
 			"Shipping to: %s, %s\n\n"+
 			"We will notify you once your order has been shipped.",
-		order.FirstName, order.LastName, order.ID, order.Total, order.Address, order.City,
+		order.FirstName, order.LastName, order.ID, order.Total, cfg.Site.Currency, order.Address, order.City,
 	)
 
 	if err := smtp.SendMail(e.host+":"+e.port, auth, e.from, []string{order.Email}, []byte(customerHeader+customerBody)); err != nil {
@@ -81,11 +81,11 @@ func (e *EmailNotifier) Send(order models.Order) error {
 			"You have a new order from %s %s (%s).\n\n"+
 			"Order Details:\n"+
 			"Order ID: #%d\n"+
-			"Total Amount: $%.2f\n"+
+			"Total Amount: %.3f %s\n"+
 			"Shipping Address: %s, %s\n"+
 			"Customer Phone: %s\n\n"+
 			"Please log in to your admin panel to manage this order.",
-		order.FirstName, order.LastName, order.Email, order.ID, order.Total, order.Address, order.City, order.Phone,
+		order.FirstName, order.LastName, order.Email, order.ID, order.Total, cfg.Site.Currency, order.Address, order.City, order.Phone,
 	)
 
 	return smtp.SendMail(e.host+":"+e.port, auth, e.from, []string{adminEmail}, []byte(adminHeader+adminBody))

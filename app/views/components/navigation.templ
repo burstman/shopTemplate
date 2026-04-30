@@ -49,11 +49,24 @@ templ Navigation(user models.AuthUser, cfg *config.Config, categories []models.C
 								<div class="px-4 py-2 text-xs text-gray-500 border-b border-gray-100 mb-1 truncate">{ user.Email }</div>
 								if user.Role == "admin" {
 									<a href="/configuration" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Admin Panel</a>
+									<a href="/admin/chats" class="flex justify-between items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+										<span>Live Chat</span>
+										@ChatNotificationDot(cfg, false, "", 0, templ.Attributes{"id": "admin-topnav-chat-dot"})
+									</a>
+									<a href="/admin/users" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Users List</a>
 								}
 								<a href="/profile" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Profile</a>
 								<button hx-delete="/logout" hx-target="body" class="w-full text-left block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer">Log out</button>
 							} else {
 								<a href="/login" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Log in</a>
+								<a href="/auth/google" class="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+									<img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" class="w-4 h-4" />
+									Login with Google
+								</a>
+								<a href="/auth/facebook" class="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+									<img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/facebook.svg" class="w-4 h-4" />
+									Login with Facebook
+								</a>
 								<a href="/signup" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Sign up</a>
 							}
 						</div>
@@ -83,8 +96,6 @@ templ Navigation(user models.AuthUser, cfg *config.Config, categories []models.C
 						for _, category := range categories {
 							if category.Slug != nil && *category.Slug == "home" {
 								<a href="/" class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium h-full">{ category.Name }</a>
-							} else if category.Slug != nil && *category.Slug == "contact" {
-								<a href="/contact" class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium h-full">{ category.Name }</a>
 							} else {
 								@NavigationMenuItem(category, true)
 							}
@@ -99,11 +110,24 @@ templ Navigation(user models.AuthUser, cfg *config.Config, categories []models.C
 					<div class="px-3 py-2 text-base font-medium text-gray-500">Welcome, { user.Email }</div>
 					if user.Role == "admin" {
 						<a href="/configuration" class="block px-3 py-2 text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">Admin Settings</a>
+						<a href="/admin/chats" class="flex justify-between items-center px-3 py-2 text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">
+							<span>Live Chat</span>
+							@ChatNotificationDot(cfg, false, "", 0, templ.Attributes{"id": "admin-topnav-chat-dot"})
+						</a>
+						<a href="/admin/users" class="block px-3 py-2 text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">Users List</a>
 					}
 					<a href="/profile" class="block px-3 py-2 text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">My Account</a>
 					<button hx-delete="/logout" hx-target="body" class="block w-full text-left px-3 py-2 text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">Sign Out</button>
 				} else {
 					<a href="/login" class="block px-3 py-2 text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">Log in</a>
+					<a href="/auth/google" class="flex items-center gap-2 px-3 py-2 text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">
+						<img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" class="w-5 h-5" />
+						Continue with Google
+					</a>
+					<a href="/auth/facebook" class="flex items-center gap-2 px-3 py-2 text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">
+						<img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/facebook.svg" class="w-5 h-5" />
+						Continue with Facebook
+					</a>
 					<a href="/signup" class="block px-3 py-2 text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">Sign up</a>
 				}
 				for _, item := range cfg.StorefrontSidebar {
@@ -114,8 +138,6 @@ templ Navigation(user models.AuthUser, cfg *config.Config, categories []models.C
 				for _, category := range categories {
 					if category.Slug != nil && *category.Slug == "home" {
 						<a href="/" class="border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700 block pl-3 pr-4 py-2 border-l-4 text-base font-medium">{ category.Name }</a>
-					} else if category.Slug != nil && *category.Slug == "contact" {
-						<a href="/contact" class="border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700 block pl-3 pr-4 py-2 border-l-4 text-base font-medium">{ category.Name }</a>
 					} else {
 						@MobileNavigationMenuItem(category, 0)
 					}

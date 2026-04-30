@@ -40,6 +40,7 @@ templ App(user models.AuthUser, cfg *config.Config, categories []models.Category
 			}
 			<link rel="stylesheet" href="/public/assets/styles.css"/>
 			<script src="https://unpkg.com/htmx.org@1.9.10"></script>
+			<script src="https://unpkg.com/htmx.org@1.9.10/dist/ext/ws.js"></script>
 			<script src="/public/assets/index.js"></script>
 			<style>
 				[x-cloak] {
@@ -47,13 +48,41 @@ templ App(user models.AuthUser, cfg *config.Config, categories []models.Category
 				}
 			</style>
 			<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.3/dist/cdn.min.js"></script>
+			<script>
+				document.addEventListener('alpine:init', () => {
+					Alpine.store('chat', {
+						wsError: false,
+						socket: null
+					})
+				})
+				document.addEventListener('htmx:oobBeforeSwap', (evt) => {
+					const oob = evt.detail.elt.getAttribute('hx-swap-oob');
+					if (oob && (oob === 'delete' || oob.startsWith('delete:'))) {
+						const selector = oob.includes(':') ? oob.split(':')[1] : null;
+						const target = selector ? document.querySelector(selector) : (evt.detail.target || document.getElementById(evt.detail.elt.id));
+						if (target) target.remove();
+						evt.preventDefault();
+					}
+				});
+			</script>
 		</head>
-		<body class="h-full flex flex-col font-sans antialiased text-gray-900 pt-16 sm:pt-28" style={ getPageStyle(cfg) }>
+		<body 
+			class="h-full flex flex-col font-sans antialiased text-gray-900 pt-16 sm:pt-28" 
+			style={ getPageStyle(cfg) }
+			hx-ext="ws" 
+			ws-connect="/api/chat/ws"
+			x-data="{}"
+			@htmx:ws-error="$store.chat.wsError = true"
+			@htmx:ws-close="$store.chat.wsError = true"
+			@htmx:ws-open="$store.chat.wsError = false; $store.chat.socket = $event.detail.socket"
+		>
 			@components.Navigation(user, cfg, categories, cartCount, nil)
 			<main class="flex-grow">
 				@content
 			</main>
-			@components.Footer(cfg)
+			@components.Footer(user,cfg)
+			@components.ChatButton(user, cfg)
+			<audio id="chat-ping-sound" src="/public/assets/ping.wav" preload="auto" class="hidden"></audio>
 		</body>
 	</html>
 }
@@ -73,7 +102,7 @@ func GetContentStyle(cfg *config.Config) string {
 	return fmt.Sprintf("background-color: %s;", cfg.Theme.ContentBgColor)
 }
 
-templ AdminPage(sidebar []config.MenuItem, activePath string, content templ.Component) {
+templ AdminPage(user models.AuthUser, cfg *config.Config, categories []models.Category, cartCount int, sidebar []config.MenuItem, activePath string, content templ.Component) {
 	<!DOCTYPE html>
 	<html lang="en" class="h-full bg-gray-100">
 		<head>
@@ -82,6 +111,7 @@ templ AdminPage(sidebar []config.MenuItem, activePath string, content templ.Comp
 			<title>Admin Dashboard</title>
 			<link rel="stylesheet" href="/public/assets/styles.css"/>
 			<script src="https://unpkg.com/htmx.org@1.9.10"></script>
+			<script src="https://unpkg.com/htmx.org@1.9.10/dist/ext/ws.js"></script>
 			<script src="/public/assets/index.js"></script>
 			<script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
 			<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.3/dist/cdn.min.js"></script>
@@ -90,9 +120,36 @@ templ AdminPage(sidebar []config.MenuItem, activePath string, content templ.Comp
 					display: none !important;
 				}
 			</style>
+			<script>
+				document.addEventListener('alpine:init', () => {
+					Alpine.store('chat', {
+						wsError: false,
+						socket: null
+					})
+				})
+				document.addEventListener('htmx:oobBeforeSwap', (evt) => {
+					const oob = evt.detail.elt.getAttribute('hx-swap-oob');
+					if (oob && (oob === 'delete' || oob.startsWith('delete:'))) {
+						const selector = oob.includes(':') ? oob.split(':')[1] : null;
+						const target = selector ? document.querySelector(selector) : (evt.detail.target || document.getElementById(evt.detail.elt.id));
+						if (target) target.remove();
+						evt.preventDefault();
+					}
+				});
+			</script>
 		</head>
-		<body class="h-full">
-			<div class="min-h-full lg:flex" x-data="{ mobileMenuOpen: false }">
+		<body 
+			class="h-full pt-16 sm:pt-28" 
+			style={ getPageStyle(cfg) }
+			hx-ext="ws" 
+			ws-connect="/api/chat/ws"
+			x-data="{ mobileMenuOpen: false }"
+			@htmx:ws-error="$store.chat.wsError = true"
+			@htmx:ws-close="$store.chat.wsError = true"
+			@htmx:ws-open="$store.chat.wsError = false; $store.chat.socket = $event.detail.socket"
+		>
+			@components.Navigation(user, cfg, categories, cartCount, nil)
+			<div class="min-h-full lg:flex">
 				<!-- Mobile Header -->
 				<div class="lg:hidden flex items-center justify-between bg-indigo-700 px-4 py-4 text-white">
 					<span class="font-bold text-xl">Admin</span>
@@ -130,22 +187,54 @@ templ AdminPage(sidebar []config.MenuItem, activePath string, content templ.Comp
 							for _, item := range sidebar {
 								<a href={ templ.SafeURL(item.Link) } class={ "group flex items-center px-2 py-2 text-sm leading-6 font-medium rounded-md text-white hover:bg-indigo-600", templ.KV("bg-indigo-800", item.Link == activePath) }>
 									{ item.Title }
+									if item.Title == "Live Chat" {
+										@components.ChatNotificationDot(cfg, false, "", 0, templ.Attributes{"id": "admin-sidebar-chat-dot"})
+									}
 								</a>
 							}
 						</div>
 					</nav>
 				</div>
+
+				<!-- Global Polling for Admin Chat (if WebSocket fails) -->
+				<div 
+					id="admin-global-poller"
+					x-data={ `{ 
+						activeChatId: null,
+						updateActiveId() {
+							const match = window.location.pathname.match(/\/admin\/chat\/(\d+)/);
+							this.activeChatId = match ? match[1] : null;
+						}
+					}` }
+					x-init={ `
+						updateActiveId();
+						htmx.on('htmx:afterSwap', (evt) => {
+							updateActiveId();
+						});
+						window.addEventListener('popstate', () => updateActiveId());
+					` }
+				>
+					<!-- Polling for Sidebar Session List -->
+					<div hx-get="/admin/chats/sidebar" hx-target="#sidebar-session-list" hx-swap="innerHTML" x-bind:hx-trigger="$store.chat.wsError ? 'every 2s' : 'every 30s'"></div>
+					
+					<!-- Polling for Active Chat Messages -->
+					<template x-if="activeChatId">
+						<div :hx-get="'/admin/chat/' + activeChatId + '/messages'" :hx-target="'#chat-messages-' + activeChatId" hx-swap="innerHTML" x-bind:hx-trigger="$store.chat.wsError ? 'every 1s' : 'every 10s'"></div>
+					</template>
+				</div>
 				<div class="flex-1">
-					<main class="flex-1 pb-8">
+					<main class="pb-8">
 						<div class="mt-8">
 							<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
 								@content
 							</div>
 						</div>
 					</main>
+					@components.Footer(user, cfg)
+					<!-- Global Toast Container -->
+					<audio id="chat-ping-sound" src="/public/assets/ping.wav" preload="auto" class="hidden"></audio>
 				</div>
 			</div>
-			<!-- Global Toast Container -->
 		</body>
 	</html>
 }

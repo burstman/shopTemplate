@@ -20,6 +20,11 @@ func InitializeRoutes(router chi.Router) {
 		auth.Post("/login", kit.Handler(HandleLoginCreate))
 		auth.Delete("/logout", kit.Handler(HandleLoginDelete))
 
+		auth.Get("/auth/google", kit.Handler(HandleGoogleLogin))
+		auth.Get("/auth/google/callback", kit.Handler(HandleGoogleCallback))
+		auth.Get("/auth/facebook", kit.Handler(HandleFacebookLogin))
+		auth.Get("/auth/facebook/callback", kit.Handler(HandleFacebookCallback))
+
 		auth.Get("/signup", kit.Handler(HandleSignupIndex))
 		auth.Post("/signup", kit.Handler(HandleSignupCreate))
 

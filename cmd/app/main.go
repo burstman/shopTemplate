@@ -6,15 +6,20 @@ import (
 	"net/http"
 	"os"
 	"shopTemplate/app"
+	"shopTemplate/app/db"
 	"shopTemplate/public"
 
 	"github.com/anthdm/superkit/kit"
 	"github.com/go-chi/chi/v5"
-	"github.com/joho/godotenv"
 )
 
 func main() {
 	kit.Setup()
+
+	// Initialize Database explicitly
+	if err := db.Connect(); err != nil {
+		log.Fatalf("CRITICAL: Failed to connect to database: %v", err)
+	}
 
 	router := chi.NewMux()
 
@@ -68,8 +73,6 @@ func disableCache(next http.Handler) http.Handler {
 }
 
 func init() {
-	if err := godotenv.Load(); err != nil {
-		// Do not use log.Fatal here, as .env might be missing in production
-		fmt.Println("Warning: .env file not found, using system environment variables")
-	}
+	// godotenv.Load is now handled inside db.Connect()
+	// to ensure consistent behavior across entry points.
 }

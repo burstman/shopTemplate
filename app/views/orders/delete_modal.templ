@@ -1,0 +1,32 @@
+package orders
+
+import (
+	"fmt"
+	"shopTemplate/app/models"
+)
+
+templ DeleteModal(order models.Order) {
+	<div id="modal" class="fixed inset-0 bg-gray-500/75 flex items-center justify-center z-50" hx-target="this">
+		<div class="bg-white rounded-lg shadow-xl p-6 w-full max-w-md" role="dialog" aria-modal="true" @click.away="document.getElementById('modal').remove()">
+			<div class="flex justify-between items-center mb-4">
+				<h2 class="text-xl font-bold text-red-600">Confirm Order Deletion</h2>
+				<button @click="document.getElementById('modal').remove()" class="text-gray-400 hover:text-gray-600 focus:outline-none text-2xl">&times;</button>
+			</div>
+			<div class="mb-6">
+				<p class="text-gray-700">Are you sure you want to delete order <strong>#{ fmt.Sprint(order.ID) }</strong> from <strong>{ order.FirstName } { order.LastName }</strong>?</p>
+				<p class="text-sm text-gray-500 mt-2">This action is permanent and cannot be undone.</p>
+			</div>
+			<div class="flex justify-end gap-3">
+				<button type="button" @click="document.getElementById('modal').remove()" class="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition-colors">Cancel</button>
+				<button
+					type="button"
+					hx-delete={ fmt.Sprintf("/admin/orders/%d", order.ID) }
+					hx-target={ fmt.Sprintf("#order-row-%d", order.ID) }
+					hx-swap="outerHTML"
+					hx-on::after-request="document.getElementById('modal').remove()"
+					class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors"
+				>Delete Order</button>
+			</div>
+		</div>
+	</div>
+}

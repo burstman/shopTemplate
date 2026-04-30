@@ -46,8 +46,6 @@ type User struct {
 	Role            string
 	PasswordHash    string
 	EmailVerifiedAt sql.NullTime
-	CreatedAt       time.Time
-	UpdatedAt       time.Time
 }
 
 func createUserFromFormValues(values SignupFormValues) (User, error) {
@@ -74,6 +72,5 @@ type Session struct {
 	IPAddress string
 	UserAgent string
 	ExpiresAt time.Time
-	CreatedAt time.Time
 	User      User
 }

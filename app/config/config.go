@@ -3,10 +3,13 @@ package config
 import (
 	"encoding/json"
 	"fmt"
+	"log/slog"
 	"os"
-	"path/filepath"
 	"sync"
 	"time"
+
+	"shopTemplate/app/db"
+	"shopTemplate/app/models"
 )
 
 const configFilePath = "app/config/config.json"
@@ -26,6 +29,8 @@ type Config struct {
 	Theme             ThemeConfig         `json:"theme"`
 	StorefrontSidebar []MenuItem          `json:"storefront_sidebar"`
 	Footer            FooterConfig        `json:"footer"`
+	Payment           PaymentConfig       `json:"payment"`
+	Chat              ChatConfig          `json:"chat"`
 }
 
 type NotificationConfig struct {
@@ -36,7 +41,6 @@ type NotificationConfig struct {
 
 type FacebookPixelConfig struct {
 	PixelID            string `json:"pixel_id"`
-	Currency           string `json:"currency"`
 	TrackPurchaseValue bool   `json:"track_purchase_value"`
 }
 
@@ -46,6 +50,10 @@ type SiteConfig struct {
 	NameBgColor   string `json:"name_bg_color"`
 	NameTextColor string `json:"name_text_color"`
 	Logo          string `json:"logo"`
+	Currency      string `json:"currency"`
+	ShowQuickView bool   `json:"show_quick_view"`
+	ShowOrderNow  bool   `json:"show_order_now"`
+	ShowAddToCart bool   `json:"show_add_to_cart"`
 }
 
 type HeroConfig struct {
@@ -106,6 +114,24 @@ type FooterConfig struct {
 	LinkColumns []LinkColumn `json:"link_columns"`
 }
 
+type ChatConfig struct {
+	PrimaryColor      string `json:"primary_color"`
+	HeaderTextColor   string `json:"header_text_color"`
+	ClientBubbleColor string `json:"client_bubble_color"`
+	ClientTextColor   string `json:"client_text_color"`
+	AdminBubbleColor  string `json:"admin_bubble_color"`
+	AdminTextColor    string `json:"admin_text_color"`
+	EnablePopup       bool   `json:"enable_popup"`
+	PopupTimeout      int    `json:"popup_timeout"`
+}
+
+type PaymentConfig struct {
+	EnableCOD       bool   `json:"enable_cod"`
+	EnableFlouci    bool   `json:"enable_flouci"`
+	FlouciPublicKey string `json:"flouci_public_key"`
+	FlouciAppToken  string `json:"flouci_app_token"`
+}
+
 type SocialLink struct {
 	Platform string `json:"platform"`
 	URL      string `json:"url"`
@@ -125,6 +151,7 @@ type MenuItem struct {
 
 func GetAdminSidebar() []MenuItem {
 	return []MenuItem{
+		{Title: "Back to Store", Link: "/", Icon: "arrow-left"},
 		{Title: "Site Settings", Link: "/admin/site", Icon: "settings"},
 		{Title: "Hero Section", Link: "/admin/hero", Icon: "image"},
 		{Title: "Homepage Sections", Link: "/admin/sections", Icon: "layout-grid"},
@@ -134,6 +161,9 @@ func GetAdminSidebar() []MenuItem {
 		{Title: "Categories", Link: "/admin/categories", Icon: "folder-tree"},
 		{Title: "Products", Link: "/admin/products", Icon: "shopping-bag"},
 		{Title: "Orders", Link: "/admin/orders", Icon: "clipboard-list"},
+		{Title: "Payment Methods", Link: "/admin/payment", Icon: "credit-card"},
+		{Title: "Chat Settings", Link: "/admin/chat_settings", Icon: "message-square"},
+		{Title: "Social Links", Link: "/admin/social_links", Icon: "share-2"},
 	}
 }
 
@@ -145,6 +175,10 @@ func defaultConfig() *Config {
 			NameBgColor:   "#2E7D32",
 			NameTextColor: "#FFFFFF",
 			Logo:          "",
+			Currency:      "TND",
+			ShowQuickView: true,
+			ShowOrderNow:  true,
+			ShowAddToCart: true,
 		},
 		Notification: NotificationConfig{
 			AdminEmailRecipient: "admin@botanica.com",
@@ -153,7 +187,6 @@ func defaultConfig() *Config {
 		},
 		FacebookPixel: FacebookPixelConfig{
 			PixelID:            "",
-			Currency:           "TND",
 			TrackPurchaseValue: true,
 		},
 		Hero: HeroConfig{
@@ -211,9 +244,10 @@ func defaultConfig() *Config {
 		Footer: FooterConfig{
 			Copyright: fmt.Sprintf("© %d Botanica. All rights reserved.", time.Now().Year()),
 			SocialLinks: []SocialLink{
-				{Platform: "Twitter", URL: "https://twitter.com", Icon: "twitter"},
 				{Platform: "Facebook", URL: "https://facebook.com", Icon: "facebook"},
 				{Platform: "Instagram", URL: "https://instagram.com", Icon: "instagram"},
+				{Platform: "TikTok", URL: "https://tiktok.com", Icon: "tiktok"},
+				{Platform: "WhatsApp", URL: "https://wa.me/21600000000", Icon: "whatsapp"},
 			},
 			LinkColumns: []LinkColumn{
 				{
@@ -228,7 +262,6 @@ func defaultConfig() *Config {
 					Title: "About",
 					Links: []MenuItem{
 						{Title: "Our Story", Link: "/about"},
-						{Title: "Contact Us", Link: "/contact"},
 						{Title: "FAQs", Link: "/faq"},
 					},
 				},
@@ -241,6 +274,22 @@ func defaultConfig() *Config {
 				},
 			},
 		},
+		Chat: ChatConfig{
+			PrimaryColor:      "#2E7D32",
+			HeaderTextColor:   "#FFFFFF",
+			ClientBubbleColor: "#2E7D32",
+			ClientTextColor:   "#FFFFFF",
+			AdminBubbleColor:  "#FFFFFF",
+			AdminTextColor:    "#1F2937",
+			EnablePopup:       true,
+			PopupTimeout:      8,
+		},
+		Payment: PaymentConfig{
+			EnableCOD:       true,
+			EnableFlouci:    false,
+			FlouciPublicKey: "",
+			FlouciAppToken:  "",
+		},
 	}
 }
 
@@ -248,54 +297,69 @@ func defaultConfig() *Config {
 // It uses a singleton pattern to only read from disk once.
 func Get() *Config {
 	once.Do(func() {
-		mu.Lock()
-		defer mu.Unlock()
-		file, err := os.ReadFile(configFilePath)
-		if err != nil {
-			if os.IsNotExist(err) {
-				cfg = defaultConfig()
-				// Use an internal save function which doesn't lock, to avoid deadlock.
-				if err := save(cfg); err != nil {
-					panic("failed to create config file: " + err.Error())
-				}
-			} else {
-				panic("failed to read config file: " + err.Error())
-			}
-		} else {
-			if err := json.Unmarshal(file, &cfg); err != nil {
-				panic("failed to parse config file: " + err.Error())
-			}
-
-			// Backfill storefront sidebar if it's missing
-			if len(cfg.StorefrontSidebar) == 0 {
-				cfg.StorefrontSidebar = defaultConfig().StorefrontSidebar
-			}
-			// Backfill footer if it's missing
-			if cfg.Footer.Copyright == "" {
-				cfg.Footer = defaultConfig().Footer
+		// 1. Try to load from Postgres settings table
+		var setting models.Setting
+		err := db.Get().Where("key = ?", "app_config").First(&setting).Error
+		if err == nil && setting.Value != "" {
+			if err := json.Unmarshal([]byte(setting.Value), &cfg); err == nil {
+				slog.Info("configuration loaded from postgres")
+				backfill(cfg)
+				return
 			}
 		}
+
+		// 2. Migration Fallback: Try to read from the legacy JSON file
+		if file, err := os.ReadFile(configFilePath); err == nil {
+			if err := json.Unmarshal(file, &cfg); err == nil {
+				slog.Info("configuration migrated from local file to postgres")
+				backfill(cfg)
+				save(cfg) // Persist legacy file to DB
+				return
+			}
+		}
+
+		// 3. Final Fallback: Use hardcoded defaults
+		slog.Warn("no configuration found in DB or file, using hardcoded defaults")
+		cfg = defaultConfig()
+		save(cfg)
 	})
 	return cfg
 }
 
-// save is an internal, non-locking function to write the config file.
+func backfill(c *Config) {
+	if len(c.StorefrontSidebar) == 0 {
+		c.StorefrontSidebar = defaultConfig().StorefrontSidebar
+	}
+	if c.Footer.Copyright == "" {
+		c.Footer = defaultConfig().Footer
+	}
+}
+
+// save is an internal, non-locking function to write the config to the DB.
 // It should only be called from a function that already holds the mutex.
 func save(c *Config) error {
-	if err := os.MkdirAll(filepath.Dir(configFilePath), 0755); err != nil {
-		return err
-	}
-	data, err := json.MarshalIndent(c, "", "  ")
+	data, err := json.Marshal(c)
 	if err != nil {
 		return err
 	}
-	return os.WriteFile(configFilePath, data, 0644)
+
+	// PostgreSQL Upsert logic using ON CONFLICT
+	return db.Get().Exec(`
+		INSERT INTO settings (key, value, created_at, updated_at) 
+		VALUES (?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP) 
+		ON CONFLICT (key) 
+		DO UPDATE SET value = EXCLUDED.value, updated_at = EXCLUDED.updated_at`,
+		"app_config", string(data)).Error
 }
 
 // Save writes the configuration to config.json, acquiring a lock to prevent race conditions.
 func Save(newCfg *Config) error {
 	mu.Lock()
 	defer mu.Unlock()
-	cfg = newCfg // Update the singleton instance
-	return save(newCfg)
+	if err := save(newCfg); err != nil {
+		return err
+	}
+	// Only update the singleton memory instance if the DB save succeeded
+	cfg = newCfg 
+	return nil
 }

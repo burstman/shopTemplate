@@ -1,17 +1,17 @@
 -- +goose Up
 -- +goose StatementBegin
 CREATE TABLE orders (
-  id integer PRIMARY KEY AUTOINCREMENT,
-  created_at datetime,
-  updated_at datetime,
-  deleted_at datetime,
+  id SERIAL PRIMARY KEY,
+  created_at timestamp,
+  updated_at timestamp,
+  deleted_at timestamp,
   first_name text,
   last_name text,
   email text,
   address text,
   city text,
   phone text,
-  total real,
+  total numeric(12, 2),
   status text DEFAULT 'pending'
 );
 -- +goose StatementEnd

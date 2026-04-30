@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"log/slog"
 	"regexp"
 	"shopTemplate/app/config"
 	"shopTemplate/app/db"
@@ -67,20 +68,22 @@ func HandleCheckoutCreate(kit *kit.Kit) error {
 
 	// 2. Create Order Items
 	for _, item := range cart.Items {
+		price := item.Product.Price
+		if item.Product.PromotionPrice > 0 {
+			price = item.Product.PromotionPrice
+		}
+
 		orderItem := models.OrderItem{
 			OrderID:      order.ID,
 			ProductID:    item.Product.ID,
 			ProductName:  item.Product.Name,
 			ProductImage: item.Product.Image,
 			Quantity:     item.Quantity,
-			Price: func() float64 {
-				if item.Product.PromotionPrice > 0 {
-					return item.Product.PromotionPrice
-				}
-				return item.Product.Price
-			}(),
+			Price:        price,
 		}
-		db.Get().Create(&orderItem)
+		if err := db.Get().Create(&orderItem).Error; err != nil {
+			slog.Error("failed to create order item", "err", err, "orderID", order.ID)
+		}
 
 		// Optional: Deduct stock here
 		// db.Get().Model(&item.Product).Update("stock", item.Product.Stock - item.Quantity)
@@ -99,14 +102,14 @@ func HandleCheckoutCreate(kit *kit.Kit) error {
 	return nil
 }
 
-func calculateTotal(cart *models.Cart) float64 {
-	var total float64
+func calculateTotal(cart *models.Cart) models.Currency {
+	var total models.Currency
 	for _, item := range cart.Items {
 		price := item.Product.Price
 		if item.Product.PromotionPrice > 0 {
 			price = item.Product.PromotionPrice
 		}
-		total += price * float64(item.Quantity)
+		total += price.Multiply(item.Quantity)
 	}
 	return total
 }

@@ -1,16 +1,16 @@
 -- +goose Up
 -- +goose StatementBegin
 CREATE TABLE order_items (
-  id integer PRIMARY KEY AUTOINCREMENT,
-  created_at datetime,
-  updated_at datetime,
-  deleted_at datetime,
+  id SERIAL PRIMARY KEY,
+  created_at timestamp,
+  updated_at timestamp,
+  deleted_at timestamp,
   order_id integer,
   product_id integer,
   product_name text,
   product_image text,
   quantity integer,
-  price real,
+  price numeric(12, 2),
   FOREIGN KEY(order_id) REFERENCES orders(id) ON DELETE CASCADE,
   FOREIGN KEY(product_id) REFERENCES products(id)
 );

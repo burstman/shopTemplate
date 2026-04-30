@@ -28,7 +28,7 @@ func main() {
 	admin := auth.User{
 		FirstName:       "Admin",
 		LastName:        "User",
-		Email:           "admin@botanica.com",
+		Email:           "admin@shop.com",
 		PasswordHash:    string(hashedPassword),
 		Role:            "admin",
 		EmailVerifiedAt: sql.NullTime{Time: time.Now(), Valid: true},
@@ -49,7 +49,7 @@ func main() {
 	user := auth.User{
 		FirstName:       "John",
 		LastName:        "Doe",
-		Email:           "user@botanica.com",
+		Email:           "user@shop.com",
 		PasswordHash:    string(hashedPassword),
 		Role:            "user",
 		EmailVerifiedAt: sql.NullTime{Time: time.Now(), Valid: true},

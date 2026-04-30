@@ -3,9 +3,10 @@ package orders
 import (
 	"fmt"
 	"shopTemplate/app/models"
+	"shopTemplate/app/config"
 )
 
-templ Index(orders []models.Order, page int, totalPages int) {
+templ Index(orders []models.Order, page int, totalPages int, cfg *config.Config) {
 	<div class="flex justify-between items-center mb-6">
 		<h1 class="text-2xl font-bold">Orders</h1>
 	</div>
@@ -26,7 +27,7 @@ templ Index(orders []models.Order, page int, totalPages int) {
 			</thead>
 			<tbody class="bg-white divide-y divide-gray-200">
 				for _, order := range orders {
-					<tr>
+					<tr id={ fmt.Sprintf("order-row-%d", order.ID) }>
 						<td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
 							#{ fmt.Sprint(order.ID) }
 						</td>
@@ -38,7 +39,7 @@ templ Index(orders []models.Order, page int, totalPages int) {
 							{ order.CreatedAt.Format("Jan 02, 2006") }
 						</td>
 						<td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-							${ fmt.Sprintf("%.2f", order.Total) }
+							{ fmt.Sprintf("%.3f %s", order.Total, cfg.Site.Currency) }
 						</td>
 						<td class="px-6 py-4 whitespace-nowrap">
 							<span class={ "px-2 inline-flex text-xs leading-5 font-semibold rounded-full", 
@@ -49,7 +50,21 @@ templ Index(orders []models.Order, page int, totalPages int) {
 							</span>
 						</td>
 						<td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-							<a href={ templ.SafeURL(fmt.Sprintf("/admin/orders/%d", order.ID)) } class="text-indigo-600 hover:text-indigo-900">View Details</a>
+							<div class="flex justify-end items-center gap-3">
+								<a href={ templ.SafeURL(fmt.Sprintf("/admin/orders/%d", order.ID)) } class="text-indigo-600 hover:text-indigo-900">View Details</a>
+								<button
+									type="button"
+									hx-get={ fmt.Sprintf("/admin/orders/%d/delete", order.ID) }
+									hx-target="body"
+									hx-swap="beforeend"
+									class="text-red-600 hover:text-red-900 cursor-pointer p-1 hover:bg-red-50 rounded transition-colors"
+									title="Delete Order"
+								>
+									<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+										<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+									</svg>
+								</button>
+							</div>
 						</td>
 					</tr>
 				}

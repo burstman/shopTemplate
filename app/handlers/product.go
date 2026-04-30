@@ -18,7 +18,6 @@ import (
 	"shopTemplate/app/helpers"
 	"shopTemplate/app/models"
 	viewerrors "shopTemplate/app/views/errors"
-	"shopTemplate/app/views/layouts"
 	"shopTemplate/app/views/products"
 
 	"github.com/anthdm/superkit/kit"
@@ -49,13 +48,15 @@ func HandleAdminProductsIndex(kit *kit.Kit) error {
 	offset := (page - 1) * perPage
 
 	var productsList []models.Product
-	db.Get().Preload("Categories").Order("created_at desc").Limit(perPage).Offset(offset).Find(&productsList)
+	if err := db.Get().Preload("Categories").Order("created_at desc").Limit(perPage).Offset(offset).Find(&productsList).Error; err != nil {
+		return err
+	}
 
 	activePath := "/admin/products"
 	sidebar := config.GetAdminSidebar()
-	// successMsg is no longer used as toast messages are removed
-	content := products.AdminList(productsList, page, totalPages)
-	return RenderWithLayout(kit, layouts.AdminPage(sidebar, activePath, content))
+	cfg := config.Get()
+	content := products.AdminList(productsList, page, totalPages, cfg)
+	return RenderAdminWithLayout(kit, sidebar, activePath, content)
 }
 
 // HandleProductsIndex renders the public product listing page.
@@ -94,11 +95,12 @@ func HandleProductNew(kit *kit.Kit) error {
 
 	activePath := "/products/new"
 	sidebar := config.GetAdminSidebar()
+	cfg := config.Get()
 	content := products.New(categories, products.CreateForm{
 		Errors:     make(validate.Errors),
 		Categories: categories,
-	})
-	return RenderWithLayout(kit, layouts.AdminPage(sidebar, activePath, content))
+	}, cfg)
+	return RenderAdminWithLayout(kit, sidebar, activePath, content)
 }
 
 func HandleProductCreate(kit *kit.Kit) error {
@@ -168,6 +170,7 @@ func HandleProductCreate(kit *kit.Kit) error {
 
 	if len(errors) > 0 {
 		categories := helpers.GetCategoryTree()
+		cfg := config.Get()
 		activePath := "/products/new"
 		sidebar := config.GetAdminSidebar()
 		form := products.CreateForm{
@@ -182,8 +185,8 @@ func HandleProductCreate(kit *kit.Kit) error {
 			SelectedCategoryIDs: categoryIDs,
 			Errors:              errors,
 		}
-		content := products.New(categories, form)
-		return RenderWithLayout(kit, layouts.AdminPage(sidebar, activePath, content))
+		content := products.New(categories, form, cfg)
+		return RenderAdminWithLayout(kit, sidebar, activePath, content)
 	}
 
 	// Handle Image Upload
@@ -205,14 +208,16 @@ func HandleProductCreate(kit *kit.Kit) error {
 		return err
 	}
 	defer dst.Close()
-	io.Copy(dst, file)
+	if _, err := io.Copy(dst, file); err != nil {
+		return err
+	}
 
 	// 2. Save Product to DB
 	product := models.Product{
 		Name:           name,
 		Description:    description,
-		Price:          price,
-		PromotionPrice: promotionPrice,
+		Price:          models.NewCurrency(price),
+		PromotionPrice: models.NewCurrency(promotionPrice),
 		Stock:          stock,
 		Image:          "/" + fullPath,
 	}
@@ -323,7 +328,8 @@ func HandleProductEdit(kit *kit.Kit) error {
 	// Preload existing categories for the product
 	db.Get().Model(&product).Association("Categories").Find(&product.Categories)
 
-	modal := products.EditModal(product, allCategories)
+	cfg := config.Get()
+	modal := products.Edit(product, allCategories, cfg)
 
 	if kit.Request.Header.Get("HX-Request") == "true" {
 		return kit.Render(modal)
@@ -331,7 +337,7 @@ func HandleProductEdit(kit *kit.Kit) error {
 
 	activePath := "/admin/products"
 	sidebar := config.GetAdminSidebar()
-	return RenderWithLayout(kit, layouts.AdminPage(sidebar, activePath, modal))
+	return RenderAdminWithLayout(kit, sidebar, activePath, modal)
 }
 
 // HandleProductUpdate handles the update of a product by an admin user.
@@ -360,18 +366,20 @@ func HandleProductUpdate(kit *kit.Kit) error {
 	}
 
 	// Parse form
-	kit.Request.ParseMultipartForm(10 << 20)
+	if err := kit.Request.ParseMultipartForm(10 << 20); err != nil {
+		return err
+	}
 
 	product.Name = kit.Request.FormValue("name")
 	product.Description = kit.Request.FormValue("description")
 	if price, err := strconv.ParseFloat(kit.Request.FormValue("price"), 64); err == nil {
-		product.Price = price
+		product.Price = models.NewCurrency(price)
 	}
 	promPriceStr := kit.Request.FormValue("promotion_price")
 	if promPriceStr == "" {
 		product.PromotionPrice = 0
 	} else if promPrice, err := strconv.ParseFloat(promPriceStr, 64); err == nil {
-		product.PromotionPrice = promPrice
+		product.PromotionPrice = models.NewCurrency(promPrice)
 	}
 	if stock, err := strconv.Atoi(kit.Request.FormValue("stock")); err == nil {
 		product.Stock = stock
@@ -411,9 +419,7 @@ func HandleProductUpdate(kit *kit.Kit) error {
 		db.Get().Model(&product).Association("Categories").Replace(categoriesToAssign)
 	}
 
-	db.Get().Save(&product)
-
-	return kit.Redirect(http.StatusSeeOther, "/admin/products")
+	return db.Get().Save(&product).Error
 }
 
 // HandleProductQuickView renders the quick view modal for a product.
@@ -431,8 +437,9 @@ func HandleProductQuickView(kit *kit.Kit) error {
 		}
 		return err
 	}
+	cfg := config.Get()
 
-	return kit.Render(products.QuickViewModal(product))
+	return kit.Render(products.QuickViewModal(product, cfg))
 }
 
 // HandleProductShow renders the standalone product detail page.

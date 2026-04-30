@@ -9,7 +9,6 @@ import (
 	"shopTemplate/app/db"
 	"shopTemplate/app/models"
 	viewerrors "shopTemplate/app/views/errors"
-	"shopTemplate/app/views/layouts"
 	"shopTemplate/app/views/orders"
 	"strconv"
 
@@ -39,10 +38,11 @@ func HandleAdminOrdersIndex(kit *kit.Kit) error {
 	var ordersList []models.Order
 	db.Get().Order("created_at desc").Limit(perPage).Offset(offset).Find(&ordersList)
 
+	cfg := config.Get()
 	activePath := "/admin/orders"
 	sidebar := config.GetAdminSidebar()
-	content := orders.Index(ordersList, page, totalPages)
-	return RenderWithLayout(kit, layouts.AdminPage(sidebar, activePath, content))
+	content := orders.Index(ordersList, page, totalPages, cfg)
+	return RenderAdminWithLayout(kit, sidebar, activePath, content)
 }
 
 func HandleAdminOrderShow(kit *kit.Kit) error {
@@ -65,7 +65,7 @@ func HandleAdminOrderShow(kit *kit.Kit) error {
 	activePath := "/admin/orders"
 	sidebar := config.GetAdminSidebar()
 	content := orders.Show(order)
-	return RenderWithLayout(kit, layouts.AdminPage(sidebar, activePath, content))
+	return RenderAdminWithLayout(kit, sidebar, activePath, content)
 }
 
 func HandleAdminOrderUpdateStatus(kit *kit.Kit) error {
@@ -83,4 +83,47 @@ func HandleAdminOrderUpdateStatus(kit *kit.Kit) error {
 	}
 
 	return kit.Redirect(http.StatusSeeOther, fmt.Sprintf("/admin/orders/%d", id))
+}
+
+func HandleAdminOrderDeleteConfirm(kit *kit.Kit) error {
+	user, ok := kit.Auth().(models.AuthUser)
+	if !ok || user.Role != "admin" {
+		return kit.Redirect(http.StatusSeeOther, "/")
+	}
+
+	idStr := chi.URLParam(kit.Request, "id")
+	id, _ := strconv.Atoi(idStr)
+
+	var order models.Order
+	if err := db.Get().First(&order, id).Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return kit.Render(viewerrors.Error404())
+		}
+		return err
+	}
+
+	return kit.Render(orders.DeleteModal(order))
+}
+
+func HandleAdminOrderDelete(kit *kit.Kit) error {
+	user, ok := kit.Auth().(models.AuthUser)
+	if !ok || user.Role != "admin" {
+		return kit.Redirect(http.StatusForbidden, "/")
+	}
+
+	idStr := chi.URLParam(kit.Request, "id")
+	id, err := strconv.Atoi(idStr)
+
+	if err != nil {
+		return kit.Render(viewerrors.Error500())
+	}
+	if err := db.Get().Delete(&models.Order{}, id).Error; err != nil {
+		return err
+	}
+
+	if kit.Request.Header.Get("HX-Request") == "true" {
+		return nil
+	}
+
+	return kit.Redirect(http.StatusSeeOther, "/admin/orders")
 }

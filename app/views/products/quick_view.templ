@@ -8,12 +8,12 @@ import (
 
 func getTrackingPrice(p models.Product) float64 {
 	if p.PromotionPrice > 0 {
-		return p.PromotionPrice
+		return p.PromotionPrice.ToFloat()
 	}
-	return p.Price
+	return p.Price.ToFloat()
 }
 
-templ QuickViewModal(product models.Product) {
+templ QuickViewModal(product models.Product, cfg *config.Config) {
 	<div id="quick-view-modal" class="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto overflow-x-hidden bg-black/50 backdrop-blur-sm p-4 md:p-0" role="dialog" aria-modal="true">
 		<!-- Close on backdrop click -->
 		<div class="absolute inset-0" onclick="closeQuickView()"></div>
@@ -37,10 +37,10 @@ templ QuickViewModal(product models.Product) {
 					<section aria-labelledby="information-heading" class="mt-2">
 						<div class="flex items-baseline gap-2">
 							if product.PromotionPrice > 0 {
-								<p class="text-3xl font-bold text-red-600">{ fmt.Sprintf("$%.2f", product.PromotionPrice) }</p>
-								<p class="text-lg text-gray-500 line-through">{ fmt.Sprintf("$%.2f", product.Price) }</p>
+								<p class="text-3xl font-bold text-red-600">{ product.PromotionPrice.String() } { cfg.Site.Currency }</p>
+								<p class="text-lg text-gray-500 line-through">{ product.Price.String() } { cfg.Site.Currency }</p>
 							} else {
-								<p class="text-3xl font-bold text-gray-900">{ fmt.Sprintf("$%.2f", product.Price) }</p>
+								<p class="text-3xl font-bold text-gray-900">{ product.Price.String() } { cfg.Site.Currency }</p>
 							}
 						</div>
 						<div class="mt-4 prose prose-sm text-gray-500">
@@ -57,26 +57,30 @@ templ QuickViewModal(product models.Product) {
 					</section>
 					<section aria-labelledby="options-heading" class="mt-10">
 						<div x-data="{ added: false }" class="flex flex-col gap-3 mt-6">
-							<button
-								type="button"
-								hx-post={ fmt.Sprintf("/cart/add/%d", product.ID) }
-								hx-swap="none"
-								onclick={ templ.JSFuncCall("trackAddToCart", product.ID, product.Name, getTrackingPrice(product), config.Get().FacebookPixel.Currency) }
-								@click="added = true; setTimeout(() => added = false, 2000)"
-								:class="{ 'bg-green-600 hover:bg-green-700': added }"
-								class="flex w-full items-center justify-center rounded-md border border-transparent bg-primary px-8 py-3 text-base font-medium text-white hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-colors"
-							>
-								<span x-show="!added">Add to Cart</span>
-								<span x-show="added" x-cloak>Added!</span>
-							</button>
-							<button
-								type="button"
-								hx-post={ fmt.Sprintf("/cart/add/%d?redirect=/checkout", product.ID) }
-								onclick={ templ.JSFuncCall("trackInitiateCheckout", product.ID, product.Name, getTrackingPrice(product), config.Get().FacebookPixel.Currency) }
-								class="flex w-full items-center justify-center rounded-md border border-gray-300 bg-white px-8 py-3 text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-colors"
-							>
-								Order Now
-							</button>
+							if cfg.Site.ShowAddToCart {
+								<button
+									type="button"
+									hx-post={ fmt.Sprintf("/cart/add/%d", product.ID) }
+									hx-swap="none"
+									onclick={ templ.JSFuncCall("trackAddToCart", product.ID, product.Name, getTrackingPrice(product), cfg.Site.Currency) }
+									@click="added = true; setTimeout(() => added = false, 2000)"
+									:class="{ 'bg-green-600 hover:bg-green-700': added }"
+									class="flex w-full items-center justify-center rounded-md border border-transparent bg-primary px-8 py-3 text-base font-medium text-white hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-colors"
+								>
+									<span x-show="!added">Add to Cart</span>
+									<span x-show="added" x-cloak>Added!</span>
+								</button>
+							}
+							if cfg.Site.ShowOrderNow {
+								<button
+									type="button"
+									hx-post={ fmt.Sprintf("/cart/add/%d?redirect=/checkout", product.ID) }
+									onclick={ templ.JSFuncCall("trackInitiateCheckout", product.ID, product.Name, getTrackingPrice(product), cfg.Site.Currency) }
+									class="flex w-full items-center justify-center rounded-md border border-gray-300 bg-white px-8 py-3 text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-colors"
+								>
+									Order Now
+								</button>
+							}
 						</div>
 					</section>
 				</div>

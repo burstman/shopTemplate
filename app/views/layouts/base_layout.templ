@@ -18,9 +18,13 @@ templ BaseLayout(user models.AuthUser, cfg *config.Config, categories []models.C
 	<html lang="en">
 		<head>
 			<title>{ cfg.Site.Name }</title>
-			<link rel="icon" type="image/x-icon" href="/public/favicon.ico"/>
+			<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛍️</text></svg>"/>
 			<meta charset="UTF-8"/>
 			<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+			<!-- Google Fonts: Inter -->
+			<link rel="preconnect" href="https://fonts.googleapis.com"/>
+			<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+			<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
 			<link rel="stylesheet" href={ view.Asset("styles.css") }/>
 			<script src={ view.Asset("index.js") }></script>
 			<!-- Alpine Plugins -->
@@ -28,12 +32,13 @@ templ BaseLayout(user models.AuthUser, cfg *config.Config, categories []models.C
 			<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 			<!-- HTMX -->
 			<script src="https://unpkg.com/htmx.org@1.9.9" defer></script>
+			<script src="https://unpkg.com/htmx.org@1.9.9/dist/ext/ws.js" defer></script>
 		</head>
 		<body x-data="{theme: 'light'}" :class="theme" class="bg-background text-foreground font-sans antialiased pt-16 sm:pt-28">
 			@components.Navigation(user, cfg, categories, cartCount, nil)
 			{ children... }
-			@components.Footer(cfg)
-
+			@components.Footer(user,cfg)
+			@components.ChatButton(user, cfg)
 		</body>
 	</html>
 }

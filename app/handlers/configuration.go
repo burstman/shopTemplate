@@ -11,7 +11,6 @@ import (
 	"shopTemplate/app/db"
 	"shopTemplate/app/models"
 	"shopTemplate/app/services"
-	"shopTemplate/app/views/layouts"
 	"strconv"
 	"strings"
 	"time"
@@ -44,12 +43,12 @@ func HandleAdminSettings(kit *kit.Kit) error {
 		content = configuration.Notifications(cfg)
 	case "facebook_pixel":
 		content = configuration.FacebookPixel(cfg)
-	case "site", "hero", "sections", "theme":
+	case "site", "hero", "sections", "theme", "payment", "storefront-sidebar", "social_links", "chat_settings":
 		content = configuration.Index(cfg, products, categories, section)
 	default:
 		return kit.Redirect(http.StatusSeeOther, "/admin/site") // Default to site settings if section is unknown
 	}
-	return RenderWithLayout(kit, layouts.AdminPage(sidebar, activePath, content))
+	return RenderAdminWithLayout(kit, sidebar, activePath, content)
 }
 
 func getAdminConfigData(section string) (*config.Config, []models.Product, []models.Category) {
@@ -83,6 +82,10 @@ func HandleAdminSettingsUpdate(kit *kit.Kit) error {
 		cfg.Site.SupportEmail = kit.Request.FormValue("support_email")
 		cfg.Site.NameBgColor = kit.Request.FormValue("site_name_bg_color")
 		cfg.Site.NameTextColor = kit.Request.FormValue("site_name_text_color")
+		cfg.Site.Currency = kit.Request.FormValue("site_currency")
+		cfg.Site.ShowQuickView = kit.Request.FormValue("show_quick_view") == "on"
+		cfg.Site.ShowOrderNow = kit.Request.FormValue("show_order_now") == "on"
+		cfg.Site.ShowAddToCart = kit.Request.FormValue("show_add_to_cart") == "on"
 
 		// Handle site logo upload
 		if file, header, err := kit.Request.FormFile("site_logo"); err == nil {
@@ -95,8 +98,11 @@ func HandleAdminSettingsUpdate(kit *kit.Kit) error {
 			if dst, err := os.Create(dstPath); err == nil {
 				defer dst.Close()
 				io.Copy(dst, file)
-				if len(cfg.Site.Logo) > 0 && cfg.Site.Logo[0] == '/' {
-					os.Remove(cfg.Site.Logo[1:])
+				// Defensive check for existing logo to avoid errors on deletion
+				if len(cfg.Site.Logo) > 1 && cfg.Site.Logo[0] == '/' {
+					if _, err := os.Stat(cfg.Site.Logo[1:]); err == nil {
+						os.Remove(cfg.Site.Logo[1:])
+					}
 				}
 				cfg.Site.Logo = "/" + dstPath
 			}
@@ -107,8 +113,30 @@ func HandleAdminSettingsUpdate(kit *kit.Kit) error {
 		cfg.Notification.TelegramChatID = kit.Request.FormValue("telegram_chat_id")
 	case "facebook_pixel":
 		cfg.FacebookPixel.PixelID = kit.Request.FormValue("pixel_id")
-		cfg.FacebookPixel.Currency = kit.Request.FormValue("currency")
 		cfg.FacebookPixel.TrackPurchaseValue = kit.Request.FormValue("track_purchase_value") == "on"
+
+	case "payment":
+		cfg.Payment.EnableCOD = kit.Request.FormValue("enable_cod") == "on"
+		cfg.Payment.EnableFlouci = kit.Request.FormValue("enable_flouci") == "on"
+		cfg.Payment.FlouciAppToken = kit.Request.FormValue("flouci_app_token")
+
+	case "social_links":
+		for i := range cfg.Footer.SocialLinks {
+			name := strings.ToLower(cfg.Footer.SocialLinks[i].Platform)
+			cfg.Footer.SocialLinks[i].URL = kit.Request.FormValue("social_" + name + "_url")
+		}
+
+	case "chat_settings":
+		cfg.Chat.PrimaryColor = kit.Request.FormValue("chat_primary_color")
+		cfg.Chat.HeaderTextColor = kit.Request.FormValue("chat_header_text_color")
+		cfg.Chat.ClientBubbleColor = kit.Request.FormValue("chat_client_bubble_color")
+		cfg.Chat.ClientTextColor = kit.Request.FormValue("chat_client_text_color")
+		cfg.Chat.AdminBubbleColor = kit.Request.FormValue("chat_admin_bubble_color")
+		cfg.Chat.AdminTextColor = kit.Request.FormValue("chat_admin_text_color")
+		cfg.Chat.EnablePopup = kit.Request.FormValue("chat_enable_popup") == "on"
+		if timeout, err := strconv.Atoi(kit.Request.FormValue("chat_popup_timeout")); err == nil {
+			cfg.Chat.PopupTimeout = timeout
+		}
 
 	case "hero":
 		cfg.Hero.Enabled = kit.Request.FormValue("hero_enabled") == "on"
@@ -295,6 +323,10 @@ func HandleAdminSettingsUpdate(kit *kit.Kit) error {
 		}
 		if section == "facebook_pixel" {
 			return kit.Render(configuration.FacebookPixel(cfg))
+		}
+		if section == "payment" || section == "social_links" || section == "chat_settings" {
+			_, products, categories := getAdminConfigData(section)
+			return kit.Render(configuration.Index(cfg, products, categories, section))
 		}
 
 		_, products, categories := getAdminConfigData(section)

@@ -4,8 +4,8 @@ import (
 	"shopTemplate/app/config"
 )
 
-templ FacebookPixelPurchase(pixelCfg config.FacebookPixelConfig, orderTotal float64) {
-	if pixelCfg.PixelID != "" {
-		<div x-init={ templ.JSFuncCall("trackPurchase", pixelCfg.Currency, orderTotal, pixelCfg.TrackPurchaseValue).Call }></div>
+templ FacebookPixelPurchase(cfg *config.Config, orderTotal float64) {
+	if cfg.FacebookPixel.PixelID != "" {
+		<div x-init={ templ.JSFuncCall("trackPurchase", cfg.Site.Currency, orderTotal, cfg.FacebookPixel.TrackPurchaseValue).Call }></div>
 	}
 }

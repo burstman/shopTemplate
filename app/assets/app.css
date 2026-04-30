@@ -24,6 +24,28 @@
 	body {
 		@apply bg-background text-foreground;
 	}
+
+  /* Global form input styling — visible borders + brand focus ring */
+  input[type="text"],
+  input[type="email"],
+  input[type="password"],
+  input[type="tel"],
+  input[type="number"],
+  input[type="url"],
+  input[type="search"],
+  input[type="date"],
+  textarea,
+  select {
+    @apply block w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm text-gray-900 shadow-sm
+           transition-all duration-200 ease-in-out
+           placeholder:text-gray-400
+           focus:border-green-600 focus:ring-2 focus:ring-green-600/20 focus:outline-none;
+  }
+
+  /* Better label styling */
+  label {
+    @apply block text-sm font-medium text-gray-700 mb-1;
+  }
 }
 
 @layer base {

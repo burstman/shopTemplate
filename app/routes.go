@@ -15,7 +15,6 @@ import (
 
 // Define your global middleware
 func InitializeMiddleware(router *chi.Mux) {
-	router.Use(chimiddleware.Logger)
 	router.Use(chimiddleware.Recoverer)
 	router.Use(middleware.WithRequest)
 }
@@ -37,8 +36,12 @@ func InitializeRoutes(router *chi.Mux) {
 		RedirectURL: "/login",
 	}
 
+	// WebSocket route without the standard HTTP logger middleware to avoid duration noise
+	router.With(kit.WithAuthentication(authConfig, false)).Get("/api/chat/ws", kit.Handler(handlers.HandleChatWS))
+
 	// Routes that "might" have an authenticated user
 	router.Group(func(app chi.Router) {
+		app.Use(chimiddleware.Logger)
 		app.Use(kit.WithAuthentication(authConfig, false)) // strict set to false
 
 		// Routes
@@ -54,7 +57,8 @@ func InitializeRoutes(router *chi.Mux) {
 		app.Get("/checkout", kit.Handler(handlers.HandleCheckoutIndex))
 		app.Get("/checkout/success", kit.Handler(handlers.HandleCheckoutSuccess))
 		app.Post("/checkout", kit.Handler(handlers.HandleCheckoutCreate))
-		app.Get("/contact", kit.Handler(handlers.HandleContactIndex))
+		app.Get("/api/chat/messages", kit.Handler(handlers.HandleChatFetchMessages))
+		app.Post("/api/chat/send", kit.Handler(handlers.HandleChatSend))
 	})
 
 	// Authenticated routes
@@ -63,6 +67,7 @@ func InitializeRoutes(router *chi.Mux) {
 	// will be redirected to the configured redirectURL, set in the
 	// AuthenticationConfig.
 	router.Group(func(app chi.Router) {
+		app.Use(chimiddleware.Logger)
 		app.Use(kit.WithAuthentication(authConfig, true)) // strict set to true
 
 		// Routes
@@ -73,7 +78,18 @@ func InitializeRoutes(router *chi.Mux) {
 		app.Get("/admin/orders", kit.Handler(handlers.HandleAdminOrdersIndex))
 		app.Get("/admin/orders/{id}", kit.Handler(handlers.HandleAdminOrderShow))
 		app.Post("/admin/orders/{id}/status", kit.Handler(handlers.HandleAdminOrderUpdateStatus))
+		app.Get("/admin/orders/{id}/delete", kit.Handler(handlers.HandleAdminOrderDeleteConfirm))
+		app.Delete("/admin/orders/{id}", kit.Handler(handlers.HandleAdminOrderDelete))
 		app.Get("/admin/products", kit.Handler(handlers.HandleAdminProductsIndex))
+		app.Get("/admin/users", kit.Handler(handlers.HandleAdminUsersIndex))
+		app.Get("/admin/users/{id}/edit", kit.Handler(handlers.HandleAdminUserEdit))
+		app.Put("/admin/users/{id}", kit.Handler(handlers.HandleAdminUserUpdate))
+		app.Get("/admin/chats", kit.Handler(handlers.HandleAdminChatIndex))
+		app.Get("/admin/chat/{id}", kit.Handler(handlers.HandleAdminChatShow))
+		app.Post("/admin/chat/{id}/send", kit.Handler(handlers.HandleAdminChatSend))
+		app.Post("/admin/chat/{id}/ban", kit.Handler(handlers.HandleAdminChatBan))
+		app.Get("/admin/chats/sidebar", kit.Handler(handlers.HandleAdminChatSidebar))       // New handler for sidebar polling
+		app.Get("/admin/chat/{id}/messages", kit.Handler(handlers.HandleAdminChatMessages)) // New handler for message polling
 
 		app.Get("/configuration", kit.Handler(handlers.HandleConfigurationIndex))
 		app.Get("/admin/{section}", kit.Handler(handlers.HandleAdminSettings))

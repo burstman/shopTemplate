@@ -10,8 +10,8 @@ type Order struct {
 	Address   string
 	City      string
 	Phone     string
-	Total     float64
-	Status    string // pending, completed, cancelled
+	Total     Currency `gorm:"type:numeric(12,2)"`
+	Status    string   // pending, completed, cancelled
 	Items     []OrderItem
 }
 
@@ -23,5 +23,5 @@ type OrderItem struct {
 	ProductName  string
 	ProductImage string
 	Quantity     int
-	Price        float64
+	Price        Currency `gorm:"type:numeric(12,2)"`
 }

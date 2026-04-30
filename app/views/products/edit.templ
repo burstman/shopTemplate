@@ -3,6 +3,7 @@ package products
 import (
 	"fmt"
 	"shopTemplate/app/models"
+	"shopTemplate/app/config"
 )
 
 // Helper to map categories to selected IDs map
@@ -14,7 +15,7 @@ func makeSelectedCategoryMap(categories []models.Category) map[uint]bool {
 	return ids
 }
 
-templ Edit(product models.Product, categories []models.Category) {
+templ Edit(product models.Product, categories []models.Category, cfg *config.Config) {
 	<div class="max-w-2xl mx-auto">
 		<h1 class="text-2xl font-bold mb-6">Edit Product</h1>
 		<form action={ templ.SafeURL(fmt.Sprintf("/products/%d", product.ID)) } method="POST" enctype="multipart/form-data" class="bg-white shadow rounded-lg p-6">
@@ -25,13 +26,13 @@ templ Edit(product models.Product, categories []models.Category) {
 				Values: map[string]string{
 					"name":        product.Name,
 					"description": product.Description,
-					"price":       fmt.Sprintf("%.2f", product.Price),
-					"promotion_price": fmt.Sprintf("%.2f", product.PromotionPrice),
+					"price":       fmt.Sprintf("%.3f", product.Price),
+					"promotion_price": fmt.Sprintf("%.3f", product.PromotionPrice),
 					"stock":       fmt.Sprint(product.Stock),
 				},
 				SelectedCatIDs: makeSelectedCategoryMap(product.Categories),
 				IsEdit:         true,
-			})
+			}, cfg)
 			<div class="mt-6 flex justify-end gap-3">
 				<a href="/admin/products" class="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300">Cancel</a>
 				<button type="submit" class="px-4 py-2 bg-primary text-white rounded-md hover:bg-primary/90">Update Product</button>

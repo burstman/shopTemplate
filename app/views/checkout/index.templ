@@ -34,7 +34,7 @@ templ Index(cart *models.Cart, values map[string]string, errors validate.Errors,
 									<div class="ml-4 flex-1">
 										<div class="flex justify-between text-sm font-medium text-gray-900">
 											<h3>{ item.Product.Name }</h3>
-											<p>{ fmt.Sprintf("$%.2f", item.Product.Price * float64(item.Quantity)) }</p>
+											<p>{ item.Product.Price.Multiply(item.Quantity).String() }</p>
 										</div>
 										<div class="flex justify-between items-center mt-1">
 											<p class="text-sm text-gray-500">Qty { fmt.Sprint(item.Quantity) }</p>
@@ -68,7 +68,7 @@ templ Index(cart *models.Cart, values map[string]string, errors validate.Errors,
 func calculateTotal(cart *models.Cart) float64 {
 	var total float64
 	for _, item := range cart.Items {
-		total += item.Product.Price * float64(item.Quantity)
+		total += item.Product.Price.Multiply(item.Quantity).ToFloat()
 	}
 	return total
 }

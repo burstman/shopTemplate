@@ -5,8 +5,8 @@ import "gorm.io/gorm"
 type Product struct {
 	gorm.Model
 	Name           string
-	Price          float64
-	PromotionPrice float64
+	Price          Currency `gorm:"type:numeric(12,2)"`
+	PromotionPrice Currency `gorm:"type:numeric(12,2)"`
 	Description    string
 	Stock          int
 	Image          string

@@ -2,7 +2,7 @@ package products
 
 import (
 	"shopTemplate/app/models"
-
+	"shopTemplate/app/config"
 	"github.com/anthdm/superkit/validate"
 	"strconv"
 )
@@ -14,7 +14,7 @@ type CreateForm struct {
 	SelectedCategoryIDs []string
 }
 
-templ CreateModal(form CreateForm) {
+templ CreateModal(form CreateForm, cfg *config.Config) {
 	<div id="modal" class="fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center z-50" hx-target="this">
 		<div class="bg-white rounded-lg shadow-xl p-6 w-full max-w-md" role="dialog" aria-modal="true">
 			<div class="flex justify-between items-center mb-4">
@@ -31,7 +31,7 @@ templ CreateModal(form CreateForm) {
 					Values: form.Values,
 					Errors: form.Errors,
 					SelectedCatIDs: stringsToUintMap(form.SelectedCategoryIDs),
-				})
+				}, cfg)
 				<div class="mt-6 flex justify-end gap-3">
 					<button type="button" hx-get="/products" hx-target="body" class="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300">Cancel</button>
 					<button type="submit" class="px-4 py-2 bg-primary text-white rounded-md hover:bg-primary/90">Create Product</button>

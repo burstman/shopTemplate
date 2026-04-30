@@ -1,12 +1,12 @@
 -- +goose Up
 -- +goose StatementBegin
 CREATE TABLE settings (
-  id integer PRIMARY KEY AUTOINCREMENT,
-  created_at datetime,
-  updated_at datetime,
-  deleted_at datetime,
+  id SERIAL PRIMARY KEY,
+  created_at timestamp,
+  updated_at timestamp,
+  deleted_at timestamp,
   key text UNIQUE,
-  value text
+  value JSONB
 );
 CREATE INDEX idx_settings_deleted_at ON settings(deleted_at);
 -- +goose StatementEnd
