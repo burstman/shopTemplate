@@ -310,7 +310,7 @@ func HandleProductEdit(kit *kit.Kit) error {
 	db.Get().Model(&product).Association("Categories").Find(&product.Categories)
 
 	cfg := config.Get()
-	modal := products.Edit(product, allCategories, cfg)
+	modal := products.EditModal(product, allCategories, cfg)
 
 	if kit.Request.Header.Get("HX-Request") == "true" {
 		return kit.Render(modal)

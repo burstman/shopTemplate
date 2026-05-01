@@ -40,7 +40,7 @@ templ AdminList(products []models.Product, page int, totalPages int, cfg *config
 							<div class="text-sm font-medium text-gray-900">{ product.Name }</div>
 						</td>
 						<td class="px-6 py-4 whitespace-nowrap">
-							<div class="text-sm text-gray-500">{ fmt.Sprintf("%.3f %s", product.Price, cfg.Site.Currency) }</div>
+							<div class="text-sm text-gray-500">{ fmt.Sprintf("%.3f %s", product.Price.ToFloat(), cfg.Site.Currency) }</div>
 						</td>
 						<td class="px-6 py-4 whitespace-nowrap">
 							<div class="text-sm text-gray-500">{ fmt.Sprint(product.Stock) }</div>
