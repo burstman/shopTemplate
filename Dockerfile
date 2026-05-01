@@ -35,6 +35,9 @@ WORKDIR /app
 COPY --from=builder /app/bin/app_prod ./app_prod
 COPY --from=builder /app/public ./public
 
+# Create an empty .env file so superkit's kit.Setup() doesn't crash
+RUN touch .env
+
 # Ensure config directory exists and copy the migration fallback
 RUN mkdir -p /app/app/config
 COPY --from=builder /app/app/config/config.json /app/app/config/config.json
