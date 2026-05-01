@@ -44,16 +44,19 @@ type FacebookPixelConfig struct {
 	TrackPurchaseValue bool   `json:"track_purchase_value"`
 }
 
+
+
 type SiteConfig struct {
-	Name          string `json:"name"`
-	SupportEmail  string `json:"support_email"`
-	NameBgColor   string `json:"name_bg_color"`
-	NameTextColor string `json:"name_text_color"`
-	Logo          string `json:"logo"`
-	Currency      string `json:"currency"`
-	ShowQuickView bool   `json:"show_quick_view"`
-	ShowOrderNow  bool   `json:"show_order_now"`
-	ShowAddToCart bool   `json:"show_add_to_cart"`
+	Name          string          `json:"name"`
+	SupportEmail  string          `json:"support_email"`
+	NameBgColor   string          `json:"name_bg_color"`
+	NameTextColor string          `json:"name_text_color"`
+	Logo          string          `json:"logo"`
+	Currency      string          `json:"currency"`
+	ShowQuickView bool            `json:"show_quick_view"`
+	ShowOrderNow  bool            `json:"show_order_now"`
+	ShowAddToCart bool            `json:"show_add_to_cart"`
+	Bundles       []models.Bundle `json:"bundles"`
 }
 
 type HeroConfig struct {
@@ -179,6 +182,10 @@ func defaultConfig() *Config {
 			ShowQuickView: true,
 			ShowOrderNow:  true,
 			ShowAddToCart: true,
+			Bundles: []models.Bundle{
+				{Quantity: 2, DiscountPercentage: 10},
+				{Quantity: 3, DiscountPercentage: 15},
+			},
 		},
 		Notification: NotificationConfig{
 			AdminEmailRecipient: "admin@botanica.com",

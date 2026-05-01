@@ -2,6 +2,8 @@ package cart
 
 import (
 	"fmt"
+	"shopTemplate/app/config"
+	"shopTemplate/app/helpers"
 	"shopTemplate/app/models"
 )
 
@@ -28,7 +30,7 @@ templ Index(cart *models.Cart) {
 							<div class="ml-6 flex-1 flex flex-col">
 								<div class="flex justify-between text-base font-medium text-gray-900">
 									<h3><a href={ templ.SafeURL(fmt.Sprintf("/products/%d", item.Product.ID)) }>{ item.Product.Name }</a></h3>
-									<p class="ml-4">{  item.Product.Price.Multiply(item.Quantity).String()  }</p>
+									<p class="ml-4">{ helpers.CalculateItemPrice(item, config.Get().Site.Bundles).String() }</p>
 								</div>
 								<div class="flex flex-1 items-end justify-between text-sm">
 									<p class="text-gray-500">Qty { fmt.Sprint(item.Quantity) } x { item.Product.Price.String() }</p>
@@ -40,7 +42,7 @@ templ Index(cart *models.Cart) {
 				<div class="border-t border-gray-200 px-4 py-6 sm:px-6 bg-gray-50">
 					<div class="flex justify-between text-base font-medium text-gray-900">
 						<p>Subtotal</p>
-						<p>{ fmt.Sprintf("$%.2f", calculateTotal(cart)) }</p>
+						<p>{ calculateTotal(cart).String() }</p>
 					</div>
 					<p class="mt-0.5 text-sm text-gray-500">Shipping and taxes calculated at checkout.</p>
 					<div class="mt-6">
@@ -57,10 +59,7 @@ templ Index(cart *models.Cart) {
 	</div>
 }
 
-func calculateTotal(cart *models.Cart) float64 {
-	var total float64
-	for _, item := range cart.Items {
-		total += item.Product.Price.Multiply(item.Quantity).ToFloat()
-	}
-	return total
+func calculateTotal(cart *models.Cart) models.Currency {
+	cfg := config.Get()
+	return helpers.CalculateCartTotal(cart, cfg.Site.Bundles)
 }

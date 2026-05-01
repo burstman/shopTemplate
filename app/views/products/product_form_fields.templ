@@ -1,9 +1,10 @@
 package products
 
 import (
+	"encoding/json"
 	"fmt"
-	"shopTemplate/app/models"
 	"shopTemplate/app/config"
+	"shopTemplate/app/models"
 
 	"github.com/anthdm/superkit/validate"
 )
@@ -98,7 +99,46 @@ templ ProductFormFields(p FormParams, cfg *config.Config) {
 				<p class="mt-2 text-sm text-red-600">{ p.Errors.Get("image")[0] }</p>
 			}
 		</div>
+
+		<div class="mt-8 border-t border-gray-200 pt-8" x-data={ fmt.Sprintf("{ bundles: %s }", getBundlesJSON(p.Product.Bundles)) }>
+			<div class="flex items-center justify-between mb-4">
+				<div>
+					<h3 class="text-sm font-medium text-gray-900">Product Bundles</h3>
+					<p class="text-xs text-gray-500">Add specific quantity discounts for this product. These override global settings.</p>
+				</div>
+				<button type="button" @click="bundles.push({quantity: 2, discount_percentage: 10})" class="inline-flex items-center px-2 py-1 border border-transparent text-xs font-medium rounded text-primary bg-primary/10 hover:bg-primary/20">
+					+ Add
+				</button>
+			</div>
+			
+			<input type="hidden" name="bundles_count" :value="bundles.length"/>
+			<div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+				<template x-for="(bundle, index) in bundles" :key="index">
+					<div class="flex items-center gap-3 p-3 bg-gray-50 rounded-md border border-gray-100 relative group">
+						<div class="flex-1">
+							<label class="block text-[10px] font-bold text-gray-400 uppercase">Qty</label>
+							<input type="number" :name="`bundle_${index}_quantity`" x-model="bundle.quantity" class="mt-1 block w-full rounded border-gray-300 shadow-sm text-xs focus:ring-primary focus:border-primary"/>
+						</div>
+						<div class="flex-1">
+							<label class="block text-[10px] font-bold text-gray-400 uppercase">Disc %</label>
+							<input type="number" :name="`bundle_${index}_discount`" x-model="bundle.discount_percentage" class="mt-1 block w-full rounded border-gray-300 shadow-sm text-xs focus:ring-primary focus:border-primary"/>
+						</div>
+						<button type="button" @click="bundles.splice(index, 1)" class="mt-4 text-gray-400 hover:text-red-500">
+							<svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+						</button>
+					</div>
+				</template>
+			</div>
+		</div>
 	</div>
+}
+
+func getBundlesJSON(bundles []models.Bundle) string {
+	if len(bundles) == 0 {
+		return "[]"
+	}
+	b, _ := json.Marshal(bundles)
+	return string(b)
 }
 
 

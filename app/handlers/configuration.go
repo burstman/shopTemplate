@@ -85,6 +85,29 @@ func HandleAdminSettingsUpdate(kit *kit.Kit) error {
 		cfg.Site.ShowOrderNow = kit.Request.FormValue("show_order_now") == "on"
 		cfg.Site.ShowAddToCart = kit.Request.FormValue("show_add_to_cart") == "on"
 
+		var bundles []models.Bundle
+		if countStr := kit.Request.FormValue("bundles_count"); countStr != "" {
+			count, _ := strconv.Atoi(countStr)
+			for j := 0; j < count; j++ {
+				prefix := fmt.Sprintf("bundle_%d_", j)
+				if kit.Request.FormValue(prefix+"delete") == "on" {
+					continue
+				}
+				qty, _ := strconv.Atoi(kit.Request.FormValue(prefix+"quantity"))
+				discount, _ := strconv.Atoi(kit.Request.FormValue(prefix+"discount"))
+				if qty > 0 {
+					bundles = append(bundles, models.Bundle{
+						Quantity:           qty,
+						DiscountPercentage: discount,
+					})
+				}
+			}
+		}
+		if kit.Request.FormValue("add_bundle") == "true" {
+			bundles = append(bundles, models.Bundle{Quantity: 2, DiscountPercentage: 10})
+		}
+		cfg.Site.Bundles = bundles
+
 		// Handle site logo upload
 		if file, header, err := kit.Request.FormFile("site_logo"); err == nil {
 			defer file.Close()

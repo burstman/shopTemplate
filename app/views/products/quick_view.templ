@@ -3,6 +3,7 @@ package products
 import (
 	"fmt"
 	"shopTemplate/app/config"
+	"shopTemplate/app/helpers"
 	"shopTemplate/app/models"
 )
 
@@ -24,15 +25,15 @@ templ QuickViewModal(product models.Product, cfg *config.Config) {
 					<path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
 				</svg>
 			</button>
-			<div class="grid w-full grid-cols-1 items-start sm:grid-cols-12">
-				<div class="aspect-square overflow-hidden bg-gray-100 sm:col-span-6 lg:col-span-5 h-full relative">
+			<div class="grid w-full grid-cols-1 items-stretch sm:grid-cols-12">
+				<div class="relative overflow-hidden bg-gray-100 sm:col-span-6 lg:col-span-5 min-h-[300px] sm:min-h-[450px]">
 					if product.Image != "" {
-						<img src={ product.Image } alt={ product.Name } class="object-cover object-center w-full h-full absolute inset-0"/>
+						<img src={ product.Image } alt={ product.Name } class="absolute inset-0 h-full w-full object-cover object-center"/>
 					} else {
-						<div class="flex h-full w-full items-center justify-center bg-gray-100 text-gray-400">No Image</div>
+						<div class="absolute inset-0 flex items-center justify-center bg-gray-100 text-gray-400">No Image</div>
 					}
 				</div>
-				<div class="sm:col-span-6 lg:col-span-7 p-6 sm:px-8 sm:py-8">
+				<div class="flex flex-col justify-center p-6 sm:col-span-6 lg:col-span-7 sm:px-8 sm:py-10">
 					<h2 class="text-2xl font-bold text-gray-900">{ product.Name }</h2>
 					<section aria-labelledby="information-heading" class="mt-2">
 						<div class="flex items-baseline gap-2">
@@ -55,12 +56,48 @@ templ QuickViewModal(product models.Product, cfg *config.Config) {
 							</div>
 						</div>
 					</section>
-					<section aria-labelledby="options-heading" class="mt-10">
-						<div x-data="{ added: false }" class="flex flex-col gap-3 mt-6">
+					<section aria-labelledby="options-heading" class="mt-10" x-data="{ quantity: 1, added: false }">
+						<input type="hidden" name="quantity" :value="quantity" id="quick-view-quantity"/>
+						{{
+							bundles := cfg.Site.Bundles
+							if len(product.Bundles) > 0 {
+								bundles = product.Bundles
+							}
+						}}
+						if len(bundles) > 0 {
+							<div class="mb-8">
+								<h3 class="text-sm font-bold text-gray-900 uppercase tracking-tight">Select Bundle</h3>
+								<div class="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-3">
+									<button
+										type="button"
+										@click="quantity = 1"
+										:class="quantity === 1 ? 'ring-2 ring-primary border-primary bg-primary/5' : 'border-gray-200 bg-white'"
+										class="flex flex-col items-center justify-center rounded-xl border p-4 text-center transition-all hover:border-primary/50"
+									>
+										<span class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">1 Pack</span>
+										<span class="mt-1 text-base font-extrabold text-gray-900">{ product.Price.String() } { cfg.Site.Currency }</span>
+									</button>
+									for _, b := range bundles {
+										<button
+											type="button"
+											@click={ fmt.Sprintf("quantity = %d", b.Quantity) }
+											:class={ fmt.Sprintf("quantity === %d ? 'ring-2 ring-primary border-primary bg-primary/5' : 'border-gray-200 bg-white'", b.Quantity) }
+											class="flex flex-col items-center justify-center rounded-xl border p-4 text-center transition-all hover:border-primary/50"
+										>
+											<span class="text-[10px] font-bold text-primary uppercase tracking-widest">{ fmt.Sprint(b.Quantity) } Pack</span>
+											<span class="mt-1 text-base font-extrabold text-gray-900">{ helpers.CalculateBundlePrice(product, b).String() } { cfg.Site.Currency }</span>
+											<span class="mt-1 inline-flex items-center rounded-full bg-green-100 px-2 py-0.5 text-[10px] font-bold text-green-700">Save { fmt.Sprint(b.DiscountPercentage) }%</span>
+										</button>
+									}
+								</div>
+							</div>
+						}
+						<div class="flex flex-col gap-3">
 							if cfg.Site.ShowAddToCart {
 								<button
 									type="button"
 									hx-post={ fmt.Sprintf("/cart/add/%d", product.ID) }
+									hx-include="#quick-view-quantity"
 									hx-swap="none"
 									onclick={ templ.JSFuncCall("trackAddToCart", product.ID, product.Name, getTrackingPrice(product), cfg.Site.Currency) }
 									@click="added = true; setTimeout(() => added = false, 2000)"
@@ -75,6 +112,7 @@ templ QuickViewModal(product models.Product, cfg *config.Config) {
 								<button
 									type="button"
 									hx-post={ fmt.Sprintf("/cart/add/%d?redirect=/checkout", product.ID) }
+									hx-include="#quick-view-quantity"
 									onclick={ templ.JSFuncCall("trackInitiateCheckout", product.ID, product.Name, getTrackingPrice(product), cfg.Site.Currency) }
 									class="flex w-full items-center justify-center rounded-md border border-gray-300 bg-white px-8 py-3 text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-colors"
 								>

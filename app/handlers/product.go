@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"errors"
+	"fmt"
 	"log"
 	"math"
 	"net/http"
@@ -201,6 +202,7 @@ func HandleProductCreate(kit *kit.Kit) error {
 		PromotionPrice: models.NewCurrency(promotionPrice),
 		Stock:          stock,
 		Image:          imageURL,
+		Bundles:        parseBundles(kit),
 	}
 
 	if err := db.Get().Create(&product).Error; err != nil {
@@ -391,6 +393,8 @@ func HandleProductUpdate(kit *kit.Kit) error {
 		db.Get().Model(&product).Association("Categories").Replace(categoriesToAssign)
 	}
 
+	product.Bundles = parseBundles(kit)
+
 	return db.Get().Save(&product).Error
 }
 
@@ -432,4 +436,23 @@ func HandleProductShow(kit *kit.Kit) error {
 
 	cfg := config.Get()
 	return RenderWithLayout(kit, products.Show(product, cfg))
+}
+
+func parseBundles(kit *kit.Kit) []models.Bundle {
+	var bundles []models.Bundle
+	if countStr := kit.Request.FormValue("bundles_count"); countStr != "" {
+		count, _ := strconv.Atoi(countStr)
+		for j := 0; j < count; j++ {
+			prefix := fmt.Sprintf("bundle_%d_", j)
+			qty, _ := strconv.Atoi(kit.Request.FormValue(prefix + "quantity"))
+			discount, _ := strconv.Atoi(kit.Request.FormValue(prefix + "discount"))
+			if qty > 0 {
+				bundles = append(bundles, models.Bundle{
+					Quantity:           qty,
+					DiscountPercentage: discount,
+				})
+			}
+		}
+	}
+	return bundles
 }

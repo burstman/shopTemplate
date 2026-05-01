@@ -15,6 +15,9 @@ import (
 
 // Define your global middleware
 func InitializeMiddleware(router *chi.Mux) {
+	router.Use(chimiddleware.RequestID)
+	router.Use(chimiddleware.RealIP)
+	router.Use(chimiddleware.Logger)
 	router.Use(chimiddleware.Recoverer)
 	router.Use(middleware.WithRequest)
 }
@@ -41,7 +44,6 @@ func InitializeRoutes(router *chi.Mux) {
 
 	// Routes that "might" have an authenticated user
 	router.Group(func(app chi.Router) {
-		app.Use(chimiddleware.Logger)
 		app.Use(kit.WithAuthentication(authConfig, false)) // strict set to false
 
 		// Routes
@@ -67,7 +69,6 @@ func InitializeRoutes(router *chi.Mux) {
 	// will be redirected to the configured redirectURL, set in the
 	// AuthenticationConfig.
 	router.Group(func(app chi.Router) {
-		app.Use(chimiddleware.Logger)
 		app.Use(kit.WithAuthentication(authConfig, true)) // strict set to true
 
 		// Routes

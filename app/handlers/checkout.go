@@ -103,13 +103,6 @@ func HandleCheckoutCreate(kit *kit.Kit) error {
 }
 
 func calculateTotal(cart *models.Cart) models.Currency {
-	var total models.Currency
-	for _, item := range cart.Items {
-		price := item.Product.Price
-		if item.Product.PromotionPrice > 0 {
-			price = item.Product.PromotionPrice
-		}
-		total += price.Multiply(item.Quantity)
-	}
-	return total
+	cfg := config.Get()
+	return helpers.CalculateCartTotal(cart, cfg.Site.Bundles)
 }

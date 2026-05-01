@@ -2,6 +2,11 @@ package models
 
 import "gorm.io/gorm"
 
+type Bundle struct {
+	Quantity           int `json:"quantity"`
+	DiscountPercentage int `json:"discount_percentage"`
+}
+
 type Product struct {
 	gorm.Model
 	Name           string
@@ -12,4 +17,5 @@ type Product struct {
 	Image          string
 	Categories     []Category `gorm:"many2many:product_categories;"`
 	Category       string     `gorm:"-"` // Deprecated: Kept for backward compatibility with views
+	Bundles        []Bundle   `gorm:"type:jsonb"`
 }

@@ -41,9 +41,13 @@ func HandleCartAdd(kit *kit.Kit) error {
 	}
 
 	cart := helpers.GetCart(kit)
+	qty := 1
+	if q, err := strconv.Atoi(kit.Request.FormValue("quantity")); err == nil && q > 0 {
+		qty = q
+	}
 
 	if item, ok := cart.Items[uint(id)]; ok {
-		item.Quantity++
+		item.Quantity += qty
 	} else {
 		var product models.Product
 		if err := db.Get().First(&product, id).Error; err != nil {
@@ -51,7 +55,7 @@ func HandleCartAdd(kit *kit.Kit) error {
 		}
 		cart.Items[uint(id)] = &models.CartItem{
 			Product:  product,
-			Quantity: 1,
+			Quantity: qty,
 		}
 	}
 
