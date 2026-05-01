@@ -2,16 +2,12 @@ package handlers
 
 import (
 	"errors"
-	"fmt"
-	"io"
 	"log"
 	"math"
 	"net/http"
 	"os"
-	"path/filepath"
 	"strconv"
 	"strings"
-	"time"
 
 	"shopTemplate/app/config"
 	"shopTemplate/app/db"
@@ -192,23 +188,8 @@ func HandleProductCreate(kit *kit.Kit) error {
 	// Handle Image Upload
 	defer file.Close()
 
-	uploadPath := "public/images/products"
-	if err := os.MkdirAll(uploadPath, 0755); err != nil {
-		return err
-	}
-
-	// Auto-rename: plant_{timestamp}.ext
-	ext := filepath.Ext(header.Filename)
-	newFileName := fmt.Sprintf("plant_%d%s", time.Now().UnixNano(), ext)
-	fullPath := filepath.Join(uploadPath, newFileName)
-
-	// Save file
-	dst, err := os.Create(fullPath)
+	imageURL, err := helpers.UploadImage(file, header, "products", "plant")
 	if err != nil {
-		return err
-	}
-	defer dst.Close()
-	if _, err := io.Copy(dst, file); err != nil {
 		return err
 	}
 
@@ -219,7 +200,7 @@ func HandleProductCreate(kit *kit.Kit) error {
 		Price:          models.NewCurrency(price),
 		PromotionPrice: models.NewCurrency(promotionPrice),
 		Stock:          stock,
-		Image:          "/" + fullPath,
+		Image:          imageURL,
 	}
 
 	if err := db.Get().Create(&product).Error; err != nil {
@@ -390,24 +371,15 @@ func HandleProductUpdate(kit *kit.Kit) error {
 	if err == nil {
 		defer file.Close()
 
-		uploadPath := "public/images/products"
-		if err := os.MkdirAll(uploadPath, 0755); err == nil {
-			ext := filepath.Ext(header.Filename)
-			newFileName := fmt.Sprintf("plant_%d%s", time.Now().UnixNano(), ext)
-			fullPath := filepath.Join(uploadPath, newFileName)
-
-			dst, err := os.Create(fullPath)
-			if err == nil {
-				defer dst.Close()
-				io.Copy(dst, file)
-				// remove old image if it exists
-				if len(product.Image) > 1 && product.Image[0] == '/' {
-					if _, err := os.Stat(product.Image[1:]); err == nil {
-						os.Remove(strings.TrimPrefix(product.Image, "/"))
-					}
+		imageURL, err := helpers.UploadImage(file, header, "products", "plant")
+		if err == nil {
+			// Optional: delete old image from Cloudinary or local. For now, we just overwrite the DB path.
+			if len(product.Image) > 1 && product.Image[0] == '/' {
+				if _, err := os.Stat(product.Image[1:]); err == nil {
+					os.Remove(strings.TrimPrefix(product.Image, "/"))
 				}
-				product.Image = "/" + fullPath
 			}
+			product.Image = imageURL
 		}
 	}
 

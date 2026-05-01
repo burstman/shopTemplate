@@ -2,18 +2,16 @@ package handlers
 
 import (
 	"fmt"
-	"io"
 	"log"
 	"net/http"
 	"os"
-	"path/filepath"
 	"shopTemplate/app/config"
 	"shopTemplate/app/db"
+	"shopTemplate/app/helpers"
 	"shopTemplate/app/models"
 	"shopTemplate/app/services"
 	"strconv"
 	"strings"
-	"time"
 
 	"shopTemplate/app/views/configuration"
 
@@ -90,21 +88,15 @@ func HandleAdminSettingsUpdate(kit *kit.Kit) error {
 		// Handle site logo upload
 		if file, header, err := kit.Request.FormFile("site_logo"); err == nil {
 			defer file.Close()
-			sitePath := "public/images/site"
-			os.MkdirAll(sitePath, 0755)
-			ext := filepath.Ext(header.Filename)
-			dstName := fmt.Sprintf("logo_%d%s", time.Now().UnixNano(), ext)
-			dstPath := filepath.Join(sitePath, dstName)
-			if dst, err := os.Create(dstPath); err == nil {
-				defer dst.Close()
-				io.Copy(dst, file)
+			imageURL, err := helpers.UploadImage(file, header, "site", "logo")
+			if err == nil {
 				// Defensive check for existing logo to avoid errors on deletion
 				if len(cfg.Site.Logo) > 1 && cfg.Site.Logo[0] == '/' {
 					if _, err := os.Stat(cfg.Site.Logo[1:]); err == nil {
 						os.Remove(cfg.Site.Logo[1:])
 					}
 				}
-				cfg.Site.Logo = "/" + dstPath
+				cfg.Site.Logo = imageURL
 			}
 		}
 	case "notifications":
@@ -161,18 +153,12 @@ func HandleAdminSettingsUpdate(kit *kit.Kit) error {
 			// Handle individual slide image upload from HeroSettings
 			if file, header, err := kit.Request.FormFile(prefix + "image"); err == nil {
 				defer file.Close()
-				carouselPath := "public/images/carousel"
-				os.MkdirAll(carouselPath, 0755)
-				ext := filepath.Ext(header.Filename)
-				dstName := fmt.Sprintf("slide_%d%s", time.Now().UnixNano(), ext)
-				dstPath := filepath.Join(carouselPath, dstName)
-				if dst, err := os.Create(dstPath); err == nil {
-					defer dst.Close()
-					io.Copy(dst, file)
+				imageURL, err := helpers.UploadImage(file, header, "carousel", "slide_"+fmt.Sprint(i))
+				if err == nil {
 					if len(slide.Image) > 0 && slide.Image[0] == '/' {
 						os.Remove(slide.Image[1:])
 					}
-					slide.Image = "/" + dstPath
+					slide.Image = imageURL
 				}
 			}
 
@@ -249,15 +235,9 @@ func HandleAdminSettingsUpdate(kit *kit.Kit) error {
 
 					if file, header, err := kit.Request.FormFile(itemPrefix + "image"); err == nil {
 						defer file.Close()
-						sectionPath := "public/images/sections"
-						os.MkdirAll(sectionPath, 0755)
-						ext := filepath.Ext(header.Filename)
-						dstName := fmt.Sprintf("section_%d_item_%d_%d%s", oldIdx, j, time.Now().UnixNano(), ext)
-						dstPath := filepath.Join(sectionPath, dstName)
-						if dst, err := os.Create(dstPath); err == nil {
-							defer dst.Close()
-							io.Copy(dst, file)
-							item.Image = "/" + dstPath
+						imageURL, err := helpers.UploadImage(file, header, "sections", fmt.Sprintf("section_%d_item_%d", oldIdx, j))
+						if err == nil {
+							item.Image = imageURL
 						}
 					}
 					items = append(items, item)
@@ -272,20 +252,14 @@ func HandleAdminSettingsUpdate(kit *kit.Kit) error {
 			// Handle section image upload
 			if file, header, err := kit.Request.FormFile(prefix + "image"); err == nil {
 				defer file.Close()
-				sectionPath := "public/images/sections"
-				os.MkdirAll(sectionPath, 0755)
-				ext := filepath.Ext(header.Filename)
-				dstName := fmt.Sprintf("section_%d_%d%s", oldIdx, time.Now().UnixNano(), ext)
-				dstPath := filepath.Join(sectionPath, dstName)
-				if dst, err := os.Create(dstPath); err == nil {
-					defer dst.Close()
-					io.Copy(dst, file)
+				imageURL, err := helpers.UploadImage(file, header, "sections", fmt.Sprintf("section_%d", oldIdx))
+				if err == nil {
 					if len(s.Image) > 0 && s.Image[0] == '/' {
 						os.Remove(s.Image[1:])
 					}
-					s.Image = "/" + dstPath
+					s.Image = imageURL
 				} else {
-					log.Printf("failed to create section image file: %v", err)
+					log.Printf("failed to upload section image: %v", err)
 				}
 			}
 
