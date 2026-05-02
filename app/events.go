@@ -16,10 +16,13 @@ func RegisterEvents() {
 	notificationSvc.Register(services.NewTelegramNotifier())
 
 	// Listen for the order.placed event emitted during checkout.
+	capiSvc := services.NewFacebookCAPIService()
+
 	event.Subscribe("order.placed", func(ctx context.Context, data any) {
 		order, ok := data.(models.Order)
 		if ok {
 			notificationSvc.NotifyAll(order)
+			capiSvc.SendPurchaseEvent(order)
 		}
 	})
 }

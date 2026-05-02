@@ -2,6 +2,7 @@
   // app/assets/index.js
   console.log("if you like superkit consider giving it a star on GitHub.");
   window.trackAddToCart = function(id, name, price, currency) {
+    currency = currency || "TND";
     console.log("FB Event: AddToCart", { id, name, price, currency });
     if (typeof fbq === "function") {
       fbq("track", "AddToCart", {
@@ -14,6 +15,7 @@
     }
   };
   window.trackInitiateCheckout = function(id, name, price, currency) {
+    currency = currency || "TND";
     console.log("FB Event: InitiateCheckout", { id, name, price, currency });
     if (typeof fbq === "function") {
       fbq("track", "InitiateCheckout", {
@@ -26,6 +28,7 @@
     }
   };
   window.trackPurchase = function(currency, value, trackValue) {
+    currency = currency || "TND";
     console.log("FB Event: Purchase", { currency, value, trackValue });
     if (typeof fbq === "function") {
       fbq("track", "Purchase", {

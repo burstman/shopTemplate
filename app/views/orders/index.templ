@@ -39,13 +39,14 @@ templ Index(orders []models.Order, page int, totalPages int, cfg *config.Config)
 							{ order.CreatedAt.Format("Jan 02, 2006") }
 						</td>
 						<td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-							{ fmt.Sprintf("%.3f %s", order.Total, cfg.Site.Currency) }
+							{ fmt.Sprintf("%.3f %s", order.Total.ToFloat(), cfg.Site.Currency) }
 						</td>
 						<td class="px-6 py-4 whitespace-nowrap">
 							<span class={ "px-2 inline-flex text-xs leading-5 font-semibold rounded-full", 
 								templ.KV("bg-yellow-100 text-yellow-800", order.Status == "pending"),
 								templ.KV("bg-blue-100 text-blue-800", order.Status == "shipped"),
-								templ.KV("bg-green-100 text-green-800", order.Status == "completed") }>
+								templ.KV("bg-green-100 text-green-800", order.Status == "completed"),
+								templ.KV("bg-red-100 text-red-800", order.Status == "cancelled") }>
 								{ order.Status }
 							</span>
 						</td>

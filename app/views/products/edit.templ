@@ -26,8 +26,8 @@ templ Edit(product models.Product, categories []models.Category, cfg *config.Con
 				Values: map[string]string{
 					"name":        product.Name,
 					"description": product.Description,
-					"price":       fmt.Sprintf("%.3f", product.Price),
-					"promotion_price": fmt.Sprintf("%.3f", product.PromotionPrice),
+					"price":       fmt.Sprintf("%.3f", product.Price.ToFloat()),
+					"promotion_price": fmt.Sprintf("%.3f", product.PromotionPrice.ToFloat()),
 					"stock":       fmt.Sprint(product.Stock),
 				},
 				SelectedCatIDs: makeSelectedCategoryMap(product.Categories),

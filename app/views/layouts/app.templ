@@ -21,6 +21,9 @@ templ App(user models.AuthUser, cfg *config.Config, categories []models.Category
 			<meta charset="UTF-8"/>
 			<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 			<title>{ cfg.Site.Name }</title>
+			if cfg.FacebookPixel.DomainVerification != "" {
+				<meta name="facebook-domain-verification" content={ cfg.FacebookPixel.DomainVerification } />
+			}
 			if cfg.FacebookPixel.PixelID != "" {
 				<!-- Facebook Pixel Code -->
 				<script>
@@ -139,7 +142,7 @@ templ AdminPage(user models.AuthUser, cfg *config.Config, categories []models.Ca
 			</script>
 		</head>
 		<body 
-			class="h-full pt-16 sm:pt-28" 
+			class="h-screen overflow-hidden flex flex-col font-sans antialiased text-gray-900 pt-16 sm:pt-28" 
 			style={ getPageStyle(cfg) }
 			hx-ext="ws" 
 			ws-connect="/api/chat/ws"
@@ -149,7 +152,7 @@ templ AdminPage(user models.AuthUser, cfg *config.Config, categories []models.Ca
 			@htmx:ws-open="$store.chat.wsError = false; $store.chat.socket = $event.detail.socket"
 		>
 			@components.Navigation(user, cfg, categories, cartCount, nil)
-			<div class="min-h-full lg:flex">
+			<div class="flex-grow flex overflow-hidden">
 				<!-- Mobile Header -->
 				<div class="lg:hidden flex items-center justify-between bg-indigo-700 px-4 py-4 text-white">
 					<span class="font-bold text-xl">Admin</span>
@@ -168,7 +171,7 @@ templ AdminPage(user models.AuthUser, cfg *config.Config, categories []models.Ca
 				<!-- Sidebar -->
 				<div 
 					:class="mobileMenuOpen ? 'translate-x-0' : '-translate-x-full'"
-					class="fixed inset-y-0 left-0 z-50 flex w-64 flex-col bg-indigo-700 pt-5 pb-4 overflow-y-auto transform transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-0 lg:flex"
+					class="fixed inset-y-0 left-0 z-50 flex w-64 flex-col bg-indigo-700 pt-5 pb-4 overflow-y-auto transform transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-0 lg:flex lg:h-full"
 				>
 					<!-- Close button for mobile -->
 					<div class="lg:hidden absolute top-0 right-0 -mr-12 pt-2" x-show="mobileMenuOpen" x-cloak>
@@ -222,14 +225,16 @@ templ AdminPage(user models.AuthUser, cfg *config.Config, categories []models.Ca
 						<div :hx-get="'/admin/chat/' + activeChatId + '/messages'" :hx-target="'#chat-messages-' + activeChatId" hx-swap="innerHTML" x-bind:hx-trigger="$store.chat.wsError ? 'every 1s' : 'every 10s'"></div>
 					</template>
 				</div>
-				<div class="flex-1">
-					<main class="pb-8">
-						<div class="mt-8">
-							<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-								@content
+				<div class="flex-1 flex flex-col overflow-hidden">
+					<div class="flex-grow overflow-y-auto custom-scrollbar">
+						<main class="pb-4">
+							<div class="mt-8">
+								<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+									@content
+								</div>
 							</div>
-						</div>
-					</main>
+						</main>
+					</div>
 					@components.Footer(user, cfg)
 					<!-- Global Toast Container -->
 					<audio id="chat-ping-sound" src="/public/assets/ping.wav" preload="auto" class="hidden"></audio>

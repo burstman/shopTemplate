@@ -6,6 +6,7 @@ import (
 	"github.com/anthdm/superkit/validate"
 	"shopTemplate/app/config"
 	"shopTemplate/app/views/layouts"
+	"shopTemplate/app/views/components"
 )
 
 templ Index(cart *models.Cart, values map[string]string, errors validate.Errors, cfg *config.Config) {
@@ -52,7 +53,7 @@ templ Index(cart *models.Cart, values map[string]string, errors validate.Errors,
 						<div class="border-t border-gray-200 px-4 py-4 bg-gray-50">
 							<div class="flex justify-between text-base font-medium text-gray-900">
 								<p>Total</p>
-								<p>{ fmt.Sprintf("$%.2f", calculateTotal(cart)) }</p>
+								<p>{ fmt.Sprintf("%.3f %s", calculateTotal(cart), cfg.Site.Currency) }</p>
 							</div>
 						</div>
 					</div>
@@ -121,7 +122,8 @@ templ CheckoutForm(values map[string]string, errors validate.Errors) {
 	</div>
 }
 
-templ Success(cfg *config.Config) {
+templ Success(cfg *config.Config, orderTotal float64) {
+	@components.FacebookPixelPurchase(cfg, orderTotal)
 	<div 
 		class="w-full px-4 sm:px-6 lg:px-8 py-24 text-center"
 		style={ layouts.GetContentStyle(cfg) }

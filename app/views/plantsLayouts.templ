@@ -50,7 +50,7 @@ templ ProductCard(product models.Product, user models.AuthUser) {
 				</h3>
 				<p class="mt-1 text-sm text-muted-foreground">{ product.Category }</p>
 			</div>
-			<p class="text-lg font-medium text-foreground">{ fmt.Sprintf("$%.2f", product.Price) }</p>
+			<p class="text-lg font-medium text-foreground">{ fmt.Sprintf("%.3f", product.Price.ToFloat()) }</p>
 		</div>
 		if user.Role == "admin" {
 			<div class="absolute top-2 right-2 z-20 flex space-x-2">

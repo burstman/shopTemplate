@@ -203,6 +203,7 @@ func HandleProductCreate(kit *kit.Kit) error {
 		Stock:          stock,
 		Image:          imageURL,
 		Bundles:        parseBundles(kit),
+		BundlesEnabled: kit.Request.FormValue("bundles_enabled") == "on",
 	}
 
 	if err := db.Get().Create(&product).Error; err != nil {
@@ -394,6 +395,7 @@ func HandleProductUpdate(kit *kit.Kit) error {
 	}
 
 	product.Bundles = parseBundles(kit)
+	product.BundlesEnabled = kit.Request.FormValue("bundles_enabled") == "on"
 
 	return db.Get().Save(&product).Error
 }

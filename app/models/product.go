@@ -18,4 +18,5 @@ type Product struct {
 	Categories     []Category `gorm:"many2many:product_categories;"`
 	Category       string     `gorm:"-"` // Deprecated: Kept for backward compatibility with views
 	Bundles        []Bundle   `gorm:"type:jsonb"`
+	BundlesEnabled bool       `gorm:"default:true"`
 }

@@ -8,7 +8,7 @@ import (
 
 templ Footer(user models.AuthUser, cfg *config.Config) {
 	<footer class="text-white mt-auto" style={ fmt.Sprintf("background-color: %s;", cfg.Theme.FooterBgColor) }>
-		<div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
+		<div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
 			<div class="grid grid-cols-1 md:grid-cols-4 gap-8">
 				<div class="col-span-1 md:col-span-1">
 					<div class="flex items-center gap-3">
@@ -62,7 +62,7 @@ templ Footer(user models.AuthUser, cfg *config.Config) {
 					}
 				</div>
 			</div>
-			<div class="mt-12 border-t border-gray-700 pt-8">
+			<div class="mt-6 border-t border-gray-700 pt-4">
 				<p class="text-base text-gray-400 xl:text-center">
 					{ cfg.Footer.Copyright }
 				</p>

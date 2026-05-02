@@ -104,6 +104,10 @@ templ ProductFormFields(p FormParams, cfg *config.Config) {
 			<div class="flex items-center justify-between mb-4">
 				<div>
 					<h3 class="text-sm font-medium text-gray-900">Product Bundles</h3>
+					<div class="flex items-center mt-2 mb-4">
+						<input id="bundles_enabled" name="bundles_enabled" type="checkbox" checked?={ p.Product.BundlesEnabled } class="focus:ring-primary h-4 w-4 text-primary border-gray-300 rounded cursor-pointer"/>
+						<label for="bundles_enabled" class="ml-2 text-sm text-gray-700 cursor-pointer">Enable Bundles for this product</label>
+					</div>
 					<p class="text-xs text-gray-500">Add specific quantity discounts for this product. These override global settings.</p>
 				</div>
 				<button type="button" @click="bundles.push({quantity: 2, discount_percentage: 10})" class="inline-flex items-center px-2 py-1 border border-transparent text-xs font-medium rounded text-primary bg-primary/10 hover:bg-primary/20">

@@ -25,10 +25,10 @@ templ EditModal(product models.Product, allCategories []models.Category, cfg *co
 						Values: map[string]string{
 							"name":        product.Name,
 							"description": product.Description,
-							"price":       fmt.Sprintf("%.2f", product.Price),
+							"price":       fmt.Sprintf("%.3f", product.Price.ToFloat()),
 							"promotion_price": func() string {
 								if product.PromotionPrice > 0 {
-									return fmt.Sprintf("%.2f", product.PromotionPrice)
+									return fmt.Sprintf("%.3f", product.PromotionPrice.ToFloat())
 								}
 								return ""
 							}(),

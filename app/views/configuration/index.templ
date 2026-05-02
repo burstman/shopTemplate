@@ -133,6 +133,13 @@ templ siteSettingsForm(cfg *config.Config) {
 					</div>
 				</div>
 			</div>
+			<div class="sm:col-span-6">
+				<label for="footer_copyright" class="block text-sm font-medium text-gray-700">Footer Copyright Text</label>
+				<div class="mt-1">
+					<input type="text" name="footer_copyright" id="footer_copyright" value={ cfg.Footer.Copyright } class="block w-full border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500 sm:text-sm"/>
+				</div>
+				<p class="mt-2 text-xs text-gray-500 italic">Example: © 2026 BEST SHOP. All rights reserved.</p>
+			</div>
 			<div class="sm:col-span-6 border-t border-gray-200 pt-6 mt-6">
 				<div class="flex items-center justify-between mb-4">
 					<div>

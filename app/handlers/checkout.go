@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"fmt"
 	"log/slog"
 	"regexp"
 	"shopTemplate/app/config"
@@ -8,6 +9,7 @@ import (
 	"shopTemplate/app/helpers"
 	"shopTemplate/app/models"
 	"shopTemplate/app/views/checkout"
+	"strconv"
 
 	"github.com/anthdm/superkit/event"
 	"github.com/anthdm/superkit/kit"
@@ -22,7 +24,9 @@ func HandleCheckoutIndex(kit *kit.Kit) error {
 
 func HandleCheckoutSuccess(kit *kit.Kit) error {
 	cfg := config.Get()
-	return RenderWithLayout(kit, checkout.Success(cfg))
+	totalStr := kit.Request.URL.Query().Get("total")
+	total, _ := strconv.ParseFloat(totalStr, 64)
+	return RenderWithLayout(kit, checkout.Success(cfg, total))
 }
 
 func HandleCheckoutCreate(kit *kit.Kit) error {
@@ -97,8 +101,8 @@ func HandleCheckoutCreate(kit *kit.Kit) error {
 	// Emit the order placement event
 	event.Emit("order.placed", order)
 
-	// Redirect to the success page
-	kit.Response.Header().Set("HX-Redirect", "/checkout/success")
+	// Redirect to the success page with total for tracking
+	kit.Response.Header().Set("HX-Redirect", fmt.Sprintf("/checkout/success?total=%.2f", order.Total.ToFloat()))
 	return nil
 }
 

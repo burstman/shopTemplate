@@ -84,6 +84,7 @@ func HandleAdminSettingsUpdate(kit *kit.Kit) error {
 		cfg.Site.ShowQuickView = kit.Request.FormValue("show_quick_view") == "on"
 		cfg.Site.ShowOrderNow = kit.Request.FormValue("show_order_now") == "on"
 		cfg.Site.ShowAddToCart = kit.Request.FormValue("show_add_to_cart") == "on"
+		cfg.Footer.Copyright = kit.Request.FormValue("footer_copyright")
 
 		var bundles []models.Bundle
 		if countStr := kit.Request.FormValue("bundles_count"); countStr != "" {
@@ -129,6 +130,9 @@ func HandleAdminSettingsUpdate(kit *kit.Kit) error {
 	case "facebook_pixel":
 		cfg.FacebookPixel.PixelID = kit.Request.FormValue("pixel_id")
 		cfg.FacebookPixel.TrackPurchaseValue = kit.Request.FormValue("track_purchase_value") == "on"
+		cfg.FacebookPixel.AccessToken = kit.Request.FormValue("access_token")
+		cfg.FacebookPixel.DomainVerification = kit.Request.FormValue("domain_verification")
+		cfg.FacebookPixel.TestEventCode = kit.Request.FormValue("test_event_code")
 
 	case "payment":
 		cfg.Payment.EnableCOD = kit.Request.FormValue("enable_cod") == "on"

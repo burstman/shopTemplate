@@ -6,6 +6,7 @@ import (
 	"log/slog"
 	"os"
 	"sync"
+	"strings"
 	"time"
 
 	"shopTemplate/app/db"
@@ -42,6 +43,9 @@ type NotificationConfig struct {
 type FacebookPixelConfig struct {
 	PixelID            string `json:"pixel_id"`
 	TrackPurchaseValue bool   `json:"track_purchase_value"`
+	AccessToken        string `json:"access_token"`
+	DomainVerification string `json:"domain_verification"`
+	TestEventCode      string `json:"test_event_code"`
 }
 
 
@@ -173,8 +177,8 @@ func GetAdminSidebar() []MenuItem {
 func defaultConfig() *Config {
 	return &Config{
 		Site: SiteConfig{
-			Name:          "Botanica",
-			SupportEmail:  "support@botanica.com",
+			Name:          "BEST SHOP",
+			SupportEmail:  "support@bestshop.com",
 			NameBgColor:   "#2E7D32",
 			NameTextColor: "#FFFFFF",
 			Logo:          "",
@@ -188,13 +192,16 @@ func defaultConfig() *Config {
 			},
 		},
 		Notification: NotificationConfig{
-			AdminEmailRecipient: "admin@botanica.com",
+			AdminEmailRecipient: "admin@bestshop.com",
 			TelegramBotToken:    "",
 			TelegramChatID:      "",
 		},
 		FacebookPixel: FacebookPixelConfig{
 			PixelID:            "",
 			TrackPurchaseValue: true,
+			AccessToken:        "",
+			DomainVerification: "",
+			TestEventCode:      "",
 		},
 		Hero: HeroConfig{
 			Enabled:    true,
@@ -249,7 +256,7 @@ func defaultConfig() *Config {
 		},
 		StorefrontSidebar: []MenuItem{},
 		Footer: FooterConfig{
-			Copyright: fmt.Sprintf("© %d Botanica. All rights reserved.", time.Now().Year()),
+			Copyright: fmt.Sprintf("© %d BEST SHOP. All rights reserved.", time.Now().Year()),
 			SocialLinks: []SocialLink{
 				{Platform: "Facebook", URL: "https://facebook.com", Icon: "facebook"},
 				{Platform: "Instagram", URL: "https://instagram.com", Icon: "instagram"},
@@ -337,8 +344,8 @@ func backfill(c *Config) {
 	if len(c.StorefrontSidebar) == 0 {
 		c.StorefrontSidebar = defaultConfig().StorefrontSidebar
 	}
-	if c.Footer.Copyright == "" {
-		c.Footer = defaultConfig().Footer
+	if c.Footer.Copyright == "" || strings.Contains(c.Footer.Copyright, "Botanica") {
+		c.Footer.Copyright = fmt.Sprintf("© %d %s. All rights reserved.", time.Now().Year(), c.Site.Name)
 	}
 }
 

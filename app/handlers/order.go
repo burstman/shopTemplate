@@ -76,9 +76,31 @@ func HandleAdminOrderUpdateStatus(kit *kit.Kit) error {
 
 	idStr := chi.URLParam(kit.Request, "id")
 	id, _ := strconv.Atoi(idStr)
-	status := kit.Request.FormValue("status")
+	newStatus := kit.Request.FormValue("status")
 
-	if err := db.Get().Model(&models.Order{}).Where("id = ?", id).Update("status", status).Error; err != nil {
+	var order models.Order
+	if err := db.Get().First(&order, id).Error; err != nil {
+		return err
+	}
+
+	// Define allowed transitions
+	allowed := false
+	switch order.Status {
+	case "pending":
+		if newStatus == "shipped" || newStatus == "cancelled" {
+			allowed = true
+		}
+	case "shipped":
+		if newStatus == "completed" || newStatus == "pending" {
+			allowed = true
+		}
+	}
+
+	if !allowed {
+		return fmt.Errorf("invalid status transition from %s to %s", order.Status, newStatus)
+	}
+
+	if err := db.Get().Model(&order).Update("status", newStatus).Error; err != nil {
 		return err
 	}
 

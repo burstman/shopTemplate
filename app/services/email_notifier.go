@@ -62,7 +62,7 @@ func (e *EmailNotifier) Send(order models.Order) error {
 			"Total: %.3f %s\n"+
 			"Shipping to: %s, %s\n\n"+
 			"We will notify you once your order has been shipped.",
-		order.FirstName, order.LastName, order.ID, order.Total, cfg.Site.Currency, order.Address, order.City,
+		order.FirstName, order.LastName, order.ID, order.Total.ToFloat(), cfg.Site.Currency, order.Address, order.City,
 	)
 
 	if err := smtp.SendMail(e.host+":"+e.port, auth, e.from, []string{order.Email}, []byte(customerHeader+customerBody)); err != nil {
@@ -85,7 +85,7 @@ func (e *EmailNotifier) Send(order models.Order) error {
 			"Shipping Address: %s, %s\n"+
 			"Customer Phone: %s\n\n"+
 			"Please log in to your admin panel to manage this order.",
-		order.FirstName, order.LastName, order.Email, order.ID, order.Total, cfg.Site.Currency, order.Address, order.City, order.Phone,
+		order.FirstName, order.LastName, order.Email, order.ID, order.Total.ToFloat(), cfg.Site.Currency, order.Address, order.City, order.Phone,
 	)
 
 	return smtp.SendMail(e.host+":"+e.port, auth, e.from, []string{adminEmail}, []byte(adminHeader+adminBody))
