@@ -25,24 +25,24 @@ func NewFacebookCAPIService() *FacebookCAPIService {
 }
 
 type capiEvent struct {
-	EventName    string           `json:"event_name"`
-	EventTime    int64            `json:"event_time"`
-	ActionSource string           `json:"action_source"`
-	UserData     capiUserData     `json:"user_data"`
-	CustomData   capiCustomData   `json:"custom_data"`
+	EventName      string         `json:"event_name"`
+	EventTime      int64          `json:"event_time"`
+	ActionSource   string         `json:"action_source"`
+	UserData       capiUserData   `json:"user_data"`
+	CustomData     capiCustomData `json:"custom_data"`
 	EventSourceURL string         `json:"event_source_url,omitempty"`
 }
 
 type capiUserData struct {
-	Email []string `json:"em,omitempty"`
-	Phone []string `json:"ph,omitempty"`
+	Email     []string `json:"em,omitempty"`
+	Phone     []string `json:"ph,omitempty"`
 	FirstName []string `json:"fn,omitempty"`
-	LastName []string `json:"ln,omitempty"`
+	LastName  []string `json:"ln,omitempty"`
 }
 
 type capiCustomData struct {
-	Currency string  `json:"currency"`
-	Value    float64 `json:"value"`
+	Currency string   `json:"currency"`
+	Value    *float64 `json:"value,omitempty"`
 }
 
 func (s *FacebookCAPIService) SendPurchaseEvent(order models.Order) {
@@ -51,10 +51,16 @@ func (s *FacebookCAPIService) SendPurchaseEvent(order models.Order) {
 	}
 
 	userData := capiUserData{
-		Email: []string{hashString(order.Email)},
-		Phone: []string{hashString(order.Phone)},
+		Email:     []string{hashString(order.Email)},
+		Phone:     []string{hashString(order.Phone)},
 		FirstName: []string{hashString(order.FirstName)},
-		LastName: []string{hashString(order.LastName)},
+		LastName:  []string{hashString(order.LastName)},
+	}
+
+	var value *float64
+	if s.cfg.FacebookPixel.TrackPurchaseValue {
+		v := order.Total.ToFloat()
+		value = &v
 	}
 
 	event := capiEvent{
@@ -63,13 +69,8 @@ func (s *FacebookCAPIService) SendPurchaseEvent(order models.Order) {
 		ActionSource: "website",
 		UserData:     userData,
 		CustomData: capiCustomData{
-			Currency: func() string {
-				if s.cfg.Site.Currency != "" {
-					return s.cfg.Site.Currency
-				}
-				return "TND"
-			}(),
-			Value: order.Total.ToFloat(),
+			Currency: s.getCurrency(),
+			Value:    value,
 		},
 	}
 
@@ -80,8 +81,12 @@ func (s *FacebookCAPIService) SendPurchaseEvent(order models.Order) {
 		payload["test_event_code"] = s.cfg.FacebookPixel.TestEventCode
 	}
 
-	jsonPayload, _ := json.Marshal(payload)
-	url := fmt.Sprintf("https://graph.facebook.com/v13.0/%s/events?access_token=%s", 
+	jsonPayload, err := json.Marshal(payload)
+	if err != nil {
+		slog.Error("failed to marshal Facebook CAPI payload", "err", err)
+		return
+	}
+	url := fmt.Sprintf("https://graph.facebook.com/v21.0/%s/events?access_token=%s",
 		s.cfg.FacebookPixel.PixelID, s.cfg.FacebookPixel.AccessToken)
 
 	resp, err := http.Post(url, "application/json", bytes.NewBuffer(jsonPayload))
@@ -93,11 +98,18 @@ func (s *FacebookCAPIService) SendPurchaseEvent(order models.Order) {
 
 	if resp.StatusCode != http.StatusOK {
 		var result map[string]interface{}
-		json.NewDecoder(resp.Body).Decode(&result)
+		_ = json.NewDecoder(resp.Body).Decode(&result)
 		slog.Error("Facebook CAPI error response", "status", resp.StatusCode, "result", result)
 	} else {
 		slog.Info("Facebook CAPI Purchase event sent successfully", "orderID", order.ID)
 	}
+}
+
+func (s *FacebookCAPIService) getCurrency() string {
+	if s.cfg.Site.Currency != "" {
+		return s.cfg.Site.Currency
+	}
+	return "TND"
 }
 
 func hashString(s string) string {

@@ -1,14 +1,20 @@
 {
   "site": {
-    "name": "My Best Shop",
-    "support_email": "support@botanica.com",
+    "name": "Best shops",
+    "support_email": "",
     "name_bg_color": "",
     "name_text_color": "",
-    "logo": "/public/images/site/logo_1776215320056633174.jpg",
-    "currency": "TND",
-    "show_quick_view": false,
+    "logo": "https://res.cloudinary.com/dwk5kwthe/image/upload/v1777599513/shopTemplate/site/logo_site_1777599513479467502.jpg",
+    "currency": "",
+    "show_quick_view": true,
     "show_order_now": true,
-    "show_add_to_cart": true
+    "show_add_to_cart": true,
+    "bundles": [
+      {
+        "quantity": 2,
+        "discount_percentage": 10
+      }
+    ]
   },
   "notification": {
     "admin_email_recipient": "topdeals.est.2025@gmail.com",
@@ -16,8 +22,11 @@
     "telegram_chat_id": "6143267777"
   },
   "facebook_pixel": {
-    "pixel_id": "487066380904129",
-    "track_purchase_value": true
+    "pixel_id": "",
+    "track_purchase_value": true,
+    "access_token": "",
+    "domain_verification": "",
+    "test_event_code": ""
   },
   "hero": {
     "enabled": true,
@@ -27,28 +36,25 @@
     "button_link": "/shop",
     "slides": [
       {
-        "image": "/public/images/carousel/slide_1776207680880155155.jpg",
+        "image": "https://res.cloudinary.com/dwk5kwthe/image/upload/v1777601398/shopTemplate/carousel/slide_0_carousel_1777601397911787021.jpg",
         "title": "New season arrival ",
         "subtitle": "Discover our curated collection of premium products",
         "button_text": "Shop Now",
-        "button_link": "#",
-        "product_id": 3
+        "button_link": "#"
       },
       {
-        "image": "/public/images/carousel/slide_1775234462652238674.png",
+        "image": "https://res.cloudinary.com/dwk5kwthe/image/upload/v1777601414/shopTemplate/carousel/slide_1_carousel_1777601414784845916.jpg",
         "title": "New Slide Title parfum ",
         "subtitle": "New Slide Subtitle parfum",
         "button_text": "Shop Now",
-        "button_link": "#",
-        "product_id": 2
+        "button_link": "#"
       },
       {
-        "image": "/public/images/carousel/slide_1776207717080249438.jpg",
+        "image": "https://res.cloudinary.com/dwk5kwthe/image/upload/v1777601432/shopTemplate/carousel/slide_2_carousel_1777601432368306456.jpg",
         "title": "Elegance Redefined",
         "subtitle": "Fresh selections handpicked just for you",
         "button_text": "Shop Now",
-        "button_link": "#",
-        "product_id": 3
+        "button_link": "#"
       }
     ]
   },
@@ -59,11 +65,7 @@
       "limit": 4,
       "enabled": true,
       "product_ids": [
-        "5",
-        "6",
-        "3",
-        "2",
-        "4"
+        "1"
       ],
       "title_bg_color": "#0d7d66",
       "title_text_color": "#ffffff"
@@ -73,6 +75,9 @@
       "title": "Best Sellerssss",
       "limit": 4,
       "enabled": true,
+      "product_ids": [
+        "1"
+      ],
       "title_bg_color": "#16da19",
       "title_text_color": "#000000"
     },
@@ -122,7 +127,7 @@
   },
   "storefront_sidebar": [],
   "footer": {
-    "copyright": "© 2026 BEST SHOP. All rights reserved.",
+    "copyright": "© 2026 Best shops. All rights reserved.",
     "social_links": [
       {
         "platform": "Facebook",
