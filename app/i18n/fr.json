@@ -1,0 +1,14 @@
+{
+  "home": "Accueil",
+  "account": "Mon Compte",
+  "profile": "Profil",
+  "logout": "Déconnexion",
+  "login": "Connexion",
+  "signup": "S'inscrire",
+  "admin_panel": "Panneau Admin",
+  "live_chat": "Chat en direct",
+  "users_list": "Liste des utilisateurs",
+  "welcome": "Bienvenue",
+  "login_google": "Se connecter avec Google",
+  "login_facebook": "Se connecter avec Facebook"
+}

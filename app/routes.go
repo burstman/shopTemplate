@@ -8,6 +8,7 @@ import (
 
 	"shopTemplate/app/services"
 	"strings"
+	"context"
 	"net/http"
 
 	"github.com/anthdm/superkit/kit"
@@ -25,6 +26,49 @@ func InitializeMiddleware(router *chi.Mux) {
 	router.Use(chimiddleware.Recoverer)
 	router.Use(middleware.WithRequest)
 	router.Use(FacebookCAPIMiddleware)
+	router.Use(I18nMiddleware)
+}
+
+func I18nMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		lang := "en" // default
+		
+		// Check cookie first
+		if cookie, err := r.Cookie("lang"); err == nil {
+			lang = cookie.Value
+		} else {
+			// Check Accept-Language header
+			accept := r.Header.Get("Accept-Language")
+			if strings.HasPrefix(accept, "fr") {
+				lang = "fr"
+			}
+		}
+
+		ctx := context.WithValue(r.Context(), "lang", lang)
+		next.ServeHTTP(w, r.WithContext(ctx))
+	})
+}
+
+func HandleSetLang(kit *kit.Kit) error {
+	lang := chi.URLParam(kit.Request, "lang")
+	if lang != "en" && lang != "fr" {
+		lang = "en"
+	}
+
+	cookie := &http.Cookie{
+		Name:     "lang",
+		Value:    lang,
+		Path:     "/",
+		MaxAge:   86400 * 30, // 30 days
+		HttpOnly: true,
+	}
+	http.SetCookie(kit.Response, cookie)
+
+	referer := kit.Request.Referer()
+	if referer == "" {
+		referer = "/"
+	}
+	return kit.Redirect(http.StatusSeeOther, referer)
 }
 
 func FacebookCAPIMiddleware(next http.Handler) http.Handler {
@@ -85,6 +129,7 @@ func InitializeRoutes(router *chi.Mux) {
 		app.Get("/", kit.Handler(handlers.HandleLandingIndex))
 		app.Get("/privacy", kit.Handler(handlers.HandlePrivacyPolicy))
 		app.Get("/data-deletion", kit.Handler(handlers.HandleDataDeletion))
+		app.Get("/set-lang/{lang}", kit.Handler(HandleSetLang))
 		app.Get("/products", kit.Handler(handlers.HandleProductsIndex))
 		app.Get("/health", kit.Handler(handlers.HandleHealthCheck)) // Health check endpoint
 		app.Get("/products/{id}", kit.Handler(handlers.HandleProductShow))

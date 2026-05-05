@@ -10,6 +10,7 @@ import (
 type LoginIndexPageData struct {
 	FormValues LoginFormValues
 	FormErrors v.Errors
+	AuthError  string
 }
 
 type LoginFormValues struct {
@@ -26,7 +27,7 @@ templ LoginIndex(user models.AuthUser, data LoginIndexPageData, categories []mod
 						<h2 class="text-2xl font-bold text-gray-900">Welcome back</h2>
 						<p class="mt-1 text-sm text-gray-500">Sign in to your account</p>
 					</div>
-					@LoginForm(data.FormValues, data.FormErrors)
+					@LoginForm(data.FormValues, data.FormErrors, data.AuthError)
 					@SocialAuthButtons(config.Get())
 				</div>
 			</div>
@@ -34,13 +35,19 @@ templ LoginIndex(user models.AuthUser, data LoginIndexPageData, categories []mod
 	}
 }
 
-templ LoginForm(values LoginFormValues, errors v.Errors) {
+templ LoginForm(values LoginFormValues, errors v.Errors, authError string) {
 	<form hx-post="/login" class="flex flex-col gap-4">
 		if errors.Has("credentials") {
 			<div class="text-red-500 text-center text-xs">{ errors.Get("credentials")[0] }</div>
 		}
 		if errors.Has("verified") {
 			<div class="text-red-500 text-center text-xs">{ errors.Get("verified")[0] }</div>
+		}
+		if authError == "auth_cancelled" {
+			<div class="text-yellow-600 text-center text-xs">Login cancelled. Please try again.</div>
+		}
+		if authError == "auth_failed" {
+			<div class="text-red-500 text-center text-xs">Authentication failed. Please try again.</div>
 		}
 		<div class="flex flex-col gap-1">
 			<label for="email">Email</label>

@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"shopTemplate/app/config"
 	"shopTemplate/app/models"
+	"shopTemplate/app/services"
 )
 
 templ Navigation(user models.AuthUser, cfg *config.Config, categories []models.Category, cartCount int, attrs templ.Attributes) {
@@ -23,7 +24,13 @@ templ Navigation(user models.AuthUser, cfg *config.Config, categories []models.C
 					<span class="text-xl md:text-2xl font-bold text-gray-900 transition-all">{ cfg.Site.Name }</span>
 				</a>
 
-				<div class="flex items-center">
+				<div class="flex items-center gap-4">
+					<!-- Language Switcher -->
+					<div class="flex items-center gap-2 text-xs font-medium border-r border-gray-200 pr-4 h-6">
+						<a href="/set-lang/en" class={ "hover:text-primary transition-colors", templ.KV("text-primary", ctx.Value("lang") == "en" || ctx.Value("lang") == nil) }>EN</a>
+						<span class="text-gray-300">|</span>
+						<a href="/set-lang/fr" class={ "hover:text-primary transition-colors", templ.KV("text-primary", ctx.Value("lang") == "fr") }>FR</a>
+					</div>
 					<div id="cart-icon-container" class="ml-4 flow-root lg:ml-6">
 						@CartIcon(cartCount, nil)
 					</div>
@@ -46,28 +53,28 @@ templ Navigation(user models.AuthUser, cfg *config.Config, categories []models.C
 							x-cloak
 						>
 							if user.LoggedIn {
-								<div class="px-4 py-2 text-xs text-gray-500 border-b border-gray-100 mb-1 truncate">{ user.Email }</div>
+								<div class="px-4 py-2 text-xs text-gray-500 border-b border-gray-100 mb-1 truncate">{ services.GetI18n().T(ctx, "welcome") }, { user.Email }</div>
 								if user.Role == "admin" {
-									<a href="/configuration" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Admin Panel</a>
+									<a href="/configuration" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">{ services.GetI18n().T(ctx, "admin_panel") }</a>
 									<a href="/admin/chats" class="flex justify-between items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-										<span>Live Chat</span>
+										<span>{ services.GetI18n().T(ctx, "live_chat") }</span>
 										@ChatNotificationDot(cfg, false, "", 0, templ.Attributes{"id": "admin-topnav-chat-dot"})
 									</a>
-									<a href="/admin/users" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Users List</a>
+									<a href="/admin/users" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">{ services.GetI18n().T(ctx, "users_list") }</a>
 								}
-								<a href="/profile" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Profile</a>
-								<button hx-delete="/logout" hx-target="body" class="w-full text-left block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer">Log out</button>
+								<a href="/profile" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">{ services.GetI18n().T(ctx, "profile") }</a>
+								<button hx-delete="/logout" hx-target="body" class="w-full text-left block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer">{ services.GetI18n().T(ctx, "logout") }</button>
 							} else {
-								<a href="/login" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Log in</a>
+								<a href="/login" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">{ services.GetI18n().T(ctx, "login") }</a>
 								<a href="/auth/google" class="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
 									<img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" class="w-4 h-4" />
-									Login with Google
+									{ services.GetI18n().T(ctx, "login_google") }
 								</a>
 								<a href="/auth/facebook" class="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
 									<img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/facebook.svg" class="w-4 h-4" />
-									Login with Facebook
+									{ services.GetI18n().T(ctx, "login_facebook") }
 								</a>
-								<a href="/signup" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Sign up</a>
+								<a href="/signup" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">{ services.GetI18n().T(ctx, "signup") }</a>
 							}
 						</div>
 					</div>
@@ -95,7 +102,7 @@ templ Navigation(user models.AuthUser, cfg *config.Config, categories []models.C
 						}
 						for _, category := range categories {
 							if category.Slug != nil && *category.Slug == "home" {
-								<a href="/" class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium h-full">{ category.Name }</a>
+								<a href="/" class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium h-full">{ services.GetI18n().T(ctx, "home") }</a>
 							} else {
 								@NavigationMenuItem(category, true)
 							}
@@ -107,28 +114,28 @@ templ Navigation(user models.AuthUser, cfg *config.Config, categories []models.C
 		<div class="sm:hidden" id="mobile-menu" x-show="mobileMenuOpen" x-transition>
 			<div class="pt-2 pb-3 space-y-1">
 				if user.LoggedIn {
-					<div class="px-3 py-2 text-base font-medium text-gray-500">Welcome, { user.Email }</div>
+					<div class="px-3 py-2 text-base font-medium text-gray-500">{ services.GetI18n().T(ctx, "welcome") }, { user.Email }</div>
 					if user.Role == "admin" {
-						<a href="/configuration" class="block px-3 py-2 text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">Admin Settings</a>
+						<a href="/configuration" class="block px-3 py-2 text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">{ services.GetI18n().T(ctx, "admin_panel") }</a>
 						<a href="/admin/chats" class="flex justify-between items-center px-3 py-2 text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">
-							<span>Live Chat</span>
+							<span>{ services.GetI18n().T(ctx, "live_chat") }</span>
 							@ChatNotificationDot(cfg, false, "", 0, templ.Attributes{"id": "admin-topnav-chat-dot"})
 						</a>
-						<a href="/admin/users" class="block px-3 py-2 text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">Users List</a>
+						<a href="/admin/users" class="block px-3 py-2 text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">{ services.GetI18n().T(ctx, "users_list") }</a>
 					}
-					<a href="/profile" class="block px-3 py-2 text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">My Account</a>
-					<button hx-delete="/logout" hx-target="body" class="block w-full text-left px-3 py-2 text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">Sign Out</button>
+					<a href="/profile" class="block px-3 py-2 text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">{ services.GetI18n().T(ctx, "profile") }</a>
+					<button hx-delete="/logout" hx-target="body" class="block w-full text-left px-3 py-2 text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">{ services.GetI18n().T(ctx, "logout") }</button>
 				} else {
-					<a href="/login" class="block px-3 py-2 text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">Log in</a>
+					<a href="/login" class="block px-3 py-2 text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">{ services.GetI18n().T(ctx, "login") }</a>
 					<a href="/auth/google" class="flex items-center gap-2 px-3 py-2 text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">
 						<img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" class="w-5 h-5" />
-						Continue with Google
+						{ services.GetI18n().T(ctx, "login_google") }
 					</a>
 					<a href="/auth/facebook" class="flex items-center gap-2 px-3 py-2 text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">
 						<img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/facebook.svg" class="w-5 h-5" />
-						Continue with Facebook
+						{ services.GetI18n().T(ctx, "login_facebook") }
 					</a>
-					<a href="/signup" class="block px-3 py-2 text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">Sign up</a>
+					<a href="/signup" class="block px-3 py-2 text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">{ services.GetI18n().T(ctx, "signup") }</a>
 				}
 				for _, item := range cfg.StorefrontSidebar {
 					<a href={ templ.SafeURL(item.Link) } class="border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700 block pl-3 pr-4 py-2 border-l-4 text-base font-medium">
@@ -137,7 +144,7 @@ templ Navigation(user models.AuthUser, cfg *config.Config, categories []models.C
 				}
 				for _, category := range categories {
 					if category.Slug != nil && *category.Slug == "home" {
-						<a href="/" class="border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700 block pl-3 pr-4 py-2 border-l-4 text-base font-medium">{ category.Name }</a>
+						<a href="/" class="border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700 block pl-3 pr-4 py-2 border-l-4 text-base font-medium">{ services.GetI18n().T(ctx, "home") }</a>
 					} else {
 						@MobileNavigationMenuItem(category, 0)
 					}

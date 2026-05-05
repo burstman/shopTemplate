@@ -1,0 +1,14 @@
+{
+  "home": "Home",
+  "account": "Account",
+  "profile": "Profile",
+  "logout": "Log out",
+  "login": "Log in",
+  "signup": "Sign up",
+  "admin_panel": "Admin Panel",
+  "live_chat": "Live Chat",
+  "users_list": "Users List",
+  "welcome": "Welcome",
+  "login_google": "Login with Google",
+  "login_facebook": "Login with Facebook"
+}

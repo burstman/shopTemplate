@@ -42,14 +42,17 @@ func HandleLoginIndex(kit *kit.Kit) error {
 	if u, ok := kit.Auth().(models.AuthUser); ok {
 		user = u
 	}
-	return kit.Render(LoginIndex(user, LoginIndexPageData{}, categories, cart.Total))
+	data := LoginIndexPageData{
+		AuthError: kit.Request.URL.Query().Get("error"),
+	}
+	return kit.Render(LoginIndex(user, data, categories, cart.Total))
 }
 
 func HandleLoginCreate(kit *kit.Kit) error {
 	var values LoginFormValues
 	errors, ok := v.Request(kit.Request, &values, authSchema)
 	if !ok {
-		return kit.Render(LoginForm(values, errors))
+		return kit.Render(LoginForm(values, errors, ""))
 	}
 
 	var user User
@@ -57,21 +60,21 @@ func HandleLoginCreate(kit *kit.Kit) error {
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
 			errors.Add("credentials", "invalid credentials")
-			return kit.Render(LoginForm(values, errors))
+			return kit.Render(LoginForm(values, errors, ""))
 		}
 	}
 
 	err = bcrypt.CompareHashAndPassword([]byte(user.PasswordHash), []byte(values.Password))
 	if err != nil {
 		errors.Add("credentials", "invalid credentials")
-		return kit.Render(LoginForm(values, errors))
+		return kit.Render(LoginForm(values, errors, ""))
 	}
 
 	skipVerify := kit.Getenv("SUPERKIT_AUTH_SKIP_VERIFY", "false")
 	if skipVerify != "true" {
 		if !user.EmailVerifiedAt.Valid {
 			errors.Add("verified", "please verify your email")
-			return kit.Render(LoginForm(values, errors))
+			return kit.Render(LoginForm(values, errors, ""))
 		}
 	}
 
@@ -205,10 +208,14 @@ func HandleGoogleCallback(kit *kit.Kit) error {
 		return kit.Text(http.StatusBadRequest, "invalid oauth state")
 	}
 
+	if err := kit.Request.FormValue("error"); err != "" {
+		return kit.Redirect(http.StatusSeeOther, "/login?error=auth_cancelled")
+	}
+
 	config := getGoogleConfig(kit)
 	token, err := config.Exchange(kit.Request.Context(), kit.Request.FormValue("code"))
 	if err != nil {
-		return err
+		return kit.Redirect(http.StatusSeeOther, "/login?error=auth_failed")
 	}
 
 	resp, err := http.Get("https://www.googleapis.com/oauth2/v2/userinfo?access_token=" + token.AccessToken)
@@ -247,10 +254,14 @@ func HandleFacebookCallback(kit *kit.Kit) error {
 		return kit.Text(http.StatusBadRequest, "invalid oauth state")
 	}
 
+	if err := kit.Request.FormValue("error"); err != "" {
+		return kit.Redirect(http.StatusSeeOther, "/login?error=auth_cancelled")
+	}
+
 	config := getFacebookConfig(kit)
 	token, err := config.Exchange(kit.Request.Context(), kit.Request.FormValue("code"))
 	if err != nil {
-		return err
+		return kit.Redirect(http.StatusSeeOther, "/login?error=auth_failed")
 	}
 
 	resp, err := http.Get("https://graph.facebook.com/me?fields=first_name,last_name,email&access_token=" + token.AccessToken)
