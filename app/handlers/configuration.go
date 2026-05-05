@@ -2,7 +2,7 @@ package handlers
 
 import (
 	"fmt"
-	"log"
+	"log/slog"
 	"net/http"
 	"os"
 	"shopTemplate/app/config"
@@ -94,8 +94,8 @@ func HandleAdminSettingsUpdate(kit *kit.Kit) error {
 				if kit.Request.FormValue(prefix+"delete") == "on" {
 					continue
 				}
-				qty, _ := strconv.Atoi(kit.Request.FormValue(prefix+"quantity"))
-				discount, _ := strconv.Atoi(kit.Request.FormValue(prefix+"discount"))
+				qty, _ := strconv.Atoi(kit.Request.FormValue(prefix + "quantity"))
+				discount, _ := strconv.Atoi(kit.Request.FormValue(prefix + "discount"))
 				if qty > 0 {
 					bundles = append(bundles, models.Bundle{
 						Quantity:           qty,
@@ -133,6 +133,11 @@ func HandleAdminSettingsUpdate(kit *kit.Kit) error {
 		cfg.FacebookPixel.AccessToken = kit.Request.FormValue("access_token")
 		cfg.FacebookPixel.DomainVerification = kit.Request.FormValue("domain_verification")
 		cfg.FacebookPixel.TestEventCode = kit.Request.FormValue("test_event_code")
+		slog.Info("facebook pixel settings updated",
+			"pixel_id", cfg.FacebookPixel.PixelID,
+			"has_access_token", cfg.FacebookPixel.AccessToken != "",
+			"test_event_code", cfg.FacebookPixel.TestEventCode,
+		)
 
 	case "payment":
 		cfg.Payment.EnableCOD = kit.Request.FormValue("enable_cod") == "on"
@@ -286,7 +291,7 @@ func HandleAdminSettingsUpdate(kit *kit.Kit) error {
 					}
 					s.Image = imageURL
 				} else {
-					log.Printf("failed to upload section image: %v", err)
+					slog.Error("failed to upload section image", "err", err)
 				}
 			}
 

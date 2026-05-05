@@ -2,6 +2,7 @@ package app
 
 import (
 	"context"
+	"log/slog"
 	"shopTemplate/app/models"
 	"shopTemplate/app/services"
 
@@ -19,10 +20,13 @@ func RegisterEvents() {
 	capiSvc := services.NewFacebookCAPIService()
 
 	event.Subscribe("order.placed", func(ctx context.Context, data any) {
+		slog.Debug("order.placed event triggered")
 		order, ok := data.(models.Order)
 		if ok {
+			slog.Info("processing purchase event for Facebook CAPI", "order_id", order.ID, "total", order.Total)
 			notificationSvc.NotifyAll(order)
 			capiSvc.SendPurchaseEvent(order)
+			slog.Info("finished processing purchase event for Facebook CAPI", "order_id", order.ID)
 		}
 	})
 }

@@ -127,6 +127,26 @@ func HandleAdminOrderDeleteConfirm(kit *kit.Kit) error {
 	return kit.Render(orders.DeleteModal(order))
 }
 
+func HandleAdminOrderCancelConfirm(kit *kit.Kit) error {
+	user, ok := kit.Auth().(models.AuthUser)
+	if !ok || user.Role != "admin" {
+		return kit.Redirect(http.StatusSeeOther, "/")
+	}
+
+	idStr := chi.URLParam(kit.Request, "id")
+	id, _ := strconv.Atoi(idStr)
+
+	var order models.Order
+	if err := db.Get().First(&order, id).Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return kit.Render(viewerrors.Error404())
+		}
+		return err
+	}
+
+	return kit.Render(orders.CancelModal(order))
+}
+
 func HandleAdminOrderDelete(kit *kit.Kit) error {
 	user, ok := kit.Auth().(models.AuthUser)
 	if !ok || user.Role != "admin" {

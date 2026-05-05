@@ -6,6 +6,10 @@ import (
 	"shopTemplate/app/views/errors"
 	"shopTemplate/plugins/auth"
 
+	"shopTemplate/app/services"
+	"strings"
+	"net/http"
+
 	"github.com/anthdm/superkit/kit"
 	"github.com/anthdm/superkit/kit/middleware"
 	"github.com/go-chi/chi/v5"
@@ -20,6 +24,37 @@ func InitializeMiddleware(router *chi.Mux) {
 	router.Use(chimiddleware.Logger)
 	router.Use(chimiddleware.Recoverer)
 	router.Use(middleware.WithRequest)
+	router.Use(FacebookCAPIMiddleware)
+}
+
+func FacebookCAPIMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		// Only track GET requests for PageView
+		// Exclude static assets, API calls, and Admin routes (optional)
+		if r.Method == http.MethodGet &&
+			!strings.HasPrefix(r.URL.Path, "/public") &&
+			!strings.HasPrefix(r.URL.Path, "/api") &&
+			!strings.HasPrefix(r.URL.Path, "/admin") &&
+			!strings.HasPrefix(r.URL.Path, "/_templ") {
+
+			capiSvc := services.NewFacebookCAPIService()
+			url := r.Host + r.URL.String()
+			if r.TLS != nil {
+				url = "https://" + url
+			} else {
+				url = "http://" + url
+			}
+
+			ip := r.RemoteAddr
+			if forwarded := r.Header.Get("X-Forwarded-For"); forwarded != "" {
+				ip = strings.Split(forwarded, ",")[0]
+			}
+			ua := r.UserAgent()
+
+			go capiSvc.SendPageViewEvent(url, ip, ua)
+		}
+		next.ServeHTTP(w, r)
+	})
 }
 
 // Define your routes in here
@@ -80,6 +115,7 @@ func InitializeRoutes(router *chi.Mux) {
 		app.Get("/admin/orders/{id}", kit.Handler(handlers.HandleAdminOrderShow))
 		app.Post("/admin/orders/{id}/status", kit.Handler(handlers.HandleAdminOrderUpdateStatus))
 		app.Get("/admin/orders/{id}/delete", kit.Handler(handlers.HandleAdminOrderDeleteConfirm))
+		app.Get("/admin/orders/{id}/cancel", kit.Handler(handlers.HandleAdminOrderCancelConfirm))
 		app.Delete("/admin/orders/{id}", kit.Handler(handlers.HandleAdminOrderDelete))
 		app.Get("/admin/products", kit.Handler(handlers.HandleAdminProductsIndex))
 		app.Get("/admin/users", kit.Handler(handlers.HandleAdminUsersIndex))

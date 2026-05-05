@@ -7,6 +7,8 @@ import (
 	"shopTemplate/app/helpers"
 	"shopTemplate/app/models"
 	cartView "shopTemplate/app/views/cart"
+	"shopTemplate/app/services"
+	"strings"
 	"strconv"
 
 	"github.com/anthdm/superkit/kit"
@@ -60,6 +62,22 @@ func HandleCartAdd(kit *kit.Kit) error {
 	}
 
 	saveCart(kit, cart)
+
+	// Trigger Facebook CAPI AddToCart event in a goroutine to avoid blocking the user
+	go func(id int, qty int) {
+		var product models.Product
+		if err := db.Get().First(&product, id).Error; err == nil {
+			capiSvc := services.NewFacebookCAPIService()
+			url := kit.Request.Host + kit.Request.URL.String()
+			ip := kit.Request.RemoteAddr
+			if forwarded := kit.Request.Header.Get("X-Forwarded-For"); forwarded != "" {
+				ip = strings.Split(forwarded, ",")[0]
+			}
+			ua := kit.Request.UserAgent()
+			price := product.Price.ToFloat() * float64(qty)
+			capiSvc.SendAddToCartEvent(uint(id), product.Name, price, url, ip, ua)
+		}
+	}(id, qty)
 
 	redirect := kit.Request.URL.Query().Get("redirect")
 	if redirect != "" {

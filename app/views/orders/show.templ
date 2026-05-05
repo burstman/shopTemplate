@@ -71,12 +71,15 @@ templ Show(order models.Order) {
 								Mark as Shipped
 							</button>
 						</form>
-						<form hx-post={ fmt.Sprintf("/admin/orders/%d/status", order.ID) } hx-confirm="Are you sure you want to cancel this order?">
-							<input type="hidden" name="status" value="cancelled"/>
-							<button type="submit" class="w-full inline-flex justify-center items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md shadow-sm text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 cursor-pointer">
-								Cancel Order
-							</button>
-						</form>
+						<button 
+							type="button" 
+							hx-get={ fmt.Sprintf("/admin/orders/%d/cancel", order.ID) }
+							hx-target="body"
+							hx-swap="beforeend"
+							class="w-full inline-flex justify-center items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md shadow-sm text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 cursor-pointer"
+						>
+							Cancel Order
+						</button>
 					} else if order.Status == "shipped" {
 						<form hx-post={ fmt.Sprintf("/admin/orders/%d/status", order.ID) }>
 							<input type="hidden" name="status" value="completed"/>

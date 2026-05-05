@@ -38,18 +38,52 @@ type capiUserData struct {
 	Phone     []string `json:"ph,omitempty"`
 	FirstName []string `json:"fn,omitempty"`
 	LastName  []string `json:"ln,omitempty"`
+	ClientIP  string   `json:"client_ip_address,omitempty"`
+	ClientUA  string   `json:"client_user_agent,omitempty"`
 }
 
 type capiCustomData struct {
-	Currency string   `json:"currency"`
-	Value    *float64 `json:"value,omitempty"`
+	Currency    string   `json:"currency,omitempty"`
+	Value       *float64 `json:"value,omitempty"`
+	ContentType string   `json:"content_type,omitempty"`
+	ContentName string   `json:"content_name,omitempty"`
+	ContentIDs  []string `json:"content_ids,omitempty"`
+}
+
+func (s *FacebookCAPIService) SendPageViewEvent(url, ip, ua string) {
+	s.sendEvents([]capiEvent{{
+		EventName:    "PageView",
+		EventTime:    time.Now().Unix(),
+		ActionSource: "website",
+		EventSourceURL: url,
+		UserData: capiUserData{
+			ClientIP: ip,
+			ClientUA: ua,
+		},
+	}})
+}
+
+func (s *FacebookCAPIService) SendAddToCartEvent(productID uint, productName string, price float64, url, ip, ua string) {
+	s.sendEvents([]capiEvent{{
+		EventName:    "AddToCart",
+		EventTime:    time.Now().Unix(),
+		ActionSource: "website",
+		EventSourceURL: url,
+		UserData: capiUserData{
+			ClientIP: ip,
+			ClientUA: ua,
+		},
+		CustomData: capiCustomData{
+			Currency:    s.getCurrency(),
+			Value:       &price,
+			ContentType: "product",
+			ContentName: productName,
+			ContentIDs:  []string{fmt.Sprint(productID)},
+		},
+	}})
 }
 
 func (s *FacebookCAPIService) SendPurchaseEvent(order models.Order) {
-	if s.cfg.FacebookPixel.PixelID == "" || s.cfg.FacebookPixel.AccessToken == "" {
-		return
-	}
-
 	userData := capiUserData{
 		Email:     []string{hashString(order.Email)},
 		Phone:     []string{hashString(order.Phone)},
@@ -74,8 +108,16 @@ func (s *FacebookCAPIService) SendPurchaseEvent(order models.Order) {
 		},
 	}
 
+	s.sendEvents([]capiEvent{event})
+}
+
+func (s *FacebookCAPIService) sendEvents(events []capiEvent) {
+	if s.cfg.FacebookPixel.PixelID == "" || s.cfg.FacebookPixel.AccessToken == "" {
+		return
+	}
+
 	payload := map[string]interface{}{
-		"data": []capiEvent{event},
+		"data": events,
 	}
 	if s.cfg.FacebookPixel.TestEventCode != "" {
 		payload["test_event_code"] = s.cfg.FacebookPixel.TestEventCode
@@ -86,12 +128,13 @@ func (s *FacebookCAPIService) SendPurchaseEvent(order models.Order) {
 		slog.Error("failed to marshal Facebook CAPI payload", "err", err)
 		return
 	}
+
 	url := fmt.Sprintf("https://graph.facebook.com/v21.0/%s/events?access_token=%s",
 		s.cfg.FacebookPixel.PixelID, s.cfg.FacebookPixel.AccessToken)
 
 	resp, err := http.Post(url, "application/json", bytes.NewBuffer(jsonPayload))
 	if err != nil {
-		slog.Error("failed to send Facebook CAPI event", "err", err)
+		slog.Error("failed to send Facebook CAPI events", "err", err)
 		return
 	}
 	defer resp.Body.Close()
@@ -101,7 +144,7 @@ func (s *FacebookCAPIService) SendPurchaseEvent(order models.Order) {
 		_ = json.NewDecoder(resp.Body).Decode(&result)
 		slog.Error("Facebook CAPI error response", "status", resp.StatusCode, "result", result)
 	} else {
-		slog.Info("Facebook CAPI Purchase event sent successfully", "orderID", order.ID)
+		slog.Info("Facebook CAPI events sent successfully", "count", len(events), "first_event", events[0].EventName)
 	}
 }
 
