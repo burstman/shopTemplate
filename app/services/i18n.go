@@ -3,8 +3,10 @@ package services
 import (
 	"context"
 	"encoding/json"
-	"os"
 	"path/filepath"
+	"shopTemplate/app/db"
+	"shopTemplate/app/i18n"
+	"shopTemplate/app/models"
 	"sync"
 )
 
@@ -32,16 +34,30 @@ func (s *I18nService) loadTranslations() {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
-	files, _ := filepath.Glob("app/i18n/*.json")
-	for _, file := range files {
-		lang := filepath.Base(file)[:2] // assumes en.json, fr.json
-		data, err := os.ReadFile(file)
-		if err != nil {
-			continue
+	// 1. Load from Embedded Files (Default)
+	entries, _ := i18n.Files.ReadDir(".")
+	for _, entry := range entries {
+		if filepath.Ext(entry.Name()) == ".json" {
+			lang := entry.Name()[:2]
+			data, err := i18n.Files.ReadFile(entry.Name())
+			if err != nil {
+				continue
+			}
+			var trans map[string]string
+			if err := json.Unmarshal(data, &trans); err == nil {
+				s.translations[lang] = trans
+			}
 		}
-		var trans map[string]string
-		if err := json.Unmarshal(data, &trans); err == nil {
-			s.translations[lang] = trans
+	}
+
+	// 2. Load from Database (Overrides)
+	var dbTrans []models.Translation
+	if err := db.Get().Find(&dbTrans).Error; err == nil {
+		for _, t := range dbTrans {
+			if s.translations[t.Lang] == nil {
+				s.translations[t.Lang] = make(map[string]string)
+			}
+			s.translations[t.Lang][t.Key] = t.Value
 		}
 	}
 }
