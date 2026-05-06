@@ -7,6 +7,8 @@ import (
 	"shopTemplate/app/config"
 	"shopTemplate/app/views/layouts"
 	"shopTemplate/app/views/components"
+	"shopTemplate/app/helpers"
+	"shopTemplate/app/services"
 )
 
 templ Index(cart *models.Cart, values map[string]string, errors validate.Errors, cfg *config.Config) {
@@ -35,7 +37,7 @@ templ Index(cart *models.Cart, values map[string]string, errors validate.Errors,
 									<div class="ml-4 flex-1">
 										<div class="flex justify-between text-sm font-medium text-gray-900">
 											<h3>{ item.Product.Name }</h3>
-											<p>{ item.Product.Price.Multiply(item.Quantity).String() }</p>
+											<p>{ helpers.CalculateItemPrice(item, cfg.Site.Bundles).String() }</p>
 										</div>
 										<div class="flex justify-between items-center mt-1">
 											<p class="text-sm text-gray-500">Qty { fmt.Sprint(item.Quantity) }</p>
@@ -53,7 +55,7 @@ templ Index(cart *models.Cart, values map[string]string, errors validate.Errors,
 						<div class="border-t border-gray-200 px-4 py-4 bg-gray-50">
 							<div class="flex justify-between text-base font-medium text-gray-900">
 								<p>Total</p>
-								<p>{ fmt.Sprintf("%.3f %s", calculateTotal(cart), cfg.Site.Currency) }</p>
+								<p>{ helpers.CalculateCartTotal(cart, cfg.Site.Bundles).String() } { cfg.Site.Currency }</p>
 							</div>
 						</div>
 					</div>
@@ -66,13 +68,6 @@ templ Index(cart *models.Cart, values map[string]string, errors validate.Errors,
 	</div>
 }
 
-func calculateTotal(cart *models.Cart) float64 {
-	var total float64
-	for _, item := range cart.Items {
-		total += item.Product.Price.Multiply(item.Quantity).ToFloat()
-	}
-	return total
-}
 
 templ CheckoutForm(values map[string]string, errors validate.Errors) {
 	<div class="bg-white shadow rounded-lg p-6 border border-gray-200">
@@ -133,13 +128,14 @@ templ Success(cfg *config.Config, orderTotal float64) {
 				<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
 			</svg>
 		</div>
-		<h1 class="text-4xl font-extrabold text-gray-900 mb-4">Order Placed!</h1>
+		<h1 class="text-4xl font-extrabold text-gray-900 mb-4">{ services.GetI18n().T(ctx, "order_placed") }</h1>
 		<p class="text-lg text-gray-600 mb-8">
-			Thank you for your purchase. We have received your order and are processing it.
-			You will receive a confirmation email shortly.
+			{ services.GetI18n().T(ctx, "thank_you_purchase") }
+			<br/>
+			{ services.GetI18n().T(ctx, "confirmation_email_shortly") }
 		</p>
 		<a href="/" class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-primary hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary">
-			Back to Home
+			{ services.GetI18n().T(ctx, "back_to_home_btn") }
 		</a>
 	</div>
 }

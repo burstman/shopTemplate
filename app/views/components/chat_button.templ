@@ -1,11 +1,14 @@
 package components
 
-import "shopTemplate/app/config"
-import "fmt"
-import "shopTemplate/app/models"
+import (
+	"context"
+	"fmt"
+	"shopTemplate/app/config"
+	"shopTemplate/app/models"
+	"shopTemplate/app/services"
+)
 
-templ ChatButton(user models.AuthUser, cfg *config.Config) {
-	if user.Role != "admin" {
+templ ChatButton(ctx context.Context, user models.AuthUser, cfg *config.Config) {
 	<div class="fixed bottom-6 right-6 z-50" x-data="{ open: false, wsError: false, wsConnected: false }">
 		<!-- Toggle Button -->
 		<button
@@ -37,9 +40,9 @@ templ ChatButton(user models.AuthUser, cfg *config.Config) {
 							}"
 							:title="wsConnected ? (wsError ? 'Connexion dégradée (Polling)' : 'Connecté') : 'Déconnecté'"
 						></div>
-						<h3 class="font-bold">Support en ligne</h3>
+						<h3 class="font-bold">{ services.GetI18n().T(ctx, "chat_support") }</h3>
 					</div>
-					<p class="text-xs opacity-80" x-text="wsError ? 'Mode secours activé' : 'Nous répondons en quelques minutes'"></p>
+					<p class="text-xs opacity-80" x-text={ fmt.Sprintf("wsError ? '%s' : '%s'", services.GetI18n().T(ctx, "chat_connection_degraded"), services.GetI18n().T(ctx, "chat_response_time")) }></p>
 				</div>
 				<button @click="open = false" class="hover:opacity-60 transition-opacity focus:outline-none" title="Fermer le chat">
 					<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
@@ -56,7 +59,7 @@ templ ChatButton(user models.AuthUser, cfg *config.Config) {
 
 				<div x-show="wsError" x-cloak class="mx-4 mt-2 p-2 bg-amber-50 border border-amber-200 rounded-lg flex items-center gap-2">
 					<svg class="w-4 h-4 text-amber-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-					<p class="text-[10px] text-amber-700 leading-tight">La connexion en temps réel est limitée par votre navigateur. Les messages s'actualiseront automatiquement.</p>
+					<p class="text-[10px] text-amber-700 leading-tight">{ services.GetI18n().T(ctx, "chat_connection_desc") }</p>
 				</div>
 
 				<div
@@ -66,7 +69,7 @@ templ ChatButton(user models.AuthUser, cfg *config.Config) {
 					hx-get="/api/chat/messages"
 					x-bind:hx-trigger="wsError ? 'every 5s, refresh-chat' : 'intersect once, refresh-chat'"
 				>
-					<div class="text-center text-xs text-gray-400">Chargement...</div>
+					<div class="text-center text-xs text-gray-400">{ services.GetI18n().T(ctx, "chat_loading") }</div>
 				</div>
 
 				<!-- Input Area -->
@@ -81,7 +84,7 @@ templ ChatButton(user models.AuthUser, cfg *config.Config) {
 				<input 
 					type="text" 
 					name="message" 
-					placeholder="Écrivez votre message..." 
+					placeholder={ services.GetI18n().T(ctx, "chat_input_placeholder") } 
 					required
 					class="flex-1 border-gray-200 rounded-full px-4 py-2 text-sm focus:ring-primary focus:border-primary"
 				/>
@@ -95,5 +98,5 @@ templ ChatButton(user models.AuthUser, cfg *config.Config) {
 		</div>
 	</div>
 	</div>
-	}
+	
 }

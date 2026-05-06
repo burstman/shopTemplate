@@ -9,6 +9,7 @@ import (
 	"os"
 	"strconv"
 	"strings"
+	"sort"
 
 	"shopTemplate/app/config"
 	"shopTemplate/app/db"
@@ -112,15 +113,17 @@ func HandleProductCreate(kit *kit.Kit) error {
 		return err
 	}
 
-	// 1. Handle Image Upload
+	// 1. Handle Images
 	errors := make(validate.Errors)
 	name := kit.Request.FormValue("name")
 	priceStr := kit.Request.FormValue("price")
 	description := kit.Request.FormValue("description")
 	promotionPriceStr := kit.Request.FormValue("promotion_price")
 	stockStr := kit.Request.FormValue("stock")
-	file, header, err := kit.Request.FormFile("image")
+	
+	files := kit.Request.MultipartForm.File["images"]
 	categoryIDs := kit.Request.MultipartForm.Value["categories"]
+	
 	if name == "" {
 		errors.Add("name", "Name is required")
 	}
@@ -143,8 +146,11 @@ func HandleProductCreate(kit *kit.Kit) error {
 			promotionPrice = p
 		}
 	}
-	if err != nil {
-		errors.Add("image", "Image is required")
+	
+	if len(files) == 0 {
+		errors.Add("images", "At least one image is required")
+	} else if len(files) > 10 {
+		errors.Add("images", "Maximum 10 images allowed")
 	}
 	var stock int
 	if stockStr != "" {
@@ -186,12 +192,19 @@ func HandleProductCreate(kit *kit.Kit) error {
 		return RenderAdminWithLayout(kit, sidebar, activePath, content)
 	}
 
-	// Handle Image Upload
-	defer file.Close()
-
-	imageURL, err := helpers.UploadImage(file, header, "products", "plant")
-	if err != nil {
-		return err
+	// Handle Images Upload
+	var imageURLs []string
+	for _, header := range files {
+		file, err := header.Open()
+		if err != nil {
+			return err
+		}
+		url, err := helpers.UploadImage(file, header, "products", "plant")
+		file.Close()
+		if err != nil {
+			return err
+		}
+		imageURLs = append(imageURLs, url)
 	}
 
 	// 2. Save Product to DB
@@ -201,7 +214,8 @@ func HandleProductCreate(kit *kit.Kit) error {
 		Price:          models.NewCurrency(price),
 		PromotionPrice: models.NewCurrency(promotionPrice),
 		Stock:          stock,
-		Image:          imageURL,
+		Images:         imageURLs,
+		Image:          imageURLs[0], // Keep for backward compatibility
 		Bundles:        parseBundles(kit),
 		BundlesEnabled: kit.Request.FormValue("bundles_enabled") == "on",
 	}
@@ -270,8 +284,10 @@ func HandleProductDelete(kit *kit.Kit) error {
 		return err
 	}
 
-	if len(product.Image) > 1 && product.Image[0] == '/' {
-		os.Remove(product.Image[1:])
+	for _, img := range product.Images {
+		if len(img) > 1 && img[0] == '/' {
+			os.Remove(strings.TrimPrefix(img, "/"))
+		}
 	}
 
 	if err := db.Get().Delete(&product).Error; err != nil {
@@ -369,24 +385,85 @@ func HandleProductUpdate(kit *kit.Kit) error {
 		product.Stock = stock
 	}
 
-	// Handle optional image update
-	file, header, err := kit.Request.FormFile("image")
-	if err == nil {
-		defer file.Close()
-
-		imageURL, err := helpers.UploadImage(file, header, "products", "plant")
-		if err == nil {
-			// Optional: delete old image from Cloudinary or local. For now, we just overwrite the DB path.
-			if len(product.Image) > 1 && product.Image[0] == '/' {
-				if _, err := os.Stat(product.Image[1:]); err == nil {
-					os.Remove(strings.TrimPrefix(product.Image, "/"))
-				}
+	// 1. Unified Image Management
+	// First, ensure product.Images is fully populated from both fields
+	if product.Image != "" {
+		found := false
+		for _, img := range product.Images {
+			if img == product.Image {
+				found = true
+				break
 			}
-			product.Image = imageURL
+		}
+		if !found {
+			product.Images = append([]string{product.Image}, product.Images...)
 		}
 	}
 
-	// Update categories
+	// 2. Handle New Images Upload
+	files := kit.Request.MultipartForm.File["images"]
+	for _, header := range files {
+		if len(product.Images) >= 10 {
+			break
+		}
+		file, err := header.Open()
+		if err == nil {
+			url, err := helpers.UploadImage(file, header, "products", "plant")
+			file.Close()
+			if err == nil {
+				product.Images = append(product.Images, url)
+			}
+		}
+	}
+
+	// 3. Handle Image Deletions
+	deleteImages := kit.Request.MultipartForm.Value["delete_images"]
+	if len(deleteImages) > 0 {
+		var updatedImages []string
+		for _, img := range product.Images {
+			shouldDelete := false
+			for _, delImg := range deleteImages {
+				if img == delImg {
+					shouldDelete = true
+					break
+				}
+			}
+			if shouldDelete {
+				if len(img) > 1 && img[0] == '/' {
+					os.Remove(strings.TrimPrefix(img, "/"))
+				}
+			} else {
+				updatedImages = append(updatedImages, img)
+			}
+		}
+		product.Images = updatedImages
+	}
+
+	// 4. Sync Singular Image Field
+	primaryImage := kit.Request.FormValue("primary_image")
+	if primaryImage != "" {
+		// Verify the primary image is still in the gallery
+		found := false
+		for _, img := range product.Images {
+			if img == primaryImage {
+				found = true
+				break
+			}
+		}
+		if found {
+			product.Image = primaryImage
+		} else if len(product.Images) > 0 {
+			product.Image = product.Images[0]
+		} else {
+			product.Image = ""
+		}
+	} else if len(product.Images) > 0 {
+		product.Image = product.Images[0]
+	} else {
+		product.Image = ""
+	}
+
+	// 5. Update categories
 	categoryIDs := kit.Request.Form["categories"]
 	if len(categoryIDs) > 0 {
 		var categoriesToAssign []models.Category
@@ -397,7 +474,11 @@ func HandleProductUpdate(kit *kit.Kit) error {
 	product.Bundles = parseBundles(kit)
 	product.BundlesEnabled = kit.Request.FormValue("bundles_enabled") == "on"
 
-	return db.Get().Save(&product).Error
+	if err := db.Get().Save(&product).Error; err != nil {
+		return err
+	}
+
+	return kit.Redirect(http.StatusSeeOther, "/admin/products")
 }
 
 // HandleProductQuickView renders the quick view modal for a product.
@@ -456,5 +537,10 @@ func parseBundles(kit *kit.Kit) []models.Bundle {
 			}
 		}
 	}
+
+	sort.Slice(bundles, func(i, j int) bool {
+		return bundles[i].Quantity < bundles[j].Quantity
+	})
+
 	return bundles
 }

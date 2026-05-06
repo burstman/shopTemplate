@@ -8,6 +8,7 @@ import (
 	"shopTemplate/app/db"
 	"shopTemplate/app/helpers"
 	"shopTemplate/app/models"
+	"shopTemplate/app/services"
 	"strconv"
 	"time"
 
@@ -59,21 +60,21 @@ func HandleLoginCreate(kit *kit.Kit) error {
 	err := db.Get().Find(&user, "email = ?", values.Email).Error
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
-			errors.Add("credentials", "invalid credentials")
+			errors.Add("credentials", services.GetI18n().T(kit.Request.Context(), "invalid_credentials"))
 			return kit.Render(LoginForm(values, errors, ""))
 		}
 	}
 
 	err = bcrypt.CompareHashAndPassword([]byte(user.PasswordHash), []byte(values.Password))
 	if err != nil {
-		errors.Add("credentials", "invalid credentials")
+		errors.Add("credentials", services.GetI18n().T(kit.Request.Context(), "invalid_credentials"))
 		return kit.Render(LoginForm(values, errors, ""))
 	}
 
 	skipVerify := kit.Getenv("SUPERKIT_AUTH_SKIP_VERIFY", "false")
 	if skipVerify != "true" {
 		if !user.EmailVerifiedAt.Valid {
-			errors.Add("verified", "please verify your email")
+			errors.Add("verified", services.GetI18n().T(kit.Request.Context(), "verify_email_desc"))
 			return kit.Render(LoginForm(values, errors, ""))
 		}
 	}
@@ -117,7 +118,7 @@ func HandleLoginDelete(kit *kit.Kit) error {
 func HandleEmailVerify(kit *kit.Kit) error {
 	tokenStr := kit.Request.URL.Query().Get("token")
 	if len(tokenStr) == 0 {
-		return kit.Render(EmailVerificationError("invalid verification token"))
+		return kit.Render(EmailVerificationError(services.GetI18n().T(kit.Request.Context(), "invalid_verification_token")))
 	}
 
 	token, err := jwt.ParseWithClaims(
@@ -125,23 +126,23 @@ func HandleEmailVerify(kit *kit.Kit) error {
 			return []byte(os.Getenv("SUPERKIT_SECRET")), nil
 		}, jwt.WithLeeway(5*time.Second))
 	if err != nil {
-		return kit.Render(EmailVerificationError("invalid verification token"))
+		return kit.Render(EmailVerificationError(services.GetI18n().T(kit.Request.Context(), "invalid_verification_token")))
 	}
 	if !token.Valid {
-		return kit.Render(EmailVerificationError("invalid verification token"))
+		return kit.Render(EmailVerificationError(services.GetI18n().T(kit.Request.Context(), "invalid_verification_token")))
 	}
 
 	claims, ok := token.Claims.(*jwt.RegisteredClaims)
 	if !ok {
-		return kit.Render(EmailVerificationError("invalid verification token"))
+		return kit.Render(EmailVerificationError(services.GetI18n().T(kit.Request.Context(), "invalid_verification_token")))
 	}
 	if claims.ExpiresAt.Time.Before(time.Now()) {
-		return kit.Render(EmailVerificationError("Email verification token expired"))
+		return kit.Render(EmailVerificationError(services.GetI18n().T(kit.Request.Context(), "verification_token_expired")))
 	}
 
 	userID, err := strconv.Atoi(claims.Subject)
 	if err != nil {
-		return kit.Render(EmailVerificationError("Email verification token expired"))
+		return kit.Render(EmailVerificationError(services.GetI18n().T(kit.Request.Context(), "verification_token_expired")))
 	}
 
 	var user User
@@ -151,7 +152,7 @@ func HandleEmailVerify(kit *kit.Kit) error {
 	}
 
 	if user.EmailVerifiedAt.Time.After(time.Time{}) {
-		return kit.Render(EmailVerificationError("Email already verified"))
+		return kit.Render(EmailVerificationError(services.GetI18n().T(kit.Request.Context(), "email_already_verified")))
 	}
 
 	now := sql.NullTime{Time: time.Now(), Valid: true}
@@ -205,7 +206,7 @@ func HandleGoogleCallback(kit *kit.Kit) error {
 	sess := kit.GetSession(userSessionName)
 	state, ok := sess.Values["oauthState"].(string)
 	if !ok || state != kit.Request.FormValue("state") {
-		return kit.Text(http.StatusBadRequest, "invalid oauth state")
+		return kit.Text(http.StatusBadRequest, services.GetI18n().T(kit.Request.Context(), "invalid_oauth_state"))
 	}
 
 	if err := kit.Request.FormValue("error"); err != "" {
@@ -251,7 +252,7 @@ func HandleFacebookCallback(kit *kit.Kit) error {
 	sess := kit.GetSession(userSessionName)
 	state, ok := sess.Values["oauthState"].(string)
 	if !ok || state != kit.Request.FormValue("state") {
-		return kit.Text(http.StatusBadRequest, "invalid oauth state")
+		return kit.Text(http.StatusBadRequest, services.GetI18n().T(kit.Request.Context(), "invalid_oauth_state"))
 	}
 
 	if err := kit.Request.FormValue("error"); err != "" {

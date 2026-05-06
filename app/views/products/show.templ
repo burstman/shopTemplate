@@ -6,6 +6,7 @@ import (
 	"shopTemplate/app/helpers"
 	"shopTemplate/app/models"
 	"shopTemplate/app/views/layouts"
+	"sort"
 )
 
 templ Show(product models.Product, cfg *config.Config) {
@@ -15,11 +16,11 @@ templ Show(product models.Product, cfg *config.Config) {
 			style={ layouts.GetContentStyle(cfg) }
 		>
 			<div class="lg:grid lg:grid-cols-2 lg:gap-x-12 lg:items-start">
-				<!-- Product Image -->
-				<div class="flex flex-col">
-					<div class="w-full aspect-[4/5] overflow-hidden rounded-xl bg-muted shadow-lg">
+				<!-- Product Image Gallery -->
+				<div class="flex flex-col gap-4" x-data={ fmt.Sprintf("{ activeImage: '%s' }", product.Image) }>
+					<div class="w-full aspect-[4/5] overflow-hidden rounded-xl bg-muted shadow-lg border border-border">
 						if product.Image != "" {
-							<img src={ product.Image } alt={ product.Name } class="w-full h-full object-center object-cover"/>
+							<img :src="activeImage" alt={ product.Name } class="w-full h-full object-center object-cover transition-all duration-300 transform hover:scale-105"/>
 						} else {
 							<div class="flex items-center justify-center h-full text-muted-foreground bg-muted">
 								<svg class="w-20 h-20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -28,6 +29,20 @@ templ Show(product models.Product, cfg *config.Config) {
 							</div>
 						}
 					</div>
+					
+					if len(product.Images) > 1 {
+						<div class="grid grid-cols-5 gap-3">
+							for _, img := range product.Images {
+								<button 
+									@click={ fmt.Sprintf("activeImage = '%s'", img) }
+									:class={ fmt.Sprintf("activeImage === '%s' ? 'ring-2 ring-primary' : 'opacity-70 hover:opacity-100'", img) }
+									class="aspect-square rounded-lg overflow-hidden border border-border bg-muted transition-all"
+								>
+									<img src={ img } alt={ product.Name } class="w-full h-full object-center object-cover"/>
+								</button>
+							}
+						</div>
+					}
 				</div>
 
 				<!-- Product Details -->
@@ -63,6 +78,10 @@ templ Show(product models.Product, cfg *config.Config) {
 								if len(product.Bundles) > 0 {
 									bundles = product.Bundles
 								}
+								// Sort bundles by quantity
+								sort.Slice(bundles, func(i, j int) bool {
+									return bundles[i].Quantity < bundles[j].Quantity
+								})
 							}}
 							if len(bundles) > 0 {
 							<div class="mb-6">
@@ -75,7 +94,14 @@ templ Show(product models.Product, cfg *config.Config) {
 										class="flex flex-col items-center justify-center rounded-xl border p-4 text-center transition-all hover:border-primary/50"
 									>
 										<span class="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">1 Pack</span>
-										<span class="mt-1 text-base font-extrabold text-foreground">{ product.Price.String() } { cfg.Site.Currency }</span>
+										<span class="mt-1 text-base font-extrabold text-foreground">
+											if product.PromotionPrice > 0 {
+												{ product.PromotionPrice.String() }
+											} else {
+												{ product.Price.String() }
+											}
+											{ " " + cfg.Site.Currency }
+										</span>
 									</button>
 									for _, b := range bundles {
 										<button

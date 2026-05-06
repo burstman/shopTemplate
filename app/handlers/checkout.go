@@ -72,10 +72,8 @@ func HandleCheckoutCreate(kit *kit.Kit) error {
 
 	// 2. Create Order Items
 	for _, item := range cart.Items {
-		price := item.Product.Price
-		if item.Product.PromotionPrice > 0 {
-			price = item.Product.PromotionPrice
-		}
+		itemTotal := helpers.CalculateItemPrice(item, cfg.Site.Bundles)
+		unitPrice := models.Currency(int64(itemTotal) / int64(item.Quantity))
 
 		orderItem := models.OrderItem{
 			OrderID:      order.ID,
@@ -83,7 +81,7 @@ func HandleCheckoutCreate(kit *kit.Kit) error {
 			ProductName:  item.Product.Name,
 			ProductImage: item.Product.Image,
 			Quantity:     item.Quantity,
-			Price:        price,
+			Price:        unitPrice,
 		}
 		if err := db.Get().Create(&orderItem).Error; err != nil {
 			slog.Error("failed to create order item", "err", err, "orderID", order.ID)

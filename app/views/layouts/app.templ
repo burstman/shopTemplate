@@ -5,7 +5,7 @@ import (
 	"shopTemplate/app/config"
 	"shopTemplate/app/models"
 	"shopTemplate/app/views/components"
-
+	"shopTemplate/app/services"
 )
 
 script initFacebookPixel(id string) {
@@ -84,7 +84,7 @@ templ App(user models.AuthUser, cfg *config.Config, categories []models.Category
 				@content
 			</main>
 			@components.Footer(user,cfg)
-			@components.ChatButton(user, cfg)
+			@components.ChatButton(ctx, user, cfg)
 			<audio id="chat-ping-sound" src="/public/assets/ping.wav" preload="auto" class="hidden"></audio>
 		</body>
 	</html>
@@ -189,8 +189,8 @@ templ AdminPage(user models.AuthUser, cfg *config.Config, categories []models.Ca
 						<div class="px-2 space-y-1">
 							for _, item := range sidebar {
 								<a href={ templ.SafeURL(item.Link) } class={ "group flex items-center px-2 py-2 text-sm leading-6 font-medium rounded-md text-white hover:bg-indigo-600", templ.KV("bg-indigo-800", item.Link == activePath) }>
-									{ item.Title }
-									if item.Title == "Live Chat" {
+									{ services.GetI18n().T(ctx, item.Title) }
+									if item.Title == "Live Chat" || item.Title == "Chat Settings" {
 										@components.ChatNotificationDot(cfg, false, "", 0, templ.Attributes{"id": "admin-sidebar-chat-dot"})
 									}
 								</a>

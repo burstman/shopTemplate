@@ -15,8 +15,9 @@ type Product struct {
 	Description    string
 	Stock          int
 	Image          string
+	Images         []string   `gorm:"type:jsonb;serializer:json"`
 	Categories     []Category `gorm:"many2many:product_categories;"`
 	Category       string     `gorm:"-"` // Deprecated: Kept for backward compatibility with views
-	Bundles        []Bundle   `gorm:"type:jsonb"`
+	Bundles        []Bundle   `gorm:"type:jsonb;serializer:json"`
 	BundlesEnabled bool       `gorm:"default:true"`
 }

@@ -7,6 +7,7 @@ import (
 	"shopTemplate/app/db"
 	"shopTemplate/app/helpers"
 	"shopTemplate/app/models"
+	"shopTemplate/app/services"
 	"strconv"
 	"time"
 
@@ -45,7 +46,7 @@ func HandleSignupCreate(kit *kit.Kit) error {
 		return kit.Render(SignupForm(values, errors))
 	}
 	if values.Password != values.PasswordConfirm {
-		errors.Add("passwordConfirm", "passwords do not match")
+		errors.Add("passwordConfirm", services.GetI18n().T(kit.Request.Context(), "passwords_dont_match"))
 		return kit.Render(SignupForm(values, errors))
 	}
 	user, err := createUserFromFormValues(values)
@@ -72,16 +73,16 @@ func HandleResendVerificationCode(kit *kit.Kit) error {
 
 	var user User
 	if err = db.Get().First(&user, id).Error; err != nil {
-		return kit.Text(http.StatusOK, "An unexpected error occured")
+		return kit.Text(http.StatusOK, services.GetI18n().T(kit.Request.Context(), "unexpected_error"))
 	}
 
 	if user.EmailVerifiedAt.Time.After(time.Time{}) {
-		return kit.Text(http.StatusOK, "Email already verified!")
+		return kit.Text(http.StatusOK, services.GetI18n().T(kit.Request.Context(), "email_already_verified"))
 	}
 
 	token, err := createVerificationToken(uint(id))
 	if err != nil {
-		return kit.Text(http.StatusOK, "An unexpected error occured")
+		return kit.Text(http.StatusOK, services.GetI18n().T(kit.Request.Context(), "unexpected_error"))
 	}
 
 	event.Emit(ResendVerificationEvent, UserWithVerificationToken{
@@ -89,7 +90,7 @@ func HandleResendVerificationCode(kit *kit.Kit) error {
 		Token: token,
 	})
 
-	msg := fmt.Sprintf("A new verification token has been sent to %s", user.Email)
+	msg := fmt.Sprintf(services.GetI18n().T(kit.Request.Context(), "verification_sent_to"), user.Email)
 
 	return kit.Text(http.StatusOK, msg)
 }

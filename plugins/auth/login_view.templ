@@ -4,6 +4,7 @@ import (
 	"shopTemplate/app/views/layouts"
 	"shopTemplate/app/models"
 	"shopTemplate/app/config"
+	"shopTemplate/app/services"
 	v "github.com/anthdm/superkit/validate"
 )
 
@@ -24,8 +25,8 @@ templ LoginIndex(user models.AuthUser, data LoginIndexPageData, categories []mod
 			<div class="mt-10 lg:mt-20 mb-16 w-full max-w-md">
 				<div class="bg-white border border-gray-200 rounded-2xl shadow-lg py-10 px-8 flex flex-col gap-8">
 					<div class="text-center">
-						<h2 class="text-2xl font-bold text-gray-900">Welcome back</h2>
-						<p class="mt-1 text-sm text-gray-500">Sign in to your account</p>
+						<h2 class="text-2xl font-bold text-gray-900">{ services.GetI18n().T(ctx, "welcome_back") }</h2>
+						<p class="mt-1 text-sm text-gray-500">{ services.GetI18n().T(ctx, "sign_in_desc") }</p>
 					</div>
 					@LoginForm(data.FormValues, data.FormErrors, data.AuthError)
 					@SocialAuthButtons(config.Get())
@@ -44,20 +45,20 @@ templ LoginForm(values LoginFormValues, errors v.Errors, authError string) {
 			<div class="text-red-500 text-center text-xs">{ errors.Get("verified")[0] }</div>
 		}
 		if authError == "auth_cancelled" {
-			<div class="text-yellow-600 text-center text-xs">Login cancelled. Please try again.</div>
+			<div class="text-yellow-600 text-center text-xs">{ services.GetI18n().T(ctx, "auth_cancelled") }</div>
 		}
 		if authError == "auth_failed" {
-			<div class="text-red-500 text-center text-xs">Authentication failed. Please try again.</div>
+			<div class="text-red-500 text-center text-xs">{ services.GetI18n().T(ctx, "auth_failed") }</div>
 		}
 		<div class="flex flex-col gap-1">
-			<label for="email">Email</label>
+			<label for="email">{ services.GetI18n().T(ctx, "email_label") }</label>
 			<input { inputAttrs(errors.Has("email"))... } name="email" id="email" value={ values.Email }/>
 			if errors.Has("email") {
 				<div class="text-red-500 text-xs">{ errors.Get("email")[0] }</div>
 			}
 		</div>
 		<div class="flex flex-col gap-1" x-data="{ show: false }">
-			<label for="password">Password</label>
+			<label for="password">{ services.GetI18n().T(ctx, "password_label") }</label>
 			<div class="flex gap-2">
 				<input
 					{ inputAttrs(errors.Has("password"))... }
@@ -80,11 +81,11 @@ templ LoginForm(values LoginFormValues, errors v.Errors, authError string) {
 			<svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 				<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
 			</svg>
-			Login
+			{ services.GetI18n().T(ctx, "login_button") }
 		</button>
 		<div class="flex justify-between">
-			<a class="text-xs underline" href="/signup">Don't have an account? Signup here.</a>
-			<a class="text-xs underline" href="/reset-password">Reset password</a>
+			<a class="text-xs underline" href="/signup">{ services.GetI18n().T(ctx, "no_account_link") }</a>
+			<a class="text-xs underline" href="/reset-password">{ services.GetI18n().T(ctx, "reset_password_link") }</a>
 		</div>
 	</form>
 }
