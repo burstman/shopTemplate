@@ -10,9 +10,11 @@ type Order struct {
 	Address   string
 	City      string
 	Phone     string
-	Total     Currency `gorm:"type:numeric(12,2)"`
-	Status    string   // pending, completed, cancelled
-	Items     []OrderItem
+	Total              Currency `gorm:"type:numeric(12,2)"`
+	PlatformCommission Currency `gorm:"type:numeric(12,2)"`
+	CommissionStatus   string   `gorm:"default:pending"` // pending, paid, cancelled
+	Status             string   // pending, completed, cancelled
+	Items              []OrderItem
 }
 
 type OrderItem struct {

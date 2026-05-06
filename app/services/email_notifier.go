@@ -91,6 +91,37 @@ func (e *EmailNotifier) Send(order models.Order) error {
 	return smtp.SendMail(e.host+":"+e.port, auth, e.from, []string{adminEmail}, []byte(adminHeader+adminBody))
 }
 
+func (e *EmailNotifier) SendAbandoned(order models.Order) error {
+	auth := smtp.PlainAuth("", e.username, e.password, e.host)
+	cfg := config.Get()
+
+	adminEmail := cfg.Notification.AdminEmailRecipient
+	if adminEmail == "" {
+		adminEmail = e.from
+	}
+
+	header := fmt.Sprintf("From: %s\r\n", e.from)
+	header += fmt.Sprintf("To: %s\r\n", adminEmail)
+	header += fmt.Sprintf("Subject: [Abandoned Cart] Potential Order #%d\r\n", order.ID)
+	header += "MIME-version: 1.0\r\n"
+	header += "Content-Type: text/plain; charset=\"UTF-8\"\r\n\r\n"
+
+	body := fmt.Sprintf(
+		"Hello,\n\n"+
+			"A customer started a checkout but hasn't finished yet.\n\n"+
+			"Partial Details:\n"+
+			"Order ID: #%d\n"+
+			"Potential Customer: %s %s\n"+
+			"Phone: %s\n"+
+			"City: %s\n"+
+			"Estimated Total: %.3f %s\n\n"+
+			"You might want to check the admin panel for more details.",
+		order.ID, order.FirstName, order.LastName, order.Phone, order.City, order.Total.ToFloat(), cfg.Site.Currency,
+	)
+
+	return smtp.SendMail(e.host+":"+e.port, auth, e.from, []string{adminEmail}, []byte(header+body))
+}
+
 // SendTest sends a simple verification email to the specified recipient.
 func (e *EmailNotifier) SendTest(recipient string) error {
 	auth := smtp.PlainAuth("", e.username, e.password, e.host)

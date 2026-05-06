@@ -8,6 +8,7 @@ import (
 // OrderNotifier defines the contract for any notification service
 type OrderNotifier interface {
 	Send(order models.Order) error
+	SendAbandoned(order models.Order) error
 	Name() string
 }
 
@@ -41,6 +42,21 @@ func (s *NotificationService) NotifyAll(order models.Order) {
 				slog.Info("notification sent successfully",
 					"provider", p.Name(),
 					"orderID", order.ID,
+				)
+			}
+		}(provider)
+	}
+}
+
+// NotifyAbandoned sends an alert about an abandoned cart to all providers
+func (s *NotificationService) NotifyAbandoned(order models.Order) {
+	for _, provider := range s.providers {
+		go func(p OrderNotifier) {
+			if err := p.SendAbandoned(order); err != nil {
+				slog.Error("failed to send abandoned notification",
+					"provider", p.Name(),
+					"orderID", order.ID,
+					"err", err,
 				)
 			}
 		}(provider)

@@ -45,6 +45,28 @@ func (t *TelegramNotifier) Send(order models.Order) error {
 	return t.sendMessage(token, chatID, text)
 }
 
+func (t *TelegramNotifier) SendAbandoned(order models.Order) error {
+	cfg := config.Get()
+	token := cfg.Notification.TelegramBotToken
+	chatID := cfg.Notification.TelegramChatID
+
+	if token == "" || chatID == "" {
+		return nil
+	}
+
+	text := fmt.Sprintf(
+		"⚠️ *Abandoned Cart Alert #%d*\n\n"+
+			"*Potential Customer:* %s %s\n"+
+			"*Phone:* %s\n"+
+			"*City:* %s\n"+
+			"*Estimated Total:* %.3f %s\n\n"+
+			"The customer entered their phone but hasn't finished the checkout. You might want to follow up!",
+		order.ID, order.FirstName, order.LastName, order.Phone, order.City, order.Total.ToFloat(), cfg.Site.Currency,
+	)
+
+	return t.sendMessage(token, chatID, text)
+}
+
 // SendTest sends a simple verification message to the specified bot and chat.
 func (t *TelegramNotifier) SendTest(token, chatID string) error {
 	text := "🚀 This is a test notification from your shop. Your Telegram configuration is correct!"

@@ -228,7 +228,9 @@ func HandleProductCreate(kit *kit.Kit) error {
 	if len(categoryIDs) > 0 {
 		var categoriesToAssign []models.Category
 		if err := db.Get().Find(&categoriesToAssign, categoryIDs).Error; err == nil {
-			db.Get().Model(&product).Association("Categories").Replace(categoriesToAssign)
+			if err := db.Get().Model(&product).Association("Categories").Replace(categoriesToAssign); err != nil {
+				return err
+			}
 		}
 	}
 
@@ -326,7 +328,9 @@ func HandleProductEdit(kit *kit.Kit) error {
 	allCategories := helpers.GetCategoryTree()
 
 	// Preload existing categories for the product
-	db.Get().Model(&product).Association("Categories").Find(&product.Categories)
+	if err := db.Get().Model(&product).Association("Categories").Find(&product.Categories); err != nil {
+		return err
+	}
 
 	cfg := config.Get()
 	modal := products.EditModal(product, allCategories, cfg)
@@ -467,8 +471,12 @@ func HandleProductUpdate(kit *kit.Kit) error {
 	categoryIDs := kit.Request.Form["categories"]
 	if len(categoryIDs) > 0 {
 		var categoriesToAssign []models.Category
-		db.Get().Find(&categoriesToAssign, categoryIDs)
-		db.Get().Model(&product).Association("Categories").Replace(categoriesToAssign)
+		if err := db.Get().Find(&categoriesToAssign, categoryIDs).Error; err != nil {
+			return err
+		}
+		if err := db.Get().Model(&product).Association("Categories").Replace(categoriesToAssign); err != nil {
+			return err
+		}
 	}
 
 	product.Bundles = parseBundles(kit)

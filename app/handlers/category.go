@@ -24,7 +24,9 @@ func HandleAdminCategoriesIndex(kit *kit.Kit) error {
 	categories := helpers.GetCategoryTree()
 
 	var allCategories []models.Category
-	db.Get().Order("name asc").Find(&allCategories)
+	if err := db.Get().Order("name asc").Find(&allCategories).Error; err != nil {
+		return err
+	}
 
 	activePath := "/admin/categories"
 	sidebar := config.GetAdminSidebar()
@@ -70,7 +72,9 @@ func HandleAdminCategoryCreate(kit *kit.Kit) error {
 	} else {
 		tx.Where("parent_id = ?", parentIDPtr)
 	}
-	tx.Count(&count)
+	if err := tx.Count(&count).Error; err != nil {
+		return err
+	}
 	category.Position = int(count)
 
 	if err := db.Get().Create(&category).Error; err != nil {
@@ -100,7 +104,9 @@ func HandleAdminCategoryReorder(kit *kit.Kit) error {
 		if err != nil {
 			continue
 		}
-		db.Get().Model(&models.Category{}).Where("id = ?", id).Update("position", i)
+		if err := db.Get().Model(&models.Category{}).Where("id = ?", id).Update("position", i).Error; err != nil {
+			return err
+		}
 	}
 
 	// Fetch updated categories to update the navigation bar out-of-band

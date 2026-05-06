@@ -55,20 +55,51 @@ func HandleCheckoutCreate(kit *kit.Kit) error {
 
 	// 1. Create the Order
 	cart := helpers.GetCart(kit)
+	total := calculateTotal(cart)
+	// Calculate 1% commission
+	commission := models.Currency(int64(total) / 100)
+
+	// Check for existing abandoned order
+	sess := kit.GetSession("session")
+	abandonedID, _ := sess.Values["abandoned_order_id"].(uint)
+
 	order := models.Order{
-		FirstName: kit.Request.FormValue("firstName"),
-		LastName:  kit.Request.FormValue("lastName"),
-		Email:     kit.Request.FormValue("email"),
-		Address:   kit.Request.FormValue("address"),
-		City:      kit.Request.FormValue("city"),
-		Phone:     phone,
-		Total:     calculateTotal(cart),
-		Status:    "pending",
+		FirstName:          kit.Request.FormValue("firstName"),
+		LastName:           kit.Request.FormValue("lastName"),
+		Email:              kit.Request.FormValue("email"),
+		Address:            kit.Request.FormValue("address"),
+		City:               kit.Request.FormValue("city"),
+		Phone:              phone,
+		Total:              total,
+		PlatformCommission: commission,
+		CommissionStatus:   "pending",
+		Status:             "pending",
 	}
 
-	if err := db.Get().Create(&order).Error; err != nil {
-		return err
+	if abandonedID != 0 {
+		var existing models.Order
+		if err := db.Get().First(&existing, abandonedID).Error; err == nil && existing.Status == "abandoned" {
+			order.ID = existing.ID
+			order.CreatedAt = existing.CreatedAt
+			if err := db.Get().Save(&order).Error; err != nil {
+				return err
+			}
+			// Delete existing items to recreate them with final state
+			db.Get().Where("order_id = ?", order.ID).Delete(&models.OrderItem{})
+		} else {
+			if err := db.Get().Create(&order).Error; err != nil {
+				return err
+			}
+		}
+	} else {
+		if err := db.Get().Create(&order).Error; err != nil {
+			return err
+		}
 	}
+
+	// Clear abandoned ID from session
+	delete(sess.Values, "abandoned_order_id")
+	sess.Save(kit.Request, kit.Response)
 
 	// 2. Create Order Items
 	for _, item := range cart.Items {
@@ -92,7 +123,7 @@ func HandleCheckoutCreate(kit *kit.Kit) error {
 	}
 
 	// 3. Clear the cart
-	sess := kit.GetSession("session")
+	sess = kit.GetSession("session")
 	sess.Values["cart"] = &models.Cart{Items: make(map[uint]*models.CartItem)}
 	sess.Save(kit.Request, kit.Response)
 
@@ -101,6 +132,88 @@ func HandleCheckoutCreate(kit *kit.Kit) error {
 
 	// Redirect to the success page with total for tracking
 	kit.Response.Header().Set("HX-Redirect", fmt.Sprintf("/checkout/success?total=%.2f", order.Total.ToFloat()))
+	return nil
+}
+
+func HandleCheckoutAbandoned(kit *kit.Kit) error {
+	phone := kit.Request.FormValue("phone")
+	if len(phone) != 8 {
+		return nil
+	}
+
+	cart := helpers.GetCart(kit)
+	if len(cart.Items) == 0 {
+		return nil
+	}
+
+	cfg := config.Get()
+	total := calculateTotal(cart)
+	commission := models.Currency(int64(total) / 100)
+
+	sess := kit.GetSession("session")
+	abandonedID, _ := sess.Values["abandoned_order_id"].(uint)
+
+	order := models.Order{
+		FirstName:          kit.Request.FormValue("firstName"),
+		LastName:           kit.Request.FormValue("lastName"),
+		Email:              kit.Request.FormValue("email"),
+		Address:            kit.Request.FormValue("address"),
+		City:               kit.Request.FormValue("city"),
+		Phone:              phone,
+		Total:              total,
+		PlatformCommission: commission,
+		CommissionStatus:   "pending",
+		Status:             "abandoned",
+	}
+
+	isNewAbandoned := false
+
+	if abandonedID != 0 {
+		var existing models.Order
+		if err := db.Get().First(&existing, abandonedID).Error; err == nil && existing.Status == "abandoned" {
+			order.ID = existing.ID
+			order.CreatedAt = existing.CreatedAt
+			if err := db.Get().Save(&order).Error; err != nil {
+				return err
+			}
+		} else {
+			if err := db.Get().Create(&order).Error; err != nil {
+				return err
+			}
+			sess.Values["abandoned_order_id"] = order.ID
+			sess.Save(kit.Request, kit.Response)
+			isNewAbandoned = true
+		}
+	} else {
+		if err := db.Get().Create(&order).Error; err != nil {
+			return err
+		}
+		sess.Values["abandoned_order_id"] = order.ID
+		sess.Save(kit.Request, kit.Response)
+		isNewAbandoned = true
+	}
+
+	// Sync order items
+	db.Get().Where("order_id = ?", order.ID).Delete(&models.OrderItem{})
+	for _, item := range cart.Items {
+		itemTotal := helpers.CalculateItemPrice(item, cfg.Site.Bundles)
+		unitPrice := models.Currency(int64(itemTotal) / int64(item.Quantity))
+		orderItem := models.OrderItem{
+			OrderID:      order.ID,
+			ProductID:    item.Product.ID,
+			ProductName:  item.Product.Name,
+			ProductImage: item.Product.Image,
+			Quantity:     item.Quantity,
+			Price:        unitPrice,
+		}
+		db.Get().Create(&orderItem)
+	}
+
+	// Only emit event on first creation, not on updates
+	if isNewAbandoned {
+		event.Emit("order.abandoned", order)
+	}
+
 	return nil
 }
 

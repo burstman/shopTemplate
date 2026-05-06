@@ -139,6 +139,7 @@ func InitializeRoutes(router *chi.Mux) {
 		app.Delete("/cart/remove/{id}", kit.Handler(handlers.HandleCartRemove))
 		app.Get("/cart", kit.Handler(handlers.HandleCartShow))
 		app.Get("/checkout", kit.Handler(handlers.HandleCheckoutIndex))
+		app.Post("/checkout/abandoned", kit.Handler(handlers.HandleCheckoutAbandoned))
 		app.Get("/checkout/success", kit.Handler(handlers.HandleCheckoutSuccess))
 		app.Post("/checkout", kit.Handler(handlers.HandleCheckoutCreate))
 		app.Get("/api/chat/messages", kit.Handler(handlers.HandleChatFetchMessages))

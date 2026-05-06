@@ -29,4 +29,14 @@ func RegisterEvents() {
 			slog.Info("finished processing purchase event for Facebook CAPI", "order_id", order.ID)
 		}
 	})
+
+	event.Subscribe("order.abandoned", func(ctx context.Context, data any) {
+		slog.Debug("order.abandoned event triggered")
+		order, ok := data.(models.Order)
+		if ok {
+			slog.Info("processing initiate checkout event for Facebook CAPI", "order_id", order.ID)
+			capiSvc.SendInitiateCheckoutEvent(order)
+			notificationSvc.NotifyAbandoned(order)
+		}
+	})
 }

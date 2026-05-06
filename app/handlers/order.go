@@ -31,17 +31,27 @@ func HandleAdminOrdersIndex(kit *kit.Kit) error {
 	perPage := 10
 
 	var total int64
-	db.Get().Model(&models.Order{}).Count(&total)
+	if err := db.Get().Model(&models.Order{}).Count(&total).Error; err != nil {
+		return err
+	}
 	totalPages := int(math.Ceil(float64(total) / float64(perPage)))
 	offset := (page - 1) * perPage
 
 	var ordersList []models.Order
-	db.Get().Order("created_at desc").Limit(perPage).Offset(offset).Find(&ordersList)
+	if err := db.Get().Order("created_at desc").Limit(perPage).Offset(offset).Find(&ordersList).Error; err != nil {
+		return err
+	}
+
+	// Calculate total platform commission (from all orders ever placed)
+	var totalComm models.Currency
+	if err := db.Get().Model(&models.Order{}).Select("COALESCE(SUM(platform_commission), 0)").Scan(&totalComm).Error; err != nil {
+		return err
+	}
 
 	cfg := config.Get()
 	activePath := "/admin/orders"
 	sidebar := config.GetAdminSidebar()
-	content := orders.Index(ordersList, page, totalPages, cfg)
+	content := orders.Index(ordersList, page, totalPages, totalComm, cfg)
 	return RenderAdminWithLayout(kit, sidebar, activePath, content)
 }
 
@@ -92,6 +102,10 @@ func HandleAdminOrderUpdateStatus(kit *kit.Kit) error {
 		}
 	case "shipped":
 		if newStatus == "completed" || newStatus == "pending" {
+			allowed = true
+		}
+	case "abandoned":
+		if newStatus == "pending" || newStatus == "cancelled" {
 			allowed = true
 		}
 	}

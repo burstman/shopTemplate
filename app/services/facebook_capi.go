@@ -111,6 +111,29 @@ func (s *FacebookCAPIService) SendPurchaseEvent(order models.Order) {
 	s.sendEvents([]capiEvent{event})
 }
 
+func (s *FacebookCAPIService) SendInitiateCheckoutEvent(order models.Order) {
+	userData := capiUserData{
+		Email:     []string{hashString(order.Email)},
+		Phone:     []string{hashString(order.Phone)},
+		FirstName: []string{hashString(order.FirstName)},
+		LastName:  []string{hashString(order.LastName)},
+	}
+
+	v := order.Total.ToFloat()
+	event := capiEvent{
+		EventName:    "InitiateCheckout",
+		EventTime:    time.Now().Unix(),
+		ActionSource: "website",
+		UserData:     userData,
+		CustomData: capiCustomData{
+			Currency: s.getCurrency(),
+			Value:    &v,
+		},
+	}
+
+	s.sendEvents([]capiEvent{event})
+}
+
 func (s *FacebookCAPIService) sendEvents(events []capiEvent) {
 	if s.cfg.FacebookPixel.PixelID == "" || s.cfg.FacebookPixel.AccessToken == "" {
 		return

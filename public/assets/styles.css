@@ -826,6 +826,10 @@ label {
   left: 0px;
 }
 
+.left-1 {
+  left: 0.25rem;
+}
+
 .left-1\/2 {
   left: 50%;
 }
@@ -862,6 +866,10 @@ label {
   top: 0px;
 }
 
+.top-1 {
+  top: 0.25rem;
+}
+
 .top-1\/2 {
   top: 50%;
 }
@@ -876,14 +884,6 @@ label {
 
 .top-4 {
   top: 1rem;
-}
-
-.left-1 {
-  left: 0.25rem;
-}
-
-.top-1 {
-  top: 0.25rem;
 }
 
 .isolate {
@@ -1901,6 +1901,10 @@ label {
   border-color: hsl(var(--primary) / var(--tw-border-opacity));
 }
 
+.border-primary\/20 {
+  border-color: hsl(var(--primary) / 0.2);
+}
+
 .border-primary\/30 {
   border-color: hsl(var(--primary) / 0.3);
 }
@@ -1953,6 +1957,10 @@ label {
 
 .bg-black\/50 {
   background-color: rgb(0 0 0 / 0.5);
+}
+
+.bg-black\/60 {
+  background-color: rgb(0 0 0 / 0.6);
 }
 
 .bg-black\/80 {
@@ -2141,10 +2149,6 @@ label {
   background-color: rgb(254 249 195 / var(--tw-bg-opacity));
 }
 
-.bg-black\/60 {
-  background-color: rgb(0 0 0 / 0.6);
-}
-
 .bg-opacity-100 {
   --tw-bg-opacity: 1;
 }
@@ -2192,6 +2196,10 @@ label {
   padding: 0.25rem;
 }
 
+.p-1\.5 {
+  padding: 0.375rem;
+}
+
 .p-2 {
   padding: 0.5rem;
 }
@@ -2210,10 +2218,6 @@ label {
 
 .p-8 {
   padding: 2rem;
-}
-
-.p-1\.5 {
-  padding: 0.375rem;
 }
 
 .px-0 {
@@ -2465,6 +2469,10 @@ label {
   font-size: 10px;
 }
 
+.text-\[8px\] {
+  font-size: 8px;
+}
+
 .text-base {
   font-size: 1rem;
   line-height: 1.5rem;
@@ -2490,8 +2498,8 @@ label {
   line-height: 1rem;
 }
 
-.text-\[8px\] {
-  font-size: 8px;
+.font-black {
+  font-weight: 900;
 }
 
 .font-bold {
@@ -2665,6 +2673,14 @@ label {
 .text-primary-foreground {
   --tw-text-opacity: 1;
   color: hsl(var(--primary-foreground) / var(--tw-text-opacity));
+}
+
+.text-primary\/40 {
+  color: hsl(var(--primary) / 0.4);
+}
+
+.text-primary\/60 {
+  color: hsl(var(--primary) / 0.6);
 }
 
 .text-red-500 {
@@ -2881,6 +2897,11 @@ label {
 
 .ring-offset-background {
   --tw-ring-offset-color: hsl(var(--background) / 1);
+}
+
+.blur {
+  --tw-blur: blur(8px);
+  filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow);
 }
 
 .filter {
@@ -3209,6 +3230,11 @@ label {
   background-color: hsl(var(--muted) / 0.5);
 }
 
+.hover\:bg-primary:hover {
+  --tw-bg-opacity: 1;
+  background-color: hsl(var(--primary) / var(--tw-bg-opacity));
+}
+
 .hover\:bg-primary\/20:hover {
   background-color: hsl(var(--primary) / 0.2);
 }
@@ -3249,11 +3275,6 @@ label {
 .hover\:bg-white:hover {
   --tw-bg-opacity: 1;
   background-color: rgb(255 255 255 / var(--tw-bg-opacity));
-}
-
-.hover\:bg-primary:hover {
-  --tw-bg-opacity: 1;
-  background-color: hsl(var(--primary) / var(--tw-bg-opacity));
 }
 
 .hover\:text-foreground:hover {

@@ -108,7 +108,9 @@ func HandleChatWS(kit *kit.Kit) error {
 
 	if !isAdmin {
 		var session models.ChatSession
-		db.Get().Where("identifier = ?", id).FirstOrCreate(&session, models.ChatSession{Identifier: id})
+		if err := db.Get().Where("identifier = ?", id).FirstOrCreate(&session, models.ChatSession{Identifier: id}).Error; err != nil {
+			slog.Error("failed to find or create chat session", "err", err, "id", id)
+		}
 		fullName := strings.TrimSpace(user.FirstName + " " + user.LastName)
 
 		if user.LoggedIn && fullName != "" && session.CustomerName != fullName {
@@ -255,7 +257,9 @@ func HandleChatSend(kit *kit.Kit) error {
 
 	// Update session activity for sidebar sorting and ensure it's saved
 	now := time.Now()
-	db.Get().Model(&session).Update("updated_at", now)
+	if err := db.Get().Model(&session).Update("updated_at", now).Error; err != nil {
+		return err
+	}
 	session.UpdatedAt = now
 
 	// Push to all connected admins
@@ -338,7 +342,9 @@ func HandleAdminChatIndex(kit *kit.Kit) error {
 
 	var sessions []models.ChatSession
 	// Get sessions ordered by most recent message
-	db.Get().Order("updated_at desc").Find(&sessions)
+	if err := db.Get().Order("updated_at desc").Find(&sessions).Error; err != nil {
+		return err
+	}
 
 	clientsMu.Lock()
 	onlineMap := make(map[string]bool)
@@ -367,7 +373,9 @@ func HandleAdminChatSidebar(kit *kit.Kit) error {
 	}
 
 	var sessions []models.ChatSession
-	db.Get().Order("updated_at desc").Find(&sessions)
+	if err := db.Get().Order("updated_at desc").Find(&sessions).Error; err != nil {
+		return err
+	}
 
 	clientsMu.Lock()
 	onlineMap := make(map[string]bool)
