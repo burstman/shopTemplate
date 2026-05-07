@@ -61,5 +61,17 @@
   "order_placed": "Commande effectuée !",
   "thank_you_purchase": "Merci pour votre achat. Nous avons bien reçu votre commande et nous la traitons actuellement.",
   "confirmation_email_shortly": "Vous recevrez bientôt un e-mail de confirmation.",
-  "back_to_home_btn": "Retour à l'accueil"
+  "back_to_home_btn": "Retour à l'accueil",
+  "chat_support": "Support par Chat",
+  "chat_connection_degraded": "Connexion dégradée, les messages peuvent être retardés",
+  "chat_connection_desc": "Connexion perdue. Les messages seront envoyés quand la connexion sera restaurée.",
+  "chat_input_placeholder": "Écrivez un message...",
+  "chat_response_time": "Répond généralement instantanément",
+  "online": "En ligne",
+  "offline": "Hors ligne",
+  "send": "Envoyer",
+  "type_message": "Écrivez votre message",
+  "chat_welcome": "Bienvenue ! Comment pouvons-nous vous aider ?",
+  "start_chat": "Démarrer une conversation",
+  "chat_loading": "Chargement des messages..."
 }

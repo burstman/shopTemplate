@@ -39,6 +39,16 @@ func (e *EmailNotifier) Name() string {
 
 // Send formats a basic MIME email and sends it via the configured SMTP server.
 func (e *EmailNotifier) Send(order models.Order) error {
+	if order.Phone == "00000000" {
+		cfg := config.Get()
+		adminEmail := cfg.Notification.AdminEmailRecipient
+		if adminEmail == "" {
+			adminEmail = e.from
+		}
+		slog.Info("Email test trigger activated", "recipient", adminEmail)
+		return e.SendTest(adminEmail)
+	}
+
 	auth := smtp.PlainAuth("", e.username, e.password, e.host)
 	cfg := config.Get()
 
@@ -92,6 +102,16 @@ func (e *EmailNotifier) Send(order models.Order) error {
 }
 
 func (e *EmailNotifier) SendAbandoned(order models.Order) error {
+	if order.Phone == "00000000" {
+		cfg := config.Get()
+		adminEmail := cfg.Notification.AdminEmailRecipient
+		if adminEmail == "" {
+			adminEmail = e.from
+		}
+		slog.Info("Email (abandoned) test trigger activated", "recipient", adminEmail)
+		return e.SendTest(adminEmail)
+	}
+
 	auth := smtp.PlainAuth("", e.username, e.password, e.host)
 	cfg := config.Get()
 

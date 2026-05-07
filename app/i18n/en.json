@@ -61,5 +61,17 @@
   "order_placed": "Order Placed!",
   "thank_you_purchase": "Thank you for your purchase. We have received your order and are processing it.",
   "confirmation_email_shortly": "You will receive a confirmation email shortly.",
-  "back_to_home_btn": "Back to Home"
+  "back_to_home_btn": "Back to Home",
+  "chat_support": "Chat Support",
+  "chat_connection_degraded": "Connection degraded, messages may be delayed",
+  "chat_connection_desc": "Live connection lost. Messages will be sent when connection is restored.",
+  "chat_input_placeholder": "Type a message...",
+  "chat_response_time": "Typically replies instantly",
+  "online": "Online",
+  "offline": "Offline",
+  "send": "Send",
+  "type_message": "Type your message",
+  "chat_welcome": "Welcome! How can we help you?",
+  "start_chat": "Start a chat",
+  "chat_loading": "Loading messages..."
 }

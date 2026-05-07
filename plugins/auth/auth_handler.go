@@ -214,12 +214,13 @@ func HandleGoogleCallback(kit *kit.Kit) error {
 	}
 
 	config := getGoogleConfig(kit)
-	token, err := config.Exchange(kit.Request.Context(), kit.Request.FormValue("code"))
+	tok, err := config.Exchange(kit.Request.Context(), kit.Request.FormValue("code"))
 	if err != nil {
 		return kit.Redirect(http.StatusSeeOther, "/login?error=auth_failed")
 	}
 
-	resp, err := http.Get("https://www.googleapis.com/oauth2/v2/userinfo?access_token=" + token.AccessToken)
+	client := config.Client(kit.Request.Context(), tok)
+	resp, err := client.Get("https://www.googleapis.com/oauth2/v2/userinfo")
 	if err != nil {
 		return err
 	}
@@ -260,12 +261,13 @@ func HandleFacebookCallback(kit *kit.Kit) error {
 	}
 
 	config := getFacebookConfig(kit)
-	token, err := config.Exchange(kit.Request.Context(), kit.Request.FormValue("code"))
+	tok, err := config.Exchange(kit.Request.Context(), kit.Request.FormValue("code"))
 	if err != nil {
 		return kit.Redirect(http.StatusSeeOther, "/login?error=auth_failed")
 	}
 
-	resp, err := http.Get("https://graph.facebook.com/me?fields=first_name,last_name,email&access_token=" + token.AccessToken)
+	client := config.Client(kit.Request.Context(), tok)
+	resp, err := client.Get("https://graph.facebook.com/me?fields=first_name,last_name,email")
 	if err != nil {
 		return err
 	}
@@ -304,7 +306,10 @@ func handleSocialLogin(kit *kit.Kit, email, firstName, lastName string) error {
 	}
 
 	sessionExpiryStr := kit.Getenv("SUPERKIT_AUTH_SESSION_EXPIRY_IN_HOURS", "48")
-	sessionExpiry, _ := strconv.Atoi(sessionExpiryStr)
+	sessionExpiry, err := strconv.Atoi(sessionExpiryStr)
+	if err != nil {
+		sessionExpiry = 48
+	}
 	if sessionExpiry == 0 {
 		sessionExpiry = 48
 	}

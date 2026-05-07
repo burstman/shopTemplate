@@ -42,9 +42,9 @@ func HandleAdminOrdersIndex(kit *kit.Kit) error {
 		return err
 	}
 
-	// Calculate total platform commission (from all orders ever placed)
+	// Calculate total platform commission (excluding test orders)
 	var totalComm models.Currency
-	if err := db.Get().Model(&models.Order{}).Select("COALESCE(SUM(platform_commission), 0)").Scan(&totalComm).Error; err != nil {
+	if err := db.Get().Model(&models.Order{}).Where("is_test = ?", false).Select("COALESCE(SUM(platform_commission), 0)").Scan(&totalComm).Error; err != nil {
 		return err
 	}
 
@@ -62,7 +62,10 @@ func HandleAdminOrderShow(kit *kit.Kit) error {
 	}
 
 	idStr := chi.URLParam(kit.Request, "id")
-	id, _ := strconv.Atoi(idStr)
+	id, err := strconv.Atoi(idStr)
+	if err != nil {
+		return kit.Render(viewerrors.Error500())
+	}
 
 	var order models.Order
 	if err := db.Get().Preload("Items.Product").First(&order, id).Error; err != nil {
@@ -85,7 +88,10 @@ func HandleAdminOrderUpdateStatus(kit *kit.Kit) error {
 	}
 
 	idStr := chi.URLParam(kit.Request, "id")
-	id, _ := strconv.Atoi(idStr)
+	id, err := strconv.Atoi(idStr)
+	if err != nil {
+		return err
+	}
 	newStatus := kit.Request.FormValue("status")
 
 	var order models.Order
@@ -128,7 +134,10 @@ func HandleAdminOrderDeleteConfirm(kit *kit.Kit) error {
 	}
 
 	idStr := chi.URLParam(kit.Request, "id")
-	id, _ := strconv.Atoi(idStr)
+	id, err := strconv.Atoi(idStr)
+	if err != nil {
+		return kit.Render(viewerrors.Error500())
+	}
 
 	var order models.Order
 	if err := db.Get().First(&order, id).Error; err != nil {
@@ -148,7 +157,10 @@ func HandleAdminOrderCancelConfirm(kit *kit.Kit) error {
 	}
 
 	idStr := chi.URLParam(kit.Request, "id")
-	id, _ := strconv.Atoi(idStr)
+	id, err := strconv.Atoi(idStr)
+	if err != nil {
+		return kit.Render(viewerrors.Error500())
+	}
 
 	var order models.Order
 	if err := db.Get().First(&order, id).Error; err != nil {

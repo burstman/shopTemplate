@@ -6,15 +6,18 @@ import (
 
 // CalculateItemPrice calculates the total price for a specific cart item, applying bundle discounts if applicable.
 // It prioritizes product-specific bundles if they exist, otherwise falls back to global bundles.
+// Bundles are only applied if the product has BundlesEnabled set to true.
 func CalculateItemPrice(item *models.CartItem, globalBundles []models.Bundle) models.Currency {
 	price := item.Product.Price
 	if item.Product.PromotionPrice > 0 {
 		price = item.Product.PromotionPrice
 	}
 
-	bundles := globalBundles
-	if len(item.Product.Bundles) > 0 {
+	var bundles []models.Bundle
+	if item.Product.BundlesEnabled && len(item.Product.Bundles) > 0 {
 		bundles = item.Product.Bundles
+	} else if len(globalBundles) > 0 {
+		bundles = globalBundles
 	}
 
 	// Find the best discount applicable for the quantity

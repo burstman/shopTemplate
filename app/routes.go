@@ -1,26 +1,27 @@
 package app
 
 import (
+	"context"
 	"log/slog"
+	"net/http"
+	"os"
 	"shopTemplate/app/handlers"
+	"shopTemplate/app/services"
 	"shopTemplate/app/views/errors"
 	"shopTemplate/plugins/auth"
-
-	"shopTemplate/app/services"
 	"strings"
-	"context"
-	"net/http"
 
 	"github.com/anthdm/superkit/kit"
 	"github.com/anthdm/superkit/kit/middleware"
 	"github.com/go-chi/chi/v5"
-
 	chimiddleware "github.com/go-chi/chi/v5/middleware"
+	"github.com/gorilla/csrf"
 )
 
 // Define your global middleware
 func InitializeMiddleware(router *chi.Mux) {
 	router.Use(chimiddleware.RequestID)
+	router.Use(CORSMiddleware)
 	router.Use(chimiddleware.RealIP)
 	router.Use(chimiddleware.Logger)
 	router.Use(chimiddleware.Recoverer)
@@ -29,10 +30,30 @@ func InitializeMiddleware(router *chi.Mux) {
 	router.Use(I18nMiddleware)
 }
 
+func CORSMiddleware(next http.Handler) http.Handler {
+	allowedOrigin := os.Getenv("ALLOWED_ORIGIN")
+	if allowedOrigin == "" {
+		allowedOrigin = "*"
+	}
+
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Access-Control-Allow-Origin", allowedOrigin)
+		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
+		w.Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, X-Requested-With, HX-Request, HX-Trigger, HX-Current-URL")
+
+		if r.Method == http.MethodOptions {
+			w.WriteHeader(http.StatusNoContent)
+			return
+		}
+
+		next.ServeHTTP(w, r)
+	})
+}
+
 func I18nMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		lang := "en" // default
-		
+
 		// Check cookie first
 		if cookie, err := r.Cookie("lang"); err == nil {
 			lang = cookie.Value
@@ -103,6 +124,21 @@ func FacebookCAPIMiddleware(next http.Handler) http.Handler {
 
 // Define your routes in here
 func InitializeRoutes(router *chi.Mux) {
+	// CSRF protection using gorilla/csrf
+	csrfMiddleware := csrf.Protect(
+		getCSRFKey(),
+		csrf.CookieName("_csrf_token"),
+		csrf.FieldName("csrf_token"),
+		csrf.RequestHeader("X-CSRF-Token"),
+		csrf.Secure(kit.IsProduction()),
+		csrf.Path("/"),
+		csrf.SameSite(csrf.SameSiteStrictMode),
+		csrf.ErrorHandler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			slog.Warn("CSRF validation failed", "path", r.URL.Path, "method", r.Method, "error", csrf.FailureReason(r).Error())
+			http.Error(w, "Forbidden - CSRF token invalid", http.StatusForbidden)
+		})),
+	)
+
 	// Authentication plugin
 	//
 	// By default the auth plugin is active, to disable the auth plugin
@@ -124,6 +160,7 @@ func InitializeRoutes(router *chi.Mux) {
 	// Routes that "might" have an authenticated user
 	router.Group(func(app chi.Router) {
 		app.Use(kit.WithAuthentication(authConfig, false)) // strict set to false
+		app.Use(csrfMiddleware)
 
 		// Routes
 		app.Get("/", kit.Handler(handlers.HandleLandingIndex))
@@ -153,6 +190,7 @@ func InitializeRoutes(router *chi.Mux) {
 	// AuthenticationConfig.
 	router.Group(func(app chi.Router) {
 		app.Use(kit.WithAuthentication(authConfig, true)) // strict set to true
+		app.Use(csrfMiddleware)
 
 		// Routes
 		app.Get("/admin/categories", kit.Handler(handlers.HandleAdminCategoriesIndex))
@@ -192,6 +230,14 @@ func InitializeRoutes(router *chi.Mux) {
 		app.Delete("/products/{id}", kit.Handler(handlers.HandleProductDelete))
 		// app.Get("/path", kit.Handler(myHandler.HandleIndex))
 	})
+}
+
+func getCSRFKey() []byte {
+	key := os.Getenv("SUPERKIT_SECRET")
+	if key == "" {
+		key = "fallback-secret-key-change-in-production"
+	}
+	return []byte(key)
 }
 
 // NotFoundHandler that will be called when the requested path could

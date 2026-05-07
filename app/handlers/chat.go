@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"log/slog"
 	"net/http"
+	"os"
 	"shopTemplate/app/config"
 	"shopTemplate/app/db"
 	"shopTemplate/app/models"
@@ -29,7 +30,14 @@ var (
 	upgrader = websocket.Upgrader{
 		ReadBufferSize:  1024,
 		WriteBufferSize: 1024,
-		CheckOrigin:     func(r *http.Request) bool { return true },
+		CheckOrigin: func(r *http.Request) bool {
+			allowedOrigin := os.Getenv("ALLOWED_ORIGIN")
+			if allowedOrigin == "" {
+				return r.Header.Get("Origin") == ""
+			}
+			origin := r.Header.Get("Origin")
+			return origin == allowedOrigin
+		},
 	}
 	// Active connections mapped by chat identifier
 	activeClients = make(map[string]*websocket.Conn)
@@ -403,10 +411,13 @@ func HandleAdminChatMessages(kit *kit.Kit) error {
 	}
 
 	sessionIDStr := chi.URLParam(kit.Request, "id")
-	sessionID, _ := strconv.Atoi(sessionIDStr)
+	sessionID, err := strconv.Atoi(sessionIDStr)
+	if err != nil {
+		return kit.Render(components.ChatMessages(config.Get(), []models.ChatMessage{}))
+	}
 
 	var session models.ChatSession
-	err := db.Get().
+	err = db.Get().
 		Preload("Messages", "1=1 ORDER BY created_at ASC").
 		First(&session, sessionID).Error
 	if err != nil {
@@ -428,10 +439,13 @@ func HandleAdminChatShow(kit *kit.Kit) error {
 	}
 
 	sessionIDStr := chi.URLParam(kit.Request, "id")
-	sessionID, _ := strconv.Atoi(sessionIDStr)
+	sessionID, err := strconv.Atoi(sessionIDStr)
+	if err != nil {
+		return err
+	}
 
 	var session models.ChatSession
-	err := db.Get().
+	err = db.Get().
 		Preload("Messages", func(db *gorm.DB) *gorm.DB {
 			return db.Order("created_at ASC")
 		}).
@@ -463,7 +477,10 @@ func HandleAdminChatSend(kit *kit.Kit) error {
 	}
 
 	sessionIDStr := chi.URLParam(kit.Request, "id")
-	sessionID, _ := strconv.Atoi(sessionIDStr)
+	sessionID, err := strconv.Atoi(sessionIDStr)
+	if err != nil {
+		return err
+	}
 	content := kit.Request.FormValue("message")
 
 	if strings.TrimSpace(content) == "" {
@@ -656,7 +673,10 @@ func HandleAdminChatBan(kit *kit.Kit) error {
 	}
 
 	sessionIDStr := chi.URLParam(kit.Request, "id")
-	sessionID, _ := strconv.Atoi(sessionIDStr)
+	sessionID, err := strconv.Atoi(sessionIDStr)
+	if err != nil {
+		return err
+	}
 
 	var session models.ChatSession
 	if err := db.Get().First(&session, sessionID).Error; err != nil {

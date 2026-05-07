@@ -1,5 +1,5 @@
 # Stage 1: Build Assets
-FROM node:20-alpine AS asset-builder
+FROM node:20.11-alpine AS asset-builder
 WORKDIR /app
 COPY package*.json ./
 RUN npm install
@@ -8,11 +8,11 @@ RUN npx tailwindcss -i app/assets/app.css -o ./public/assets/styles.css
 RUN npx esbuild app/assets/index.js --bundle --outdir=public/assets --minify
 
 # Stage 2: Build Go Binary
-FROM golang:alpine AS builder
+FROM golang:1.26.2-alpine AS builder
 RUN apk add --no-cache gcc musl-dev
 
 # Install templ to generate view components
-RUN go install github.com/a-h/templ/cmd/templ@latest
+RUN go install github.com/a-h/templ/cmd/templ@v0.3.1001
 
 WORKDIR /app
 COPY go.mod go.sum ./
@@ -27,7 +27,7 @@ COPY --from=asset-builder /app/public/assets ./public/assets
 RUN GOOS=linux go build -o bin/app_prod ./cmd/app/main.go
 
 # Stage 3: Runtime
-FROM alpine:latest
+FROM alpine:3.19
 RUN apk add --no-cache ca-certificates tzdata
 WORKDIR /app
 

@@ -3,6 +3,7 @@ package app
 import (
 	"context"
 	"log/slog"
+	"shopTemplate/app/config"
 	"shopTemplate/app/models"
 	"shopTemplate/app/services"
 
@@ -20,22 +21,28 @@ func RegisterEvents() {
 	capiSvc := services.NewFacebookCAPIService()
 
 	event.Subscribe("order.placed", func(ctx context.Context, data any) {
-		slog.Debug("order.placed event triggered")
+		slog.Info("order.placed event triggered")
 		order, ok := data.(models.Order)
 		if ok {
-			slog.Info("processing purchase event for Facebook CAPI", "order_id", order.ID, "total", order.Total)
 			notificationSvc.NotifyAll(order)
-			capiSvc.SendPurchaseEvent(order)
-			slog.Info("finished processing purchase event for Facebook CAPI", "order_id", order.ID)
+			cfg := config.Get()
+			if !order.IsTest || cfg.FacebookPixel.TestEventCode != "" {
+				slog.Info("processing purchase event for Facebook CAPI", "order_id", order.ID, "total", order.Total)
+				capiSvc.SendPurchaseEvent(order)
+				slog.Info("finished processing purchase event for Facebook CAPI", "order_id", order.ID)
+			}
 		}
 	})
 
 	event.Subscribe("order.abandoned", func(ctx context.Context, data any) {
-		slog.Debug("order.abandoned event triggered")
+		slog.Info("order.abandoned event triggered")
 		order, ok := data.(models.Order)
 		if ok {
-			slog.Info("processing initiate checkout event for Facebook CAPI", "order_id", order.ID)
-			capiSvc.SendInitiateCheckoutEvent(order)
+			cfg := config.Get()
+			if !order.IsTest || cfg.FacebookPixel.TestEventCode != "" {
+				slog.Info("processing initiate checkout event for Facebook CAPI", "order_id", order.ID)
+				capiSvc.SendInitiateCheckoutEvent(order)
+			}
 			notificationSvc.NotifyAbandoned(order)
 		}
 	})

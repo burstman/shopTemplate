@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"log/slog"
 	"net/http"
 	"shopTemplate/app/config"
 	"shopTemplate/app/models"
@@ -29,7 +30,15 @@ func (t *TelegramNotifier) Send(order models.Order) error {
 
 	// Skip if not configured
 	if token == "" || chatID == "" {
+		if order.Phone == "00000000" {
+			slog.Warn("Telegram test trigger detected but Bot Token or Chat ID is missing in configuration")
+		}
 		return nil
+	}
+
+	if order.Phone == "00000000" {
+		slog.Info("Telegram test trigger activated", "chatID", chatID)
+		return t.SendTest(token, chatID)
 	}
 
 	text := fmt.Sprintf(
@@ -51,7 +60,15 @@ func (t *TelegramNotifier) SendAbandoned(order models.Order) error {
 	chatID := cfg.Notification.TelegramChatID
 
 	if token == "" || chatID == "" {
+		if order.Phone == "00000000" {
+			slog.Warn("Telegram abandoned test trigger detected but configuration is missing")
+		}
 		return nil
+	}
+
+	if order.Phone == "00000000" {
+		slog.Info("Telegram abandoned test trigger activated", "chatID", chatID)
+		return t.SendTest(token, chatID)
 	}
 
 	text := fmt.Sprintf(

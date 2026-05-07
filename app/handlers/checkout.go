@@ -3,6 +3,7 @@ package handlers
 import (
 	"fmt"
 	"log/slog"
+	"math"
 	"regexp"
 	"shopTemplate/app/config"
 	"shopTemplate/app/db"
@@ -10,6 +11,7 @@ import (
 	"shopTemplate/app/models"
 	"shopTemplate/app/views/checkout"
 	"strconv"
+	"time"
 
 	"github.com/anthdm/superkit/event"
 	"github.com/anthdm/superkit/kit"
@@ -25,7 +27,10 @@ func HandleCheckoutIndex(kit *kit.Kit) error {
 func HandleCheckoutSuccess(kit *kit.Kit) error {
 	cfg := config.Get()
 	totalStr := kit.Request.URL.Query().Get("total")
-	total, _ := strconv.ParseFloat(totalStr, 64)
+	total, err := strconv.ParseFloat(totalStr, 64)
+	if err != nil {
+		total = 0
+	}
 	return RenderWithLayout(kit, checkout.Success(cfg, total))
 }
 
@@ -35,8 +40,8 @@ func HandleCheckoutCreate(kit *kit.Kit) error {
 	cfg := config.Get()
 
 	// Server-side validation for exactly 8 digits
-	matched, _ := regexp.MatchString(`^[0-9]{8}$`, phone)
-	if !matched {
+	matched, err := regexp.MatchString(`^[0-9]{8}$`, phone)
+	if err != nil || !matched {
 		errors.Add("phone", "Phone number must be exactly 8 digits")
 	}
 
@@ -56,8 +61,15 @@ func HandleCheckoutCreate(kit *kit.Kit) error {
 	// 1. Create the Order
 	cart := helpers.GetCart(kit)
 	total := calculateTotal(cart)
-	// Calculate 1% commission
-	commission := models.Currency(int64(total) / 100)
+	// Calculate 1% commission with proper rounding
+	commission := models.Currency(math.Round(float64(total) / 100.0))
+
+	// Detect test order (phone = 00000000)
+	isTest := phone == "00000000"
+	if isTest {
+		slog.Info("test order detected during checkout", "phone", phone)
+		commission = 0
+	}
 
 	// Check for existing abandoned order
 	sess := kit.GetSession("session")
@@ -73,12 +85,18 @@ func HandleCheckoutCreate(kit *kit.Kit) error {
 		Total:              total,
 		PlatformCommission: commission,
 		CommissionStatus:   "pending",
-		Status:             "pending",
+		Status: func() string {
+			if isTest {
+				return "test"
+			}
+			return "pending"
+		}(),
+		IsTest: isTest,
 	}
 
 	if abandonedID != 0 {
 		var existing models.Order
-		if err := db.Get().First(&existing, abandonedID).Error; err == nil && existing.Status == "abandoned" {
+		if err := db.Get().First(&existing, abandonedID).Error; err == nil && (existing.Status == "abandoned" || existing.Status == "test") {
 			order.ID = existing.ID
 			order.CreatedAt = existing.CreatedAt
 			if err := db.Get().Save(&order).Error; err != nil {
@@ -104,7 +122,8 @@ func HandleCheckoutCreate(kit *kit.Kit) error {
 	// 2. Create Order Items
 	for _, item := range cart.Items {
 		itemTotal := helpers.CalculateItemPrice(item, cfg.Site.Bundles)
-		unitPrice := models.Currency(int64(itemTotal) / int64(item.Quantity))
+		// Use proper rounding to avoid precision loss on division
+		unitPrice := models.Currency(math.Round(float64(itemTotal) / float64(item.Quantity)))
 
 		orderItem := models.OrderItem{
 			OrderID:      order.ID,
@@ -127,8 +146,20 @@ func HandleCheckoutCreate(kit *kit.Kit) error {
 	sess.Values["cart"] = &models.Cart{Items: make(map[uint]*models.CartItem)}
 	sess.Save(kit.Request, kit.Response)
 
-	// Emit the order placement event
-	event.Emit("order.placed", order)
+	// Emit events.
+	if isTest {
+		lastTest, _ := sess.Values["last_test_notified_at"].(int64)
+		if time.Now().Unix()-lastTest >= 60 {
+			slog.Info("triggering test notification for 8 zeros")
+			event.Emit("order.placed", order)
+			sess.Values["last_test_notified_at"] = time.Now().Unix()
+			sess.Save(kit.Request, kit.Response)
+		} else {
+			slog.Info("test notification rate limited, skipping")
+		}
+	} else {
+		event.Emit("order.placed", order)
+	}
 
 	// Redirect to the success page with total for tracking
 	kit.Response.Header().Set("HX-Redirect", fmt.Sprintf("/checkout/success?total=%.2f", order.Total.ToFloat()))
@@ -148,7 +179,19 @@ func HandleCheckoutAbandoned(kit *kit.Kit) error {
 
 	cfg := config.Get()
 	total := calculateTotal(cart)
-	commission := models.Currency(int64(total) / 100)
+	commission := models.Currency(math.Round(float64(total) / 100.0))
+
+	// Detect test order (phone = 00000000)
+	isTest := phone == "00000000"
+	if isTest {
+		slog.Info("test order detected during abandoned checkout processing", "phone", phone)
+		commission = 0
+	}
+
+	status := "abandoned"
+	if isTest {
+		status = "test"
+	}
 
 	sess := kit.GetSession("session")
 	abandonedID, _ := sess.Values["abandoned_order_id"].(uint)
@@ -163,14 +206,15 @@ func HandleCheckoutAbandoned(kit *kit.Kit) error {
 		Total:              total,
 		PlatformCommission: commission,
 		CommissionStatus:   "pending",
-		Status:             "abandoned",
+		Status:             status,
+		IsTest:             isTest,
 	}
 
 	isNewAbandoned := false
 
 	if abandonedID != 0 {
 		var existing models.Order
-		if err := db.Get().First(&existing, abandonedID).Error; err == nil && existing.Status == "abandoned" {
+		if err := db.Get().First(&existing, abandonedID).Error; err == nil && (existing.Status == "abandoned" || existing.Status == "test") {
 			order.ID = existing.ID
 			order.CreatedAt = existing.CreatedAt
 			if err := db.Get().Save(&order).Error; err != nil {
@@ -197,7 +241,7 @@ func HandleCheckoutAbandoned(kit *kit.Kit) error {
 	db.Get().Where("order_id = ?", order.ID).Delete(&models.OrderItem{})
 	for _, item := range cart.Items {
 		itemTotal := helpers.CalculateItemPrice(item, cfg.Site.Bundles)
-		unitPrice := models.Currency(int64(itemTotal) / int64(item.Quantity))
+		unitPrice := models.Currency(math.Round(float64(itemTotal) / float64(item.Quantity)))
 		orderItem := models.OrderItem{
 			OrderID:      order.ID,
 			ProductID:    item.Product.ID,
@@ -209,8 +253,19 @@ func HandleCheckoutAbandoned(kit *kit.Kit) error {
 		db.Get().Create(&orderItem)
 	}
 
-	// Only emit event on first creation, not on updates
-	if isNewAbandoned {
+	// Only emit event on first creation, or if it's a test trigger with rate limiting
+	shouldNotify := isNewAbandoned
+	if isTest {
+		lastTest, _ := sess.Values["last_test_notified_at"].(int64)
+		if time.Now().Unix()-lastTest >= 60 {
+			shouldNotify = true
+			sess.Values["last_test_notified_at"] = time.Now().Unix()
+			sess.Save(kit.Request, kit.Response)
+			slog.Info("triggering test abandoned notification for 8 zeros")
+		}
+	}
+
+	if shouldNotify {
 		event.Emit("order.abandoned", order)
 	}
 

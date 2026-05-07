@@ -4,12 +4,13 @@ import (
 	"errors"
 	"fmt"
 	"log"
+	"log/slog"
 	"math"
 	"net/http"
 	"os"
+	"sort"
 	"strconv"
 	"strings"
-	"sort"
 
 	"shopTemplate/app/config"
 	"shopTemplate/app/db"
@@ -288,7 +289,9 @@ func HandleProductDelete(kit *kit.Kit) error {
 
 	for _, img := range product.Images {
 		if len(img) > 1 && img[0] == '/' {
-			os.Remove(strings.TrimPrefix(img, "/"))
+			if err := os.Remove(strings.TrimPrefix(img, "/")); err != nil {
+				slog.Warn("failed to remove product image", "path", img, "error", err)
+			}
 		}
 	}
 
@@ -411,12 +414,13 @@ func HandleProductUpdate(kit *kit.Kit) error {
 			break
 		}
 		file, err := header.Open()
-		if err == nil {
-			url, err := helpers.UploadImage(file, header, "products", "plant")
-			file.Close()
-			if err == nil {
-				product.Images = append(product.Images, url)
-			}
+		if err != nil {
+			continue
+		}
+		url, uploadErr := helpers.UploadImage(file, header, "products", "plant")
+		file.Close()
+		if uploadErr == nil {
+			product.Images = append(product.Images, url)
 		}
 	}
 
@@ -434,7 +438,9 @@ func HandleProductUpdate(kit *kit.Kit) error {
 			}
 			if shouldDelete {
 				if len(img) > 1 && img[0] == '/' {
-					os.Remove(strings.TrimPrefix(img, "/"))
+					if err := os.Remove(strings.TrimPrefix(img, "/")); err != nil {
+						slog.Warn("failed to remove deleted product image", "path", img, "error", err)
+					}
 				}
 			} else {
 				updatedImages = append(updatedImages, img)

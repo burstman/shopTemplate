@@ -74,7 +74,11 @@ func HandleCartAdd(kit *kit.Kit) error {
 				ip = strings.Split(forwarded, ",")[0]
 			}
 			ua := kit.Request.UserAgent()
-			price := product.Price.ToFloat() * float64(qty)
+			price := product.Price.ToFloat()
+			if product.PromotionPrice > 0 {
+				price = product.PromotionPrice.ToFloat()
+			}
+			price = price * float64(qty)
 			capiSvc.SendAddToCartEvent(uint(id), product.Name, price, url, ip, ua)
 		}
 	}(id, qty)

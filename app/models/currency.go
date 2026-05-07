@@ -41,6 +41,14 @@ func (c Currency) Multiply(q int) Currency {
 	return c * Currency(q)
 }
 
+// Divide divides the currency value by a divisor with proper rounding.
+func (c Currency) Divide(d int) Currency {
+	if d == 0 {
+		return 0
+	}
+	return Currency(math.Round(float64(c) / float64(d)))
+}
+
 // ToFloat converts the internal integer representation back to a float64.
 func (c Currency) ToFloat() float64 {
 	return float64(c) / multiplier

@@ -14,6 +14,7 @@ type Order struct {
 	PlatformCommission Currency `gorm:"type:numeric(12,2)"`
 	CommissionStatus   string   `gorm:"default:pending"` // pending, paid, cancelled
 	Status             string   // pending, completed, cancelled
+	IsTest             bool     `gorm:"default:false"`
 	Items              []OrderItem
 }
 
