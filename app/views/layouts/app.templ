@@ -14,12 +14,13 @@ script initFacebookPixel(id string) {
     fbq('track', 'PageView');
 }
 
-templ App(user models.AuthUser, cfg *config.Config, categories []models.Category, cartCount int, content templ.Component) {
+templ App(user models.AuthUser, cfg *config.Config, categories []models.Category, cartCount int, content templ.Component, csrfToken string) {
 	<!DOCTYPE html>
 	<html lang="en" class="h-full">
 		<head>
 			<meta charset="UTF-8"/>
 			<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+			<meta name="csrf-token" content={ csrfToken } />
 			<title>{ cfg.Site.Name }</title>
 			if cfg.FacebookPixel.DomainVerification != "" {
 				<meta name="facebook-domain-verification" content={ cfg.FacebookPixel.DomainVerification } />
@@ -67,6 +68,12 @@ templ App(user models.AuthUser, cfg *config.Config, categories []models.Category
 						evt.preventDefault();
 					}
 				});
+				document.addEventListener('htmx:configRequest', (evt) => {
+					const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+					if (csrfToken) {
+						evt.detail.headers['X-CSRF-Token'] = csrfToken;
+					}
+				});
 			</script>
 		</head>
 		<body 
@@ -105,12 +112,13 @@ func GetContentStyle(cfg *config.Config) string {
 	return fmt.Sprintf("background-color: %s;", cfg.Theme.ContentBgColor)
 }
 
-templ AdminPage(user models.AuthUser, cfg *config.Config, categories []models.Category, cartCount int, sidebar []config.MenuItem, activePath string, content templ.Component) {
+templ AdminPage(user models.AuthUser, cfg *config.Config, categories []models.Category, cartCount int, sidebar []config.MenuItem, activePath string, content templ.Component, csrfToken string) {
 	<!DOCTYPE html>
 	<html lang="en" class="h-full bg-gray-100">
 		<head>
 			<meta charset="UTF-8"/>
 			<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+			<meta name="csrf-token" content={ csrfToken } />
 			<title>Admin Dashboard</title>
 			<link rel="stylesheet" href="/public/assets/styles.css"/>
 			<script src="https://unpkg.com/htmx.org@1.9.10"></script>
@@ -137,6 +145,12 @@ templ AdminPage(user models.AuthUser, cfg *config.Config, categories []models.Ca
 						const target = selector ? document.querySelector(selector) : (evt.detail.target || document.getElementById(evt.detail.elt.id));
 						if (target) target.remove();
 						evt.preventDefault();
+					}
+				});
+				document.addEventListener('htmx:configRequest', (evt) => {
+					const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+					if (csrfToken) {
+						evt.detail.headers['X-CSRF-Token'] = csrfToken;
 					}
 				});
 			</script>

@@ -144,5 +144,6 @@ func Connect() error {
 	if errGorm != nil {
 		return fmt.Errorf("failed to initialize gorm: %w", errGorm)
 	}
+
 	return nil
 }

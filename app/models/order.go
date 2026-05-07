@@ -15,6 +15,7 @@ type Order struct {
 	CommissionStatus   string   `gorm:"default:pending"` // pending, paid, cancelled
 	Status             string   // pending, completed, cancelled
 	IsTest             bool     `gorm:"default:false"`
+	AffiliateID        *uint    `gorm:"index"`
 	Items              []OrderItem
 }
 

@@ -5,7 +5,9 @@ import (
 	"log/slog"
 	"net/http"
 	"os"
+	"shopTemplate/app/db"
 	"shopTemplate/app/handlers"
+	"shopTemplate/app/models"
 	"shopTemplate/app/services"
 	"shopTemplate/app/views/errors"
 	"shopTemplate/plugins/auth"
@@ -28,6 +30,7 @@ func InitializeMiddleware(router *chi.Mux) {
 	router.Use(middleware.WithRequest)
 	router.Use(FacebookCAPIMiddleware)
 	router.Use(I18nMiddleware)
+	router.Use(adminSetupMiddleware)
 }
 
 func CORSMiddleware(next http.Handler) http.Handler {
@@ -124,6 +127,17 @@ func FacebookCAPIMiddleware(next http.Handler) http.Handler {
 
 // Define your routes in here
 func InitializeRoutes(router *chi.Mux) {
+	// Admin setup (must be before auth/CSRF groups since no admin exists yet)
+	router.Get("/setup", kit.Handler(handlers.HandleSetupIndex))
+	router.Post("/setup", kit.Handler(handlers.HandleSetupCreate))
+
+	// Affiliate API (token-based auth, no CSRF needed)
+	router.Group(func(app chi.Router) {
+		app.Use(handlers.AffiliateAPIMiddleware)
+		app.Get("/api/orders", kit.Handler(handlers.HandleAPIAffiliateOrders))
+		app.Get("/api/commission", kit.Handler(handlers.HandleAPIAffiliateCommission))
+	})
+
 	// CSRF protection using gorilla/csrf
 	csrfMiddleware := csrf.Protect(
 		getCSRFKey(),
@@ -133,6 +147,7 @@ func InitializeRoutes(router *chi.Mux) {
 		csrf.Secure(kit.IsProduction()),
 		csrf.Path("/"),
 		csrf.SameSite(csrf.SameSiteStrictMode),
+		csrf.TrustedOrigins([]string{"localhost:7331", "localhost:3000"}),
 		csrf.ErrorHandler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			slog.Warn("CSRF validation failed", "path", r.URL.Path, "method", r.Method, "error", csrf.FailureReason(r).Error())
 			http.Error(w, "Forbidden - CSRF token invalid", http.StatusForbidden)
@@ -160,6 +175,7 @@ func InitializeRoutes(router *chi.Mux) {
 	// Routes that "might" have an authenticated user
 	router.Group(func(app chi.Router) {
 		app.Use(kit.WithAuthentication(authConfig, false)) // strict set to false
+		app.Use(plaintextCSRFMiddleware)
 		app.Use(csrfMiddleware)
 
 		// Routes
@@ -190,6 +206,7 @@ func InitializeRoutes(router *chi.Mux) {
 	// AuthenticationConfig.
 	router.Group(func(app chi.Router) {
 		app.Use(kit.WithAuthentication(authConfig, true)) // strict set to true
+		app.Use(plaintextCSRFMiddleware)
 		app.Use(csrfMiddleware)
 
 		// Routes
@@ -213,7 +230,6 @@ func InitializeRoutes(router *chi.Mux) {
 		app.Post("/admin/chat/{id}/ban", kit.Handler(handlers.HandleAdminChatBan))
 		app.Get("/admin/chats/sidebar", kit.Handler(handlers.HandleAdminChatSidebar))       // New handler for sidebar polling
 		app.Get("/admin/chat/{id}/messages", kit.Handler(handlers.HandleAdminChatMessages)) // New handler for message polling
-
 		app.Get("/configuration", kit.Handler(handlers.HandleConfigurationIndex))
 		app.Get("/admin/{section}", kit.Handler(handlers.HandleAdminSettings))
 		app.Post("/admin/{section}", kit.Handler(handlers.HandleAdminSettingsUpdate))
@@ -229,6 +245,31 @@ func InitializeRoutes(router *chi.Mux) {
 		app.Get("/products/{id}/delete", kit.Handler(handlers.HandleProductDeleteConfirm))
 		app.Delete("/products/{id}", kit.Handler(handlers.HandleProductDelete))
 		// app.Get("/path", kit.Handler(myHandler.HandleIndex))
+	})
+}
+
+func adminSetupMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if r.URL.Path == "/setup" || strings.HasPrefix(r.URL.Path, "/public/") || strings.HasPrefix(r.URL.Path, "/_templ/") {
+			next.ServeHTTP(w, r)
+			return
+		}
+		var count int64
+		db.Get().Model(&models.User{}).Where("role = ?", "admin").Count(&count)
+		if count == 0 {
+			http.Redirect(w, r, "/setup", http.StatusSeeOther)
+			return
+		}
+		next.ServeHTTP(w, r)
+	})
+}
+
+func plaintextCSRFMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if r.TLS == nil {
+			r = csrf.PlaintextHTTPRequest(r)
+		}
+		next.ServeHTTP(w, r)
 	})
 }
 

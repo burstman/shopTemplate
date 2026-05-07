@@ -104,6 +104,10 @@ func HandleAdminCategoryReorder(kit *kit.Kit) error {
 		if err != nil {
 			continue
 		}
+		var cat models.Category
+		if err := db.Get().First(&cat, id).Error; err != nil || cat.IsLocked {
+			continue
+		}
 		if err := db.Get().Model(&models.Category{}).Where("id = ?", id).Update("position", i).Error; err != nil {
 			return err
 		}

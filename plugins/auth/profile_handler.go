@@ -9,6 +9,7 @@ import (
 	"shopTemplate/app/views/layouts"
 
 	"github.com/anthdm/superkit/kit"
+	"github.com/gorilla/csrf"
 	v "github.com/anthdm/superkit/validate"
 )
 
@@ -42,8 +43,9 @@ func HandleProfileShow(kit *kit.Kit) error {
 
 	categories := helpers.GetCategoryTree()
 	cart := helpers.GetCart(kit)
+	csrfToken := csrf.Token(kit.Request)
 
-	return kit.Render(layouts.App(pluginAuth, config.Get(), categories, cart.Total, ProfileShow(formValues)))
+	return kit.Render(layouts.App(pluginAuth, config.Get(), categories, cart.Total, ProfileShow(formValues), csrfToken))
 }
 
 func HandleProfileUpdate(kit *kit.Kit) error {

@@ -8,6 +8,7 @@ import (
 
 	"github.com/a-h/templ"
 	"github.com/anthdm/superkit/kit"
+	"github.com/gorilla/csrf"
 )
 
 func RenderWithLayout(kit *kit.Kit, content templ.Component) error {
@@ -18,8 +19,9 @@ func RenderWithLayout(kit *kit.Kit, content templ.Component) error {
 
 	categories := helpers.GetCategoryTree()
 	cart := helpers.GetCart(kit)
+	csrfToken := csrf.Token(kit.Request)
 
-	return kit.Render(layouts.App(user, config.Get(), categories, cart.Total, content))
+	return kit.Render(layouts.App(user, config.Get(), categories, cart.Total, content, csrfToken))
 }
 
 func RenderAdminWithLayout(kit *kit.Kit, sidebar []config.MenuItem, activePath string, content templ.Component) error {
@@ -31,6 +33,7 @@ func RenderAdminWithLayout(kit *kit.Kit, sidebar []config.MenuItem, activePath s
 	cfg := config.Get()
 	categories := helpers.GetCategoryTree()
 	cart := helpers.GetCart(kit)
+	csrfToken := csrf.Token(kit.Request)
 
-	return kit.Render(layouts.AdminPage(user, cfg, categories, cart.Total, sidebar, activePath, content))
+	return kit.Render(layouts.AdminPage(user, cfg, categories, cart.Total, sidebar, activePath, content, csrfToken))
 }

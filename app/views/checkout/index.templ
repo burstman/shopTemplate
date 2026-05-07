@@ -72,7 +72,7 @@ templ Index(cart *models.Cart, values map[string]string, errors validate.Errors,
 templ CheckoutForm(values map[string]string, errors validate.Errors) {
 	<div class="bg-white shadow rounded-lg p-6 border border-gray-200">
 		<h2 class="text-xl font-semibold mb-6">Shipping Information</h2>
-		<form hx-post="/checkout" class="space-y-4">
+		<form hx-post="/checkout" class="space-y-4" x-data="{ abandonedTimer: null }" x-on:submit="clearTimeout(abandonedTimer)">
 			<div class="grid grid-cols-2 gap-4">
 				<div>
 					<label for="firstName" class="block text-sm font-medium text-gray-700">First Name</label>
@@ -107,10 +107,19 @@ templ CheckoutForm(values map[string]string, errors validate.Errors) {
 						title="Phone number must be exactly 8 digits" 
 						required 
 						class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
-						hx-post="/checkout/abandoned"
-						hx-trigger="keyup[this.value.length==8], blur[this.value.length==8]"
-						hx-include="closest form"
-						hx-swap="none"
+						x-on:input="
+							clearTimeout(abandonedTimer);
+							if ($el.value.length === 8) {
+								abandonedTimer = setTimeout(() => {
+									const form = $el.closest('form');
+									if (!form) return;
+									htmx.ajax('POST', '/checkout/abandoned', {
+										values: Object.fromEntries(new FormData(form)),
+										swap: 'none'
+									});
+								}, 120000);
+							}
+						"
 					/>
 					if errors.Has("phone") {
 						<p class="mt-1 text-xs text-red-600">{ errors.Get("phone")[0] }</p>

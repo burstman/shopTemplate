@@ -31,9 +31,9 @@ var (
 		ReadBufferSize:  1024,
 		WriteBufferSize: 1024,
 		CheckOrigin: func(r *http.Request) bool {
-			allowedOrigin := os.Getenv("ALLOWED_ORIGIN")
-			if allowedOrigin == "" {
-				return r.Header.Get("Origin") == ""
+			allowedOrigin := strings.TrimSpace(os.Getenv("ALLOWED_ORIGIN"))
+			if allowedOrigin == "" || allowedOrigin == "*" {
+				return true
 			}
 			origin := r.Header.Get("Origin")
 			return origin == allowedOrigin

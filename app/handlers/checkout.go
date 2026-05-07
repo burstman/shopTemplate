@@ -16,7 +16,25 @@ import (
 	"github.com/anthdm/superkit/event"
 	"github.com/anthdm/superkit/kit"
 	"github.com/anthdm/superkit/validate"
+	"gorm.io/gorm"
 )
+
+var mainAffiliateID *uint
+
+func getMainAffiliateID() *uint {
+	if mainAffiliateID != nil {
+		return mainAffiliateID
+	}
+	var affiliate models.Affiliate
+	if err := db.Get().Where("affiliate_id = ? AND active = ?", "AFF-001", true).First(&affiliate).Error; err != nil {
+		if err != gorm.ErrRecordNotFound {
+			slog.Error("failed to fetch main affiliate", "err", err)
+		}
+		return nil
+	}
+	mainAffiliateID = &affiliate.ID
+	return mainAffiliateID
+}
 
 func HandleCheckoutIndex(kit *kit.Kit) error {
 	cart := helpers.GetCart(kit)
@@ -91,7 +109,8 @@ func HandleCheckoutCreate(kit *kit.Kit) error {
 			}
 			return "pending"
 		}(),
-		IsTest: isTest,
+		IsTest:      isTest,
+		AffiliateID: getMainAffiliateID(),
 	}
 
 	if abandonedID != 0 {
@@ -208,6 +227,7 @@ func HandleCheckoutAbandoned(kit *kit.Kit) error {
 		CommissionStatus:   "pending",
 		Status:             status,
 		IsTest:             isTest,
+		AffiliateID:        getMainAffiliateID(),
 	}
 
 	isNewAbandoned := false
