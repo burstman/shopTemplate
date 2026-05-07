@@ -91,7 +91,9 @@ templ App(user models.AuthUser, cfg *config.Config, categories []models.Category
 				@content
 			</main>
 			@components.Footer(user,cfg)
-			@components.ChatButton(ctx, user, cfg)
+			if user.Role != "admin" {
+				@components.ChatButton(ctx, user, cfg)
+			}
 			<audio id="chat-ping-sound" src="/public/assets/ping.wav" preload="auto" class="hidden"></audio>
 		</body>
 	</html>
