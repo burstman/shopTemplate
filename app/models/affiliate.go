@@ -11,4 +11,5 @@ type Affiliate struct {
 	Rate         float64
 	Active       bool   `gorm:"default:true"`
 	APIToken     string `gorm:"uniqueIndex;size:64"`
+	Domain       string `gorm:"size:255"`
 }

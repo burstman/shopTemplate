@@ -22,6 +22,7 @@ import (
 	"github.com/anthdm/superkit/kit"
 	"github.com/anthdm/superkit/validate"
 	"github.com/go-chi/chi/v5"
+	"github.com/gorilla/csrf"
 	"gorm.io/gorm"
 )
 
@@ -95,10 +96,11 @@ func HandleProductNew(kit *kit.Kit) error {
 	activePath := "/products/new"
 	sidebar := config.GetAdminSidebar()
 	cfg := config.Get()
+	csrfToken := csrf.Token(kit.Request)
 	content := products.New(categories, products.CreateForm{
 		Errors:     make(validate.Errors),
 		Categories: categories,
-	}, cfg)
+	}, cfg, csrfToken)
 	return RenderAdminWithLayout(kit, sidebar, activePath, content)
 }
 
@@ -189,7 +191,8 @@ func HandleProductCreate(kit *kit.Kit) error {
 			SelectedCategoryIDs: categoryIDs,
 			Errors:              errors,
 		}
-		content := products.New(categories, form, cfg)
+		csrfToken := csrf.Token(kit.Request)
+		content := products.New(categories, form, cfg, csrfToken)
 		return RenderAdminWithLayout(kit, sidebar, activePath, content)
 	}
 

@@ -3,6 +3,7 @@ package handlers
 import (
 	"crypto/rand"
 	"database/sql"
+	"fmt"
 	"math/big"
 	"net/http"
 	"shopTemplate/app/db"
@@ -36,7 +37,7 @@ func HandleSetupIndex(kit *kit.Kit) error {
 	if count > 0 {
 		return kit.Redirect(http.StatusSeeOther, "/login")
 	}
-	return kit.Render(admin.SetupPage("", "", ""))
+	return kit.Render(admin.SetupPage("", "", "", ""))
 }
 
 func HandleSetupCreate(kit *kit.Kit) error {
@@ -50,8 +51,14 @@ func HandleSetupCreate(kit *kit.Kit) error {
 	email := kit.Request.FormValue("email")
 
 	if name == "" || email == "" {
-		return kit.Render(admin.SetupPage("", "", "All fields are required."))
+		return kit.Render(admin.SetupPage("", "", "", "All fields are required."))
 	}
+
+	scheme := "https"
+	if kit.Request.TLS == nil {
+		scheme = "http"
+	}
+	domain := fmt.Sprintf("%s://%s", scheme, kit.Request.Host)
 
 	password, err := generateSetupPassword(12)
 	if err != nil {
@@ -72,7 +79,7 @@ func HandleSetupCreate(kit *kit.Kit) error {
 	}
 
 	if err := db.Get().Create(&user).Error; err != nil {
-		return kit.Render(admin.SetupPage("", "", "Failed to create admin: "+err.Error()))
+		return kit.Render(admin.SetupPage("", "", "", "Failed to create admin: "+err.Error()))
 	}
 
 	// Auto-create affiliate only if one doesn't exist
@@ -86,11 +93,12 @@ func HandleSetupCreate(kit *kit.Kit) error {
 			PasswordHash: string(hash),
 			Rate:         0,
 			Active:       true,
+			Domain:       domain,
 		}
 		if err := db.Get().Create(&affiliate).Error; err != nil {
-			return kit.Render(admin.SetupPage("", "", "Failed to create affiliate: "+err.Error()))
+			return kit.Render(admin.SetupPage("", "", "", "Failed to create affiliate: "+err.Error()))
 		}
 	}
 
-	return kit.Render(admin.SetupPage(email, password, ""))
+	return kit.Render(admin.SetupPage(email, password, domain, ""))
 }

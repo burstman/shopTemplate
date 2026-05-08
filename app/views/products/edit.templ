@@ -15,11 +15,12 @@ func makeSelectedCategoryMap(categories []models.Category) map[uint]bool {
 	return ids
 }
 
-templ Edit(product models.Product, categories []models.Category, cfg *config.Config) {
+templ Edit(product models.Product, categories []models.Category, cfg *config.Config, csrfToken string) {
 	<div class="max-w-2xl mx-auto">
 		<h1 class="text-2xl font-bold mb-6">Edit Product</h1>
 		<form action={ templ.SafeURL(fmt.Sprintf("/products/%d", product.ID)) } method="POST" enctype="multipart/form-data" class="bg-white shadow rounded-lg p-6">
 			<input type="hidden" name="_method" value="PUT"/>
+			<input type="hidden" name="csrf_token" value={ csrfToken } />
 			@ProductFormFields(FormParams{
 				Product:       product,
 				AllCategories: categories,

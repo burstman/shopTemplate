@@ -210,6 +210,7 @@ func InitializeRoutes(router *chi.Mux) {
 		app.Use(csrfMiddleware)
 
 		// Routes
+		app.Get("/admin/dashboard", kit.Handler(handlers.HandleAdminDashboard))
 		app.Get("/admin/categories", kit.Handler(handlers.HandleAdminCategoriesIndex))
 		app.Post("/admin/categories", kit.Handler(handlers.HandleAdminCategoryCreate))
 		app.Delete("/admin/categories/{id}", kit.Handler(handlers.HandleAdminCategoryDelete))

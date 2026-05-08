@@ -18,6 +18,7 @@ import (
 	"github.com/a-h/templ"
 	"github.com/anthdm/superkit/kit"
 	"github.com/go-chi/chi/v5"
+	"github.com/gorilla/csrf"
 )
 
 func HandleAdminSettings(kit *kit.Kit) error {
@@ -45,7 +46,8 @@ func HandleAdminSettings(kit *kit.Kit) error {
 	case "facebook_pixel":
 		content = configuration.FacebookPixel(cfg)
 	case "site", "hero", "sections", "theme", "payment", "storefront-sidebar", "social_links", "chat_settings":
-		content = configuration.Index(cfg, products, categories, section)
+		csrfToken := csrf.Token(kit.Request)
+		content = configuration.Index(cfg, products, categories, section, csrfToken)
 	default:
 		return kit.Redirect(http.StatusSeeOther, "/admin/site") // Default to site settings if section is unknown
 	}
@@ -342,14 +344,16 @@ func HandleAdminSettingsUpdate(kit *kit.Kit) error {
 			if err != nil {
 				return err
 			}
-			return kit.Render(configuration.Index(cfg, products, categories, section))
+			csrfToken := csrf.Token(kit.Request)
+			return kit.Render(configuration.Index(cfg, products, categories, section, csrfToken))
 		}
 
 		_, products, categories, err := getAdminConfigData(section)
 		if err != nil {
 			return err
 		}
-		return kit.Render(configuration.Index(cfg, products, categories, section))
+		csrfToken := csrf.Token(kit.Request)
+		return kit.Render(configuration.Index(cfg, products, categories, section, csrfToken))
 	}
 
 	return kit.Redirect(http.StatusSeeOther, "/admin/"+section)
@@ -425,7 +429,8 @@ func HandleAdminSectionAdd(kit *kit.Kit) error {
 		if err != nil {
 			return err
 		}
-		return kit.Render(configuration.Index(cfg, products, categories, "sections"))
+		csrfToken := csrf.Token(kit.Request)
+		return kit.Render(configuration.Index(cfg, products, categories, "sections", csrfToken))
 	}
 
 	return kit.Redirect(http.StatusSeeOther, "/admin/sections")
@@ -454,7 +459,8 @@ func HandleAdminSectionDelete(kit *kit.Kit) error {
 		if err != nil {
 			return err
 		}
-		return kit.Render(configuration.Index(cfg, products, categories, "sections"))
+		csrfToken := csrf.Token(kit.Request)
+		return kit.Render(configuration.Index(cfg, products, categories, "sections", csrfToken))
 	}
 
 	return kit.Redirect(http.StatusSeeOther, "/admin/sections")
@@ -498,7 +504,8 @@ func HandleAdminSectionDuplicate(kit *kit.Kit) error {
 		if err != nil {
 			return err
 		}
-		return kit.Render(configuration.Index(cfg, products, categories, "sections"))
+		csrfToken := csrf.Token(kit.Request)
+		return kit.Render(configuration.Index(cfg, products, categories, "sections", csrfToken))
 	}
 
 	return kit.Redirect(http.StatusSeeOther, "/admin/sections")

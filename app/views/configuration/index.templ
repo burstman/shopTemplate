@@ -9,7 +9,7 @@ import (
 	"strings"
 )
 
-templ Index(cfg *config.Config, products []models.Product, categories []models.Category, activeSection string) {
+templ Index(cfg *config.Config, products []models.Product, categories []models.Category, activeSection string, csrfToken string) {
 	<form 
 		id="config-form"
 		method="POST" 
@@ -21,6 +21,7 @@ templ Index(cfg *config.Config, products []models.Product, categories []models.C
 		hx-swap="none"
 		hx-indicator="#save-indicator"
 	>
+		<input type="hidden" name="csrf_token" value={ csrfToken } />
 		switch activeSection {
 			case "site":
 				@siteSettingsForm(cfg)

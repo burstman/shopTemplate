@@ -159,6 +159,7 @@ type MenuItem struct {
 func GetAdminSidebar() []MenuItem {
 	return []MenuItem{
 		{Title: "Back to Store", Link: "/", Icon: "arrow-left"},
+		{Title: "Dashboard", Link: "/admin/dashboard", Icon: "layout-dashboard"},
 		{Title: "Site Settings", Link: "/admin/site", Icon: "settings"},
 		{Title: "Hero Section", Link: "/admin/hero", Icon: "image"},
 		{Title: "Homepage Sections", Link: "/admin/sections", Icon: "layout-grid"},
