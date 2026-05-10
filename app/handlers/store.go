@@ -48,6 +48,6 @@ func HandleCategoryShow(kit *kit.Kit) error {
 		return err
 	}
 
-	cfg := config.Get()
+	cfg := config.FromContext(kit.Request.Context())
 	return RenderWithLayout(kit, products.CategoryShow(category, items, breadcrumbs, cfg))
 }

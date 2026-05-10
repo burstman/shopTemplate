@@ -21,7 +21,7 @@ func RenderWithLayout(kit *kit.Kit, content templ.Component) error {
 	cart := helpers.GetCart(kit)
 	csrfToken := csrf.Token(kit.Request)
 
-	return kit.Render(layouts.App(user, config.Get(), categories, cart.Total, content, csrfToken))
+	return kit.Render(layouts.App(user, config.FromContext(kit.Request.Context()), categories, cart.Total, content, csrfToken))
 }
 
 func RenderAdminWithLayout(kit *kit.Kit, sidebar []config.MenuItem, activePath string, content templ.Component) error {
@@ -30,7 +30,7 @@ func RenderAdminWithLayout(kit *kit.Kit, sidebar []config.MenuItem, activePath s
 		user = authedUser
 	}
 
-	cfg := config.Get()
+	cfg := config.FromContext(kit.Request.Context())
 	categories := helpers.GetCategoryTree()
 	cart := helpers.GetCart(kit)
 	csrfToken := csrf.Token(kit.Request)

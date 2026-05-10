@@ -1,6 +1,7 @@
 package config
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"log/slog"
@@ -15,10 +16,37 @@ import (
 
 const configFilePath = "app/config/config.json"
 
+type contextKey string
+
+const (
+	affiliateKey  contextKey = "affiliate"
+	affiliateIDKey contextKey = "affiliate_id"
+)
+
+func WithAffiliate(ctx context.Context, affiliate *models.Affiliate) context.Context {
+	ctx = context.WithValue(ctx, affiliateKey, affiliate)
+	ctx = context.WithValue(ctx, affiliateIDKey, affiliate.AffiliateID)
+	return ctx
+}
+
+func AffiliateFromContext(ctx context.Context) *models.Affiliate {
+	v, _ := ctx.Value(affiliateKey).(*models.Affiliate)
+	return v
+}
+
+func AffiliateIDFromContext(ctx context.Context) string {
+	v, _ := ctx.Value(affiliateIDKey).(string)
+	return v
+}
+
 var (
-	cfg  *Config
-	once sync.Once
-	mu   sync.Mutex
+	cfg     *Config
+	once    sync.Once
+	mu      sync.Mutex
+	affMu   sync.RWMutex
+	affMap  = map[string]uint{}   // domain -> affiliate ID
+	cfgMu   sync.RWMutex
+	cfgCache = map[string]*Config{} // affiliate_id -> config
 )
 
 type Config struct {
@@ -57,6 +85,7 @@ type SiteConfig struct {
 	NameTextColor string          `json:"name_text_color"`
 	Logo          string          `json:"logo"`
 	Currency      string          `json:"currency"`
+	AffiliateID   string          `json:"affiliate_id"`
 	ShowQuickView bool            `json:"show_quick_view"`
 	ShowOrderNow  bool            `json:"show_order_now"`
 	ShowAddToCart bool            `json:"show_add_to_cart"`
@@ -159,7 +188,7 @@ type MenuItem struct {
 func GetAdminSidebar() []MenuItem {
 	return []MenuItem{
 		{Title: "Back to Store", Link: "/", Icon: "arrow-left"},
-		{Title: "Dashboard", Link: "/admin/dashboard", Icon: "layout-dashboard"},
+
 		{Title: "Site Settings", Link: "/admin/site", Icon: "settings"},
 		{Title: "Hero Section", Link: "/admin/hero", Icon: "image"},
 		{Title: "Homepage Sections", Link: "/admin/sections", Icon: "layout-grid"},
@@ -308,8 +337,9 @@ func defaultConfig() *Config {
 	}
 }
 
-// Get loads the configuration from config.json, creating it with defaults if it doesn't exist.
-// It uses a singleton pattern to only read from disk once.
+// Get loads the configuration from the global singleton.
+// It is primarily used for background tasks (events, setup) that lack an HTTP request context.
+// For request-scoped config, use FromContext(ctx) instead.
 func Get() *Config {
 	once.Do(func() {
 		// 1. Try to load from Postgres settings table
@@ -341,6 +371,93 @@ func Get() *Config {
 	return cfg
 }
 
+// LookupAffiliateByDomain finds an affiliate whose domain matches the request host.
+// It tries the raw host first, then with https:// and http:// prefixes.
+func LookupAffiliateByDomain(host string) *models.Affiliate {
+	var aff models.Affiliate
+
+	if host == "" {
+		return nil
+	}
+
+	if err := db.Get().Where("domain = ?", host).First(&aff).Error; err == nil {
+		return &aff
+	}
+
+	if err := db.Get().Where("domain = ?", "https://"+host).First(&aff).Error; err == nil {
+		return &aff
+	}
+
+	if err := db.Get().Where("domain = ?", "http://"+host).First(&aff).Error; err == nil {
+		return &aff
+	}
+
+	return nil
+}
+
+func configKey(affiliateID string) string {
+	if affiliateID == "" {
+		return "app_config"
+	}
+	return "app_config:" + affiliateID
+}
+
+// LoadByAffiliateID loads the configuration for a specific affiliate.
+// It caches the config in memory keyed by affiliate ID.
+func LoadByAffiliateID(affiliateID string) *Config {
+	if affiliateID == "" {
+		return Get()
+	}
+
+	cfgMu.RLock()
+	if c, ok := cfgCache[affiliateID]; ok {
+		cfgMu.RUnlock()
+		return c
+	}
+	cfgMu.RUnlock()
+
+	key := configKey(affiliateID)
+	var setting models.Setting
+	err := db.Get().Where("key = ?", key).First(&setting).Error
+	if err != nil || setting.Value == "" {
+		// Fall back to the legacy global config if it exists
+		global := Get()
+		c := *global // shallow copy (OK since Config has no pointer fields beyond slices)
+		c.Site.AffiliateID = affiliateID
+		backfill(&c)
+
+		if saveErr := saveWithKey(key, &c); saveErr != nil {
+			slog.Error("failed to save config for affiliate", "affiliate_id", affiliateID, "err", saveErr)
+		}
+
+		cfgMu.Lock()
+		cfgCache[affiliateID] = &c
+		cfgMu.Unlock()
+		return &c
+	}
+
+	var c Config
+	if err := json.Unmarshal([]byte(setting.Value), &c); err != nil {
+		slog.Error("failed to unmarshal config for affiliate", "affiliate_id", affiliateID, "err", err)
+		return Get()
+	}
+	backfill(&c)
+
+	cfgMu.Lock()
+	cfgCache[affiliateID] = &c
+	cfgMu.Unlock()
+	return &c
+}
+
+// FromContext returns the config for the current shop from the request context.
+// Falls back to Get() if no shop context is available.
+func FromContext(ctx context.Context) *Config {
+	if affID := AffiliateIDFromContext(ctx); affID != "" {
+		return LoadByAffiliateID(affID)
+	}
+	return Get()
+}
+
 func backfill(c *Config) {
 	if len(c.StorefrontSidebar) == 0 {
 		c.StorefrontSidebar = defaultConfig().StorefrontSidebar
@@ -348,33 +465,42 @@ func backfill(c *Config) {
 	if c.Footer.Copyright == "" || strings.Contains(c.Footer.Copyright, "Botanica") {
 		c.Footer.Copyright = fmt.Sprintf("© %d %s. All rights reserved.", time.Now().Year(), c.Site.Name)
 	}
+	if c.Site.AffiliateID == "" {
+		c.Site.AffiliateID = "AFF-001"
+	}
 }
 
-// save is an internal, non-locking function to write the config to the DB.
-// It should only be called from a function that already holds the mutex.
+// save writes the config to the legacy "app_config" key.
 func save(c *Config) error {
+	return saveWithKey("app_config", c)
+}
+
+func saveWithKey(key string, c *Config) error {
 	data, err := json.Marshal(c)
 	if err != nil {
 		return err
 	}
-
-	// PostgreSQL Upsert logic using ON CONFLICT
 	return db.Get().Exec(`
 		INSERT INTO settings (key, value, created_at, updated_at) 
 		VALUES (?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP) 
 		ON CONFLICT (key) 
 		DO UPDATE SET value = EXCLUDED.value, updated_at = EXCLUDED.updated_at`,
-		"app_config", string(data)).Error
+		key, string(data)).Error
 }
 
-// Save writes the configuration to config.json, acquiring a lock to prevent race conditions.
+// Save writes the configuration for the current shop and updates in-memory caches.
 func Save(newCfg *Config) error {
 	mu.Lock()
 	defer mu.Unlock()
-	if err := save(newCfg); err != nil {
+
+	affID := newCfg.Site.AffiliateID
+	key := configKey(affID)
+	if err := saveWithKey(key, newCfg); err != nil {
 		return err
 	}
-	// Only update the singleton memory instance if the DB save succeeded
-	cfg = newCfg 
+	cfgMu.Lock()
+	cfgCache[affID] = newCfg
+	cfgMu.Unlock()
+	cfg = newCfg
 	return nil
 }

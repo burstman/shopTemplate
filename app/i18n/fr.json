@@ -73,5 +73,7 @@
   "type_message": "Écrivez votre message",
   "chat_welcome": "Bienvenue ! Comment pouvons-nous vous aider ?",
   "start_chat": "Démarrer une conversation",
-  "chat_loading": "Chargement des messages..."
+  "chat_loading": "Chargement des messages...",
+  "remaining_balance": "Solde Restant",
+  "balance": "Solde"
 }

@@ -32,7 +32,7 @@ func HandleAdminSettings(kit *kit.Kit) error {
 		section = "site"
 	}
 
-	cfg, products, categories, err := getAdminConfigData(section)
+	cfg, products, categories, err := getAdminConfigData(kit.Request, section)
 	if err != nil {
 		return err
 	}
@@ -54,8 +54,8 @@ func HandleAdminSettings(kit *kit.Kit) error {
 	return RenderAdminWithLayout(kit, sidebar, activePath, content)
 }
 
-func getAdminConfigData(section string) (*config.Config, []models.Product, []models.Category, error) {
-	cfg := config.Get()
+func getAdminConfigData(r *http.Request, section string) (*config.Config, []models.Product, []models.Category, error) {
+	cfg := config.FromContext(r.Context())
 	var products []models.Product
 	var categories []models.Category
 
@@ -81,7 +81,7 @@ func HandleAdminSettingsUpdate(kit *kit.Kit) error {
 	section := chi.URLParam(kit.Request, "section")
 	kit.Request.ParseMultipartForm(32 << 20) // Parse both multipart and standard form data
 
-	cfg := config.Get()
+	cfg := config.FromContext(kit.Request.Context())
 
 	switch section {
 	case "site":
@@ -340,7 +340,7 @@ func HandleAdminSettingsUpdate(kit *kit.Kit) error {
 			return kit.Render(configuration.FacebookPixel(cfg))
 		}
 		if section == "payment" || section == "social_links" || section == "chat_settings" {
-			_, products, categories, err := getAdminConfigData(section)
+			_, products, categories, err := getAdminConfigData(kit.Request, section)
 			if err != nil {
 				return err
 			}
@@ -348,7 +348,7 @@ func HandleAdminSettingsUpdate(kit *kit.Kit) error {
 			return kit.Render(configuration.Index(cfg, products, categories, section, csrfToken))
 		}
 
-		_, products, categories, err := getAdminConfigData(section)
+		_, products, categories, err := getAdminConfigData(kit.Request, section)
 		if err != nil {
 			return err
 		}
@@ -414,7 +414,7 @@ func HandleAdminSectionAdd(kit *kit.Kit) error {
 		return kit.Redirect(http.StatusSeeOther, "/")
 	}
 
-	cfg := config.Get()
+	cfg := config.FromContext(kit.Request.Context())
 	cfg.Sections = append(cfg.Sections, config.SectionConfig{
 		Type:       "featured_products",
 		Title:      "New Collection",
@@ -425,7 +425,7 @@ func HandleAdminSectionAdd(kit *kit.Kit) error {
 	config.Save(cfg)
 
 	if kit.Request.Header.Get("HX-Request") == "true" {
-		_, products, categories, err := getAdminConfigData("sections")
+		_, products, categories, err := getAdminConfigData(kit.Request, "sections")
 		if err != nil {
 			return err
 		}
@@ -448,14 +448,14 @@ func HandleAdminSectionDelete(kit *kit.Kit) error {
 		return kit.Redirect(http.StatusSeeOther, "/admin/sections")
 	}
 
-	cfg := config.Get()
+	cfg := config.FromContext(kit.Request.Context())
 	if index >= 0 && index < len(cfg.Sections) {
 		cfg.Sections = append(cfg.Sections[:index], cfg.Sections[index+1:]...)
 		config.Save(cfg)
 	}
 
 	if kit.Request.Header.Get("HX-Request") == "true" {
-		_, products, categories, err := getAdminConfigData("sections")
+		_, products, categories, err := getAdminConfigData(kit.Request, "sections")
 		if err != nil {
 			return err
 		}
@@ -478,7 +478,7 @@ func HandleAdminSectionDuplicate(kit *kit.Kit) error {
 		return kit.Redirect(http.StatusSeeOther, "/admin/sections")
 	}
 
-	cfg := config.Get()
+	cfg := config.FromContext(kit.Request.Context())
 	if index >= 0 && index < len(cfg.Sections) {
 		original := cfg.Sections[index]
 		duplicate := original
@@ -500,7 +500,7 @@ func HandleAdminSectionDuplicate(kit *kit.Kit) error {
 	}
 
 	if kit.Request.Header.Get("HX-Request") == "true" {
-		_, products, categories, err := getAdminConfigData("sections")
+		_, products, categories, err := getAdminConfigData(kit.Request, "sections")
 		if err != nil {
 			return err
 		}

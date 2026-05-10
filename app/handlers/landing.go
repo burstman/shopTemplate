@@ -14,7 +14,7 @@ import (
 
 func HandleLandingIndex(kit *kit.Kit) error {
 	// 1. Fetch all settings
-	cfg := config.Get()
+	cfg := config.FromContext(kit.Request.Context())
 
 	// 2. Fetch products for each configured section
 	sectionProducts := make(map[int][]models.Product)

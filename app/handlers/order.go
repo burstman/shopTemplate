@@ -42,16 +42,17 @@ func HandleAdminOrdersIndex(kit *kit.Kit) error {
 		return err
 	}
 
-	// Calculate total platform commission (excluding test orders)
-	var totalComm models.Currency
-	if err := db.Get().Model(&models.Order{}).Where("is_test = ?", false).Select("COALESCE(SUM(platform_commission), 0)").Scan(&totalComm).Error; err != nil {
-		return err
+	// Fetch affiliate balance
+	var balance float64
+	var affiliate models.Affiliate
+	if err := db.Get().Where("affiliate_id = ?", "AFF-001").First(&affiliate).Error; err == nil {
+		balance = affiliate.Balance.ToFloat()
 	}
 
-	cfg := config.Get()
+	cfg := config.FromContext(kit.Request.Context())
 	activePath := "/admin/orders"
 	sidebar := config.GetAdminSidebar()
-	content := orders.Index(ordersList, page, totalPages, totalComm, cfg)
+	content := orders.Index(ordersList, page, totalPages, balance, cfg)
 	return RenderAdminWithLayout(kit, sidebar, activePath, content)
 }
 

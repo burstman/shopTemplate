@@ -45,7 +45,7 @@ func HandleProfileShow(kit *kit.Kit) error {
 	cart := helpers.GetCart(kit)
 	csrfToken := csrf.Token(kit.Request)
 
-	return kit.Render(layouts.App(pluginAuth, config.Get(), categories, cart.Total, ProfileShow(formValues), csrfToken))
+	return kit.Render(layouts.App(pluginAuth, config.FromContext(kit.Request.Context()), categories, cart.Total, ProfileShow(formValues), csrfToken))
 }
 
 func HandleProfileUpdate(kit *kit.Kit) error {

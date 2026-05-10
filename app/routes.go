@@ -5,6 +5,7 @@ import (
 	"log/slog"
 	"net/http"
 	"os"
+	"shopTemplate/app/config"
 	"shopTemplate/app/db"
 	"shopTemplate/app/handlers"
 	"shopTemplate/app/models"
@@ -26,11 +27,33 @@ func InitializeMiddleware(router *chi.Mux) {
 	router.Use(CORSMiddleware)
 	router.Use(chimiddleware.RealIP)
 	router.Use(chimiddleware.Logger)
-	router.Use(chimiddleware.Recoverer)
+	router.Use(PanicRecoverer)
 	router.Use(middleware.WithRequest)
+	router.Use(StoreDomainMiddleware)
 	router.Use(FacebookCAPIMiddleware)
 	router.Use(I18nMiddleware)
 	router.Use(adminSetupMiddleware)
+}
+
+// StoreDomainMiddleware looks up the affiliate by the request domain
+// and stores it in the request context for shop-scoped config access.
+func StoreDomainMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		// Skip setup — no shop context available yet
+		if r.URL.Path == "/setup" || strings.HasPrefix(r.URL.Path, "/public/") || strings.HasPrefix(r.URL.Path, "/_templ/") {
+			next.ServeHTTP(w, r)
+			return
+		}
+
+		affiliate := config.LookupAffiliateByDomain(r.Host)
+		if affiliate != nil {
+			ctx := config.WithAffiliate(r.Context(), affiliate)
+			next.ServeHTTP(w, r.WithContext(ctx))
+			return
+		}
+
+		next.ServeHTTP(w, r)
+	})
 }
 
 func CORSMiddleware(next http.Handler) http.Handler {
@@ -184,19 +207,19 @@ func InitializeRoutes(router *chi.Mux) {
 		app.Get("/data-deletion", kit.Handler(handlers.HandleDataDeletion))
 		app.Get("/set-lang/{lang}", kit.Handler(HandleSetLang))
 		app.Get("/products", kit.Handler(handlers.HandleProductsIndex))
-		app.Get("/health", kit.Handler(handlers.HandleHealthCheck)) // Health check endpoint
+		app.Get("/health", kit.Handler(handlers.HandleHealthCheck))
 		app.Get("/products/{id}", kit.Handler(handlers.HandleProductShow))
 		app.Get("/categories/{id}", kit.Handler(handlers.HandleCategoryShow))
 		app.Get("/products/{id}/quick-view", kit.Handler(handlers.HandleProductQuickView))
-		app.Post("/cart/add/{id}", kit.Handler(handlers.HandleCartAdd))
+		app.With(handlers.RateLimitCart.Middleware).Post("/cart/add/{id}", kit.Handler(handlers.HandleCartAdd))
 		app.Delete("/cart/remove/{id}", kit.Handler(handlers.HandleCartRemove))
 		app.Get("/cart", kit.Handler(handlers.HandleCartShow))
 		app.Get("/checkout", kit.Handler(handlers.HandleCheckoutIndex))
 		app.Post("/checkout/abandoned", kit.Handler(handlers.HandleCheckoutAbandoned))
 		app.Get("/checkout/success", kit.Handler(handlers.HandleCheckoutSuccess))
-		app.Post("/checkout", kit.Handler(handlers.HandleCheckoutCreate))
+		app.With(handlers.RateLimitCheckout.Middleware).Post("/checkout", kit.Handler(handlers.HandleCheckoutCreate))
 		app.Get("/api/chat/messages", kit.Handler(handlers.HandleChatFetchMessages))
-		app.Post("/api/chat/send", kit.Handler(handlers.HandleChatSend))
+		app.With(handlers.RateLimitChat.Middleware).Post("/api/chat/send", kit.Handler(handlers.HandleChatSend))
 	})
 
 	// Authenticated routes
@@ -296,6 +319,20 @@ func NotFoundHandler(kit *kit.Kit) error {
 
 // ErrorHandler that will be called on errors return from application handlers.
 func ErrorHandler(kit *kit.Kit, err error) {
+	services.ReportError(kit.Request, err)
 	slog.Error("internal server error", "err", err.Error(), "path", kit.Request.URL.Path)
 	kit.Render(errors.Error500())
+}
+
+func PanicRecoverer(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		defer func() {
+			if rvr := recover(); rvr != nil {
+				services.ReportPanic(r, rvr)
+				slog.Error("panic recovered", "err", rvr, "path", r.URL.Path)
+				http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+			}
+		}()
+		next.ServeHTTP(w, r)
+	})
 }

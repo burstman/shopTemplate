@@ -219,7 +219,7 @@ func HandleChatFetchMessages(kit *kit.Kit) error {
 		updateSessionName(kit.Request.Context(), id, fullName)
 	}
 
-	return kit.Render(components.ChatMessages(config.Get(), session.Messages))
+	return kit.Render(components.ChatMessages(config.FromContext(kit.Request.Context()), session.Messages))
 }
 
 // HandleChatSend saves a message from the client.
@@ -271,7 +271,7 @@ func HandleChatSend(kit *kit.Kit) error {
 	session.UpdatedAt = now
 
 	// Push to all connected admins
-	cfg := config.Get()
+	cfg := config.FromContext(kit.Request.Context())
 
 	// Generate HTML once outside the loop for efficiency
 	bubbleHTML, err := componentToString(kit.Request.Context(), components.ChatMessageBubble(cfg, msg)) // Message bubble
@@ -338,7 +338,7 @@ func HandleChatSend(kit *kit.Kit) error {
 	}
 
 	// We return only the new bubble so HTMX can swap it with 'beforeend'
-	return kit.Render(components.ChatMessageBubble(config.Get(), msg))
+	return kit.Render(components.ChatMessageBubble(config.FromContext(kit.Request.Context()), msg))
 }
 
 // HandleAdminChatIndex displays the list of all chat sessions for the admin.
@@ -413,7 +413,7 @@ func HandleAdminChatMessages(kit *kit.Kit) error {
 	sessionIDStr := chi.URLParam(kit.Request, "id")
 	sessionID, err := strconv.Atoi(sessionIDStr)
 	if err != nil {
-		return kit.Render(components.ChatMessages(config.Get(), []models.ChatMessage{}))
+		return kit.Render(components.ChatMessages(config.FromContext(kit.Request.Context()), []models.ChatMessage{}))
 	}
 
 	var session models.ChatSession
@@ -422,13 +422,13 @@ func HandleAdminChatMessages(kit *kit.Kit) error {
 		First(&session, sessionID).Error
 	if err != nil {
 		// Return empty list instead of 204 to keep HTMX target happy
-		return kit.Render(components.ChatMessages(config.Get(), []models.ChatMessage{}))
+		return kit.Render(components.ChatMessages(config.FromContext(kit.Request.Context()), []models.ChatMessage{}))
 	}
 
 	// Prevent caching of polling results
 	kit.Response.Header().Set("Cache-Control", "no-store, no-cache, must-revalidate, max-age=0")
 
-	return kit.Render(components.ChatMessages(config.Get(), session.Messages))
+	return kit.Render(components.ChatMessages(config.FromContext(kit.Request.Context()), session.Messages))
 }
 
 // HandleAdminChatShow displays the messages for a specific session.
@@ -455,7 +455,7 @@ func HandleAdminChatShow(kit *kit.Kit) error {
 		return err
 	}
 
-	cfg := config.Get()
+	cfg := config.FromContext(kit.Request.Context())
 
 	if kit.Request.Header.Get("HX-Request") == "true" {
 		clientsMu.Lock()
@@ -506,7 +506,7 @@ func HandleAdminChatSend(kit *kit.Kit) error {
 	// Real-time push to participants
 	var session models.ChatSession
 	if err := db.Get().First(&session, sessionID).Error; err == nil {
-		cfg := config.Get()
+		cfg := config.FromContext(kit.Request.Context())
 		bubbleHTML, err := componentToString(kit.Request.Context(), components.ChatMessageBubble(cfg, msg))
 		if err != nil {
 			return err
@@ -587,7 +587,7 @@ func HandleAdminChatSend(kit *kit.Kit) error {
 		}
 	}
 
-	return kit.Render(components.ChatMessageBubble(config.Get(), msg))
+	return kit.Render(components.ChatMessageBubble(config.FromContext(kit.Request.Context()), msg))
 }
 
 func broadcastStatusUpdate(ctx context.Context, identifier string, isOnline bool) {

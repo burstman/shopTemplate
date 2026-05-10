@@ -116,7 +116,7 @@ func HandleAdminCategoryReorder(kit *kit.Kit) error {
 	// Fetch updated categories to update the navigation bar out-of-band
 	categories := helpers.GetCategoryTree()
 
-	cfg := config.Get()
+	cfg := config.FromContext(kit.Request.Context())
 	cart := helpers.GetCart(kit)
 
 	// Render the Navigation component with OOB swap targeting the #main-navigation element

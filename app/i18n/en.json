@@ -73,5 +73,7 @@
   "type_message": "Type your message",
   "chat_welcome": "Welcome! How can we help you?",
   "start_chat": "Start a chat",
-  "chat_loading": "Loading messages..."
+  "chat_loading": "Loading messages...",
+  "remaining_balance": "Remaining Balance",
+  "balance": "Balance"
 }

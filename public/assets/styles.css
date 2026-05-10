@@ -1901,10 +1901,6 @@ label {
   border-color: hsl(var(--primary) / var(--tw-border-opacity));
 }
 
-.border-primary\/20 {
-  border-color: hsl(var(--primary) / 0.2);
-}
-
 .border-primary\/30 {
   border-color: hsl(var(--primary) / 0.3);
 }
@@ -2177,11 +2173,6 @@ label {
 .bg-yellow-50 {
   --tw-bg-opacity: 1;
   background-color: rgb(254 252 232 / var(--tw-bg-opacity));
-}
-
-.bg-yellow-500 {
-  --tw-bg-opacity: 1;
-  background-color: rgb(234 179 8 / var(--tw-bg-opacity));
 }
 
 .bg-opacity-100 {
@@ -2712,14 +2703,6 @@ label {
 .text-primary-foreground {
   --tw-text-opacity: 1;
   color: hsl(var(--primary-foreground) / var(--tw-text-opacity));
-}
-
-.text-primary\/40 {
-  color: hsl(var(--primary) / 0.4);
-}
-
-.text-primary\/60 {
-  color: hsl(var(--primary) / 0.6);
 }
 
 .text-purple-800 {

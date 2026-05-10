@@ -85,3 +85,15 @@ db-seed:
 .PHONY: reset-admin-password
 reset-admin-password:
 	@go run cmd/reset-password/main.go
+
+.PHONY: reset-shop
+reset-shop:
+	@if [ -z "$(AFF_ID)" ]; then echo "Usage: make reset-shop AFF_ID=AFF-001"; exit 1; fi
+	@echo "Resetting shop $(AFF_ID)..."
+	@psql "$(DATABASE_URL)" -c \
+		"DELETE FROM orders WHERE affiliate_id IN (SELECT id FROM affiliates WHERE affiliate_id = '$(AFF_ID)');" 2>/dev/null
+	@psql "$(DATABASE_URL)" -c \
+		"DELETE FROM affiliates WHERE affiliate_id = '$(AFF_ID)';" 2>/dev/null
+	@psql "$(DATABASE_URL)" -c \
+		"DELETE FROM sessions WHERE user_id IN (SELECT id FROM users WHERE role = 'admin'); DELETE FROM users WHERE role = 'admin';" 2>/dev/null
+	@echo "Done. Admin users and affiliate $(AFF_ID) removed."

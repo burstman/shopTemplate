@@ -2,18 +2,17 @@ package dashboard
 
 import (
 	"fmt"
-	"shopTemplate/app/models"
 	"shopTemplate/app/config"
+	"shopTemplate/app/models"
+	"shopTemplate/app/services"
 )
 
 type DashboardData struct {
-	TotalOrders       int64
-	TotalRevenue      float64
-	TotalCommission   float64
-	PendingCommission float64
-	PaidCommission    float64
-	OrdersByStatus    map[string]int64
-	RecentOrders      []models.Order
+	TotalOrders    int64
+	TotalRevenue   float64
+	Balance   float64
+	OrdersByStatus map[string]int64
+	RecentOrders   []models.Order
 }
 
 templ Index(data DashboardData, cfg *config.Config) {
@@ -23,7 +22,7 @@ templ Index(data DashboardData, cfg *config.Config) {
 		</div>
 
 		<!-- Summary Cards -->
-		<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+		<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
 			<div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
 				<div class="flex items-center justify-between">
 					<div>
@@ -55,69 +54,25 @@ templ Index(data DashboardData, cfg *config.Config) {
 			<div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
 				<div class="flex items-center justify-between">
 					<div>
-						<p class="text-sm font-medium text-gray-500 uppercase tracking-wider">Total Commission</p>
-						<p class="mt-2 text-3xl font-black text-primary">{ fmt.Sprintf("%.2f", data.TotalCommission) } { cfg.Site.Currency }</p>
+						<p class="text-sm font-medium text-gray-500 uppercase tracking-wider">{ services.GetI18n().T(ctx, "balance") }</p>
+						<p class={ "mt-2 text-3xl font-black",
+							templ.KV("text-green-600", data.Balance > 0),
+							templ.KV("text-red-600", data.Balance <= 0) }>{ fmt.Sprintf("%.2f", data.Balance) } { cfg.Site.Currency }</p>
 					</div>
-					<div class="p-3 bg-primary/10 rounded-lg">
-						<svg class="w-8 h-8 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/>
-						</svg>
-					</div>
-				</div>
-			</div>
-
-			<div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-				<div class="flex items-center justify-between">
-					<div>
-						<p class="text-sm font-medium text-gray-500 uppercase tracking-wider">Pending Commission</p>
-						<p class="mt-2 text-3xl font-black text-yellow-600">{ fmt.Sprintf("%.2f", data.PendingCommission) } { cfg.Site.Currency }</p>
-					</div>
-					<div class="p-3 bg-yellow-100 rounded-lg">
-						<svg class="w-8 h-8 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+					<div class={ "p-3 rounded-lg",
+						templ.KV("bg-green-100", data.Balance > 0),
+						templ.KV("bg-red-100", data.Balance <= 0) }>
+						<svg class={ "w-8 h-8",
+							templ.KV("text-green-600", data.Balance > 0),
+							templ.KV("text-red-600", data.Balance <= 0) } fill="none" stroke="currentColor" viewBox="0 0 24 24">
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
 						</svg>
 					</div>
 				</div>
 			</div>
 		</div>
 
-		<!-- Commission Breakdown -->
-		<div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-			<div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-				<h2 class="text-lg font-semibold text-gray-900 mb-4">Commission Breakdown</h2>
-				<div class="space-y-4">
-					<div>
-						<div class="flex justify-between text-sm mb-1">
-							<span class="text-gray-600">Paid Commission</span>
-							<span class="font-semibold text-green-600">{ fmt.Sprintf("%.2f", data.PaidCommission) } { cfg.Site.Currency }</span>
-						</div>
-						<div class="w-full bg-gray-200 rounded-full h-2.5">
-							if data.TotalCommission > 0 {
-								<div class="bg-green-500 h-2.5 rounded-full" style={ fmt.Sprintf("width: %.1f%%", data.PaidCommission/data.TotalCommission*100) }></div>
-							}
-						</div>
-					</div>
-					<div>
-						<div class="flex justify-between text-sm mb-1">
-							<span class="text-gray-600">Pending Commission</span>
-							<span class="font-semibold text-yellow-600">{ fmt.Sprintf("%.2f", data.PendingCommission) } { cfg.Site.Currency }</span>
-						</div>
-						<div class="w-full bg-gray-200 rounded-full h-2.5">
-							if data.TotalCommission > 0 {
-								<div class="bg-yellow-500 h-2.5 rounded-full" style={ fmt.Sprintf("width: %.1f%%", data.PendingCommission/data.TotalCommission*100) }></div>
-							}
-						</div>
-					</div>
-					<div class="pt-2 border-t border-gray-100">
-						<div class="flex justify-between text-sm font-semibold">
-							<span class="text-gray-800">Total Commission</span>
-							<span class="text-primary">{ fmt.Sprintf("%.2f", data.TotalCommission) } { cfg.Site.Currency }</span>
-						</div>
-					</div>
-				</div>
-			</div>
-
-			<!-- Orders by Status -->
+		<!-- Orders by Status -->
 			<div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
 				<h2 class="text-lg font-semibold text-gray-900 mb-4">Orders by Status</h2>
 				<div class="space-y-3">
@@ -168,7 +123,6 @@ templ Index(data DashboardData, cfg *config.Config) {
 					}
 				</div>
 			</div>
-		</div>
 
 		<!-- Recent Orders -->
 		<div class="bg-white rounded-xl shadow-sm border border-gray-200">

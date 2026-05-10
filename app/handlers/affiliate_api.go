@@ -62,6 +62,7 @@ type commissionJSON struct {
 	TotalCommission   float64 `json:"total_commission"`
 	PendingCommission float64 `json:"pending_commission"`
 	PaidCommission    float64 `json:"paid_commission"`
+	Balance      float64 `json:"balance"`
 }
 
 func writeJSON(w http.ResponseWriter, status int, data any) {
@@ -148,12 +149,15 @@ func HandleAPIAffiliateCommission(kit *kit.Kit) error {
 		rows.Scan(&r.TotalOrders, &r.TotalRevenue, &r.TotalCommission, &r.PendingCommission, &r.PaidCommission)
 	}
 
+	balance := affiliate.Balance.ToFloat()
+
 	writeJSON(kit.Response, http.StatusOK, commissionJSON{
 		TotalOrders:       r.TotalOrders,
 		TotalRevenue:      r.TotalRevenue,
 		TotalCommission:   r.TotalCommission,
 		PendingCommission: r.PendingCommission,
 		PaidCommission:    r.PaidCommission,
+		Balance:           balance,
 	})
 	return nil
 }

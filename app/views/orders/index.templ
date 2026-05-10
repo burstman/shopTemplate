@@ -2,23 +2,29 @@ package orders
 
 import (
 	"fmt"
-	"shopTemplate/app/models"
 	"shopTemplate/app/config"
+	"shopTemplate/app/models"
+	"shopTemplate/app/services"
 )
 
-templ Index(orders []models.Order, page int, totalPages int, totalCommission models.Currency, cfg *config.Config) {
+templ Index(orders []models.Order, page int, totalPages int, balance float64, cfg *config.Config) {
 	<div class="flex flex-col gap-6 mb-8">
 		<div class="flex justify-between items-center">
 			<h1 class="text-2xl font-bold">Orders</h1>
 		</div>
 
-		<!-- Commission Summary Card -->
-		<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-			<div class="bg-primary/5 border border-primary/20 rounded-xl p-6">
-				<p class="text-sm font-medium text-primary/60 uppercase tracking-wider mb-1">Total Platform Commission (1%)</p>
-				<p class="text-3xl font-black text-primary">{ totalCommission.String() } { cfg.Site.Currency }</p>
-				<p class="mt-2 text-xs text-primary/40">Accumulated from all non-cancelled orders</p>
-			</div>
+		<!-- Balance Card -->
+		<div class={ "rounded-xl p-6 border max-w-sm",
+			templ.KV("bg-green-50 border-green-200", balance > 0),
+			templ.KV("bg-red-50 border-red-200", balance <= 0) }>
+			if balance > 0 {
+				<p class="text-sm font-medium text-green-600 uppercase tracking-wider mb-1">{ services.GetI18n().T(ctx, "remaining_balance") }</p>
+				<p class="text-3xl font-black text-green-600">{ fmt.Sprintf("%.2f", balance) } { cfg.Site.Currency }</p>
+			} else {
+				<p class="text-sm font-medium text-red-600 uppercase tracking-wider mb-1">{ services.GetI18n().T(ctx, "remaining_balance") }</p>
+				<p class="text-3xl font-black text-red-600">{ fmt.Sprintf("%.2f", balance) } { cfg.Site.Currency }</p>
+				<p class="mt-2 text-xs text-red-500">Balance depleted. Please recharge to continue deducting commission.</p>
+			}
 		</div>
 	</div>
 

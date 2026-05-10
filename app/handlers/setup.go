@@ -6,9 +6,12 @@ import (
 	"fmt"
 	"math/big"
 	"net/http"
+	"shopTemplate/app/config"
 	"shopTemplate/app/db"
 	"shopTemplate/app/models"
 	"shopTemplate/app/views/admin"
+	"strconv"
+	"strings"
 	"time"
 
 	"github.com/anthdm/superkit/kit"
@@ -30,6 +33,26 @@ func randomString(length int) (string, error) {
 }
 
 var generateSetupPassword = randomString
+
+func generateAffiliateID() (string, error) {
+	var maxID *string
+	err := db.Get().Model(&models.Affiliate{}).Select("MAX(affiliate_id)").Scan(&maxID).Error
+	if err != nil {
+		return "", err
+	}
+	if maxID == nil || *maxID == "" {
+		return "AFF-001", nil
+	}
+	parts := strings.SplitN(*maxID, "-", 2)
+	if len(parts) != 2 {
+		return "", fmt.Errorf("invalid affiliate id format: %s", *maxID)
+	}
+	num, err := strconv.Atoi(parts[1])
+	if err != nil {
+		return "", fmt.Errorf("invalid affiliate id number: %s", parts[1])
+	}
+	return fmt.Sprintf("AFF-%03d", num+1), nil
+}
 
 func HandleSetupIndex(kit *kit.Kit) error {
 	var count int64
@@ -86,17 +109,29 @@ func HandleSetupCreate(kit *kit.Kit) error {
 	var affCount int64
 	db.Get().Model(&models.Affiliate{}).Count(&affCount)
 	if affCount == 0 {
+		affiliateID, err := generateAffiliateID()
+		if err != nil {
+			return kit.Render(admin.SetupPage("", "", "", "Failed to generate affiliate ID: "+err.Error()))
+		}
+
 		affiliate := models.Affiliate{
-			AffiliateID:  "AFF-001",
+			AffiliateID:  affiliateID,
 			Name:         name,
 			Email:        email,
 			PasswordHash: string(hash),
 			Rate:         0,
 			Active:       true,
 			Domain:       domain,
+			Balance:      models.NewCurrency(100.00),
 		}
 		if err := db.Get().Create(&affiliate).Error; err != nil {
 			return kit.Render(admin.SetupPage("", "", "", "Failed to create affiliate: "+err.Error()))
+		}
+
+		cfg := config.Get()
+		cfg.Site.AffiliateID = affiliateID
+		if err := config.Save(cfg); err != nil {
+			return kit.Render(admin.SetupPage("", "", "", "Failed to save affiliate ID to config: "+err.Error()))
 		}
 	}
 

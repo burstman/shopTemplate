@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"context"
 	"fmt"
 	"log/slog"
 	"math"
@@ -19,31 +20,22 @@ import (
 	"gorm.io/gorm"
 )
 
-var mainAffiliateID *uint
-
-func getMainAffiliateID() *uint {
-	if mainAffiliateID != nil {
-		return mainAffiliateID
-	}
-	var affiliate models.Affiliate
-	if err := db.Get().Where("affiliate_id = ? AND active = ?", "AFF-001", true).First(&affiliate).Error; err != nil {
-		if err != gorm.ErrRecordNotFound {
-			slog.Error("failed to fetch main affiliate", "err", err)
-		}
+func getAffiliateID(ctx context.Context) *uint {
+	affiliate := config.AffiliateFromContext(ctx)
+	if affiliate == nil {
 		return nil
 	}
-	mainAffiliateID = &affiliate.ID
-	return mainAffiliateID
+	return &affiliate.ID
 }
 
 func HandleCheckoutIndex(kit *kit.Kit) error {
 	cart := helpers.GetCart(kit)
-	cfg := config.Get()
+	cfg := config.FromContext(kit.Request.Context())
 	return RenderWithLayout(kit, checkout.Index(cart, make(map[string]string), make(validate.Errors), cfg))
 }
 
 func HandleCheckoutSuccess(kit *kit.Kit) error {
-	cfg := config.Get()
+	cfg := config.FromContext(kit.Request.Context())
 	totalStr := kit.Request.URL.Query().Get("total")
 	total, err := strconv.ParseFloat(totalStr, 64)
 	if err != nil {
@@ -52,10 +44,28 @@ func HandleCheckoutSuccess(kit *kit.Kit) error {
 	return RenderWithLayout(kit, checkout.Success(cfg, total))
 }
 
+func deductCommissionFromBalance(commission models.Currency, affiliateID *uint) error {
+	if affiliateID == nil || commission <= 0 {
+		return nil
+	}
+	result := db.Get().Model(&models.Affiliate{}).
+		Where("id = ?", *affiliateID).
+		Update("balance", gorm.Expr("GREATEST(balance - ?, 0)", commission.ToFloat()))
+	if result.Error != nil {
+		slog.Error("failed to deduct balance", "err", result.Error)
+		return result.Error
+	}
+	if result.RowsAffected == 0 {
+		slog.Warn("affiliate not found for balance deduction", "id", *affiliateID)
+		return fmt.Errorf("affiliate %d not found", *affiliateID)
+	}
+	return nil
+}
+
 func HandleCheckoutCreate(kit *kit.Kit) error {
 	errors := make(validate.Errors)
 	phone := kit.Request.FormValue("phone")
-	cfg := config.Get()
+	cfg := config.FromContext(kit.Request.Context())
 
 	// Server-side validation for exactly 8 digits
 	matched, err := regexp.MatchString(`^[0-9]{8}$`, phone)
@@ -78,7 +88,7 @@ func HandleCheckoutCreate(kit *kit.Kit) error {
 
 	// 1. Create the Order
 	cart := helpers.GetCart(kit)
-	total := calculateTotal(cart)
+	total := calculateTotal(cart, cfg.Site.Bundles)
 	// Calculate 1% commission with proper rounding
 	commission := models.Currency(math.Round(float64(total) / 100.0))
 
@@ -87,6 +97,14 @@ func HandleCheckoutCreate(kit *kit.Kit) error {
 	if isTest {
 		slog.Info("test order detected during checkout", "phone", phone)
 		commission = 0
+	}
+
+	// Deduct commission from affiliate's balance
+	affiliateID := getAffiliateID(kit.Request.Context())
+	if !isTest {
+		if err := deductCommissionFromBalance(commission, affiliateID); err != nil {
+			slog.Error("commission deduction failed, order will still proceed", "err", err)
+		}
 	}
 
 	// Check for existing abandoned order
@@ -110,7 +128,7 @@ func HandleCheckoutCreate(kit *kit.Kit) error {
 			return "pending"
 		}(),
 		IsTest:      isTest,
-		AffiliateID: getMainAffiliateID(),
+		AffiliateID: affiliateID,
 	}
 
 	if abandonedID != 0 {
@@ -196,8 +214,8 @@ func HandleCheckoutAbandoned(kit *kit.Kit) error {
 		return nil
 	}
 
-	cfg := config.Get()
-	total := calculateTotal(cart)
+	cfg := config.FromContext(kit.Request.Context())
+	total := calculateTotal(cart, cfg.Site.Bundles)
 	commission := models.Currency(math.Round(float64(total) / 100.0))
 
 	// Detect test order (phone = 00000000)
@@ -227,7 +245,7 @@ func HandleCheckoutAbandoned(kit *kit.Kit) error {
 		CommissionStatus:   "pending",
 		Status:             status,
 		IsTest:             isTest,
-		AffiliateID:        getMainAffiliateID(),
+		AffiliateID:        getAffiliateID(kit.Request.Context()),
 	}
 
 	isNewAbandoned := false
@@ -292,7 +310,6 @@ func HandleCheckoutAbandoned(kit *kit.Kit) error {
 	return nil
 }
 
-func calculateTotal(cart *models.Cart) models.Currency {
-	cfg := config.Get()
-	return helpers.CalculateCartTotal(cart, cfg.Site.Bundles)
+func calculateTotal(cart *models.Cart, bundles []models.Bundle) models.Currency {
+	return helpers.CalculateCartTotal(cart, bundles)
 }
