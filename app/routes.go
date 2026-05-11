@@ -37,6 +37,7 @@ func InitializeMiddleware(router *chi.Mux) {
 
 // StoreDomainMiddleware looks up the affiliate by the request domain
 // and stores it in the request context for shop-scoped config access.
+// If no affiliate matches the domain, it auto-updates the first affiliate's domain.
 func StoreDomainMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		// Skip setup — no shop context available yet
@@ -48,6 +49,17 @@ func StoreDomainMiddleware(next http.Handler) http.Handler {
 		affiliate := config.LookupAffiliateByDomain(r.Host)
 		if affiliate != nil {
 			ctx := config.WithAffiliate(r.Context(), affiliate)
+			next.ServeHTTP(w, r.WithContext(ctx))
+			return
+		}
+
+		// Auto-register: update first affiliate's domain to match the new host
+		var first models.Affiliate
+		if err := db.Get().First(&first).Error; err == nil {
+			first.Domain = r.Host
+			db.Get().Save(&first)
+			slog.Info("auto-updated affiliate domain", "affiliate_id", first.AffiliateID, "domain", r.Host)
+			ctx := config.WithAffiliate(r.Context(), &first)
 			next.ServeHTTP(w, r.WithContext(ctx))
 			return
 		}
