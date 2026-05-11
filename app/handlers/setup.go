@@ -81,7 +81,7 @@ func HandleSetupCreate(kit *kit.Kit) error {
 	if kit.Request.TLS == nil {
 		scheme = "http"
 	}
-	domain := fmt.Sprintf("%s://%s", scheme, kit.Request.Host)
+	shopURL := fmt.Sprintf("%s://%s", scheme, kit.Request.Host)
 
 	password, err := generateSetupPassword(12)
 	if err != nil {
@@ -121,7 +121,7 @@ func HandleSetupCreate(kit *kit.Kit) error {
 			PasswordHash: string(hash),
 			Rate:         0,
 			Active:       true,
-			Domain:       domain,
+			ShopURL:      shopURL,
 			Balance:      models.NewCurrency(100.00),
 		}
 		if err := db.Get().Create(&affiliate).Error; err != nil {
@@ -135,5 +135,5 @@ func HandleSetupCreate(kit *kit.Kit) error {
 		}
 	}
 
-	return kit.Render(admin.SetupPage(email, password, domain, ""))
+	return kit.Render(admin.SetupPage(email, password, shopURL, ""))
 }

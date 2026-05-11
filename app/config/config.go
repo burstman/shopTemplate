@@ -44,7 +44,7 @@ var (
 	once    sync.Once
 	mu      sync.Mutex
 	affMu   sync.RWMutex
-	affMap  = map[string]uint{}   // domain -> affiliate ID
+	affMap  = map[string]uint{}   // shop_url -> affiliate ID
 	cfgMu   sync.RWMutex
 	cfgCache = map[string]*Config{} // affiliate_id -> config
 )
@@ -371,24 +371,24 @@ func Get() *Config {
 	return cfg
 }
 
-// LookupAffiliateByDomain finds an affiliate whose domain matches the request host.
+// LookupAffiliateByShopURL finds an affiliate whose shop_url matches the request host.
 // It tries the raw host first, then with https:// and http:// prefixes.
-func LookupAffiliateByDomain(host string) *models.Affiliate {
+func LookupAffiliateByShopURL(host string) *models.Affiliate {
 	var aff models.Affiliate
 
 	if host == "" {
 		return nil
 	}
 
-	if err := db.Get().Where("domain = ?", host).First(&aff).Error; err == nil {
+	if err := db.Get().Where("shop_url = ?", host).First(&aff).Error; err == nil {
 		return &aff
 	}
 
-	if err := db.Get().Where("domain = ?", "https://"+host).First(&aff).Error; err == nil {
+	if err := db.Get().Where("shop_url = ?", "https://"+host).First(&aff).Error; err == nil {
 		return &aff
 	}
 
-	if err := db.Get().Where("domain = ?", "http://"+host).First(&aff).Error; err == nil {
+	if err := db.Get().Where("shop_url = ?", "http://"+host).First(&aff).Error; err == nil {
 		return &aff
 	}
 

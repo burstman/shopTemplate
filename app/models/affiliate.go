@@ -11,7 +11,7 @@ type Affiliate struct {
 	Rate         float64
 	Active       bool     `gorm:"default:true"`
 	APIToken     string   `gorm:"uniqueIndex;size:64"`
-	Domain       string   `gorm:"size:255"`
+	ShopURL      string   `gorm:"size:255"`
 	DashboardURL string   `gorm:"size:255"`
 	APIKey       string   `gorm:"size:128"`
 	Balance      Currency `gorm:"type:numeric(12,2);default:100.00"`
