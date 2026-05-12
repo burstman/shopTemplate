@@ -7,6 +7,7 @@ import (
 	"log/slog"
 	"net/http"
 	"shopTemplate/app/config"
+	"shopTemplate/app/db"
 	"shopTemplate/app/models"
 )
 
@@ -32,6 +33,10 @@ func (t *TelegramNotifier) Send(order models.Order) error {
 	if token == "" || chatID == "" {
 		if order.Phone == "00000000" {
 			slog.Warn("Telegram test trigger detected but Bot Token or Chat ID is missing in configuration")
+			var aff models.Affiliate
+			if err := db.Get().First(&aff).Error; err == nil {
+				ReportWarningAffiliate(&aff, "Telegram test trigger detected but Bot Token or Chat ID is missing")
+			}
 		}
 		return nil
 	}
@@ -62,6 +67,10 @@ func (t *TelegramNotifier) SendAbandoned(order models.Order) error {
 	if token == "" || chatID == "" {
 		if order.Phone == "00000000" {
 			slog.Warn("Telegram abandoned test trigger detected but configuration is missing")
+			var aff models.Affiliate
+			if err := db.Get().First(&aff).Error; err == nil {
+				ReportWarningAffiliate(&aff, "Telegram abandoned test trigger detected but configuration is missing")
+			}
 		}
 		return nil
 	}

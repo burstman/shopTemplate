@@ -6,6 +6,7 @@ import (
 	"net/smtp"
 	"os"
 	"shopTemplate/app/config"
+	"shopTemplate/app/db"
 	"shopTemplate/app/models"
 )
 
@@ -22,6 +23,10 @@ type EmailNotifier struct {
 func NewEmailNotifier() *EmailNotifier {
 	if os.Getenv("SMTP_PASS") == "" {
 		slog.Warn("SMTP_PASS is not set in environment variables")
+		var aff models.Affiliate
+		if err := db.Get().First(&aff).Error; err == nil {
+			ReportWarningAffiliate(&aff, "SMTP_PASS is not set in environment variables")
+		}
 	}
 
 	return &EmailNotifier{

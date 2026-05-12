@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"shopTemplate/app/config"
+	"shopTemplate/app/models"
 )
 
 type errorPayload struct {
@@ -78,19 +79,12 @@ func ReportPanic(r *http.Request, rvr any) {
 	sendError(r, msg)
 }
 
-func ReportWarning(r *http.Request, message string) {
-	aff := config.AffiliateFromContext(r.Context())
+func sendWarning(aff *models.Affiliate, message string) {
 	if aff == nil || aff.DashboardURL == "" {
 		return
 	}
 
 	payload := warnPayload{Message: message}
-	if r != nil {
-		payload.Path = r.URL.Path
-		payload.Method = r.Method
-		payload.Host = r.Host
-	}
-
 	url := aff.DashboardURL + "/api/warn"
 	slog.Info("sending warning to dashboard", "url", url, "message", message)
 
@@ -108,4 +102,13 @@ func ReportWarning(r *http.Request, message string) {
 			resp.Body.Close()
 		}
 	}()
+}
+
+func ReportWarning(r *http.Request, message string) {
+	aff := config.AffiliateFromContext(r.Context())
+	sendWarning(aff, message)
+}
+
+func ReportWarningAffiliate(aff *models.Affiliate, message string) {
+	sendWarning(aff, message)
 }

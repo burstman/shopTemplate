@@ -10,6 +10,7 @@ import (
 	"shopTemplate/app/db"
 	"shopTemplate/app/helpers"
 	"shopTemplate/app/models"
+	"shopTemplate/app/services"
 	"shopTemplate/app/views/checkout"
 	"strconv"
 	"time"
@@ -57,6 +58,10 @@ func deductCommissionFromBalance(commission models.Currency, affiliateID *uint) 
 	}
 	if result.RowsAffected == 0 {
 		slog.Warn("affiliate not found for balance deduction", "id", *affiliateID)
+		var aff models.Affiliate
+		if err := db.Get().First(&aff, *affiliateID).Error; err == nil {
+			services.ReportWarningAffiliate(&aff, fmt.Sprintf("affiliate %d not found for balance deduction", *affiliateID))
+		}
 		return fmt.Errorf("affiliate %d not found", *affiliateID)
 	}
 	return nil
