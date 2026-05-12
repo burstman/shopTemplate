@@ -181,10 +181,8 @@ func InitializeRoutes(router *chi.Mux) {
 		csrf.RequestHeader("X-CSRF-Token"),
 		csrf.Secure(kit.IsProduction()),
 		csrf.Path("/"),
-		csrf.SameSite(csrf.SameSiteStrictMode),
-		csrf.TrustedOrigins(getTrustedOrigins()),
 		csrf.ErrorHandler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			slog.Warn("CSRF validation failed", "path", r.URL.Path, "method", r.Method, "error", csrf.FailureReason(r).Error())
+			slog.Warn("CSRF validation failed", "path", r.URL.Path, "method", r.Method, "error", csrf.FailureReason(r).Error(), "origin", r.Header.Get("Origin"), "host", r.Host)
 			services.ReportWarning(r, csrf.FailureReason(r).Error())
 			http.Error(w, "Forbidden - CSRF token invalid", http.StatusForbidden)
 		})),
@@ -304,23 +302,14 @@ func adminSetupMiddleware(next http.Handler) http.Handler {
 func plaintextCSRFMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.TLS == nil {
-			r = csrf.PlaintextHTTPRequest(r)
+			// Behind a TLS-terminating proxy (nginx, Cloudflare, etc.)
+			// r.TLS is nil even though the client-facing connection is HTTPS.
+			if r.Header.Get("X-Forwarded-Proto") != "https" {
+				r = csrf.PlaintextHTTPRequest(r)
+			}
 		}
 		next.ServeHTTP(w, r)
 	})
-}
-
-func getTrustedOrigins() []string {
-	var affiliates []models.Affiliate
-	origins := []string{"localhost:7331", "localhost:3000"}
-	if err := db.Get().Find(&affiliates).Error; err == nil {
-		for _, a := range affiliates {
-			if a.ShopURL != "" {
-				origins = append(origins, a.ShopURL)
-			}
-		}
-	}
-	return origins
 }
 
 func getCSRFKey() []byte {
