@@ -3,6 +3,7 @@ package services
 import (
 	"bytes"
 	"encoding/json"
+	"log/slog"
 	"net/http"
 	"runtime/debug"
 	"time"
@@ -90,9 +91,12 @@ func ReportWarning(r *http.Request, message string) {
 		payload.Host = r.Host
 	}
 
+	url := aff.DashboardURL + "/api/warn"
+	slog.Info("sending warning to dashboard", "url", url, "message", message)
+
 	go func() {
 		body, _ := json.Marshal(payload)
-		req, _ := http.NewRequest("POST", aff.DashboardURL+"/api/warn", bytes.NewReader(body))
+		req, _ := http.NewRequest("POST", url, bytes.NewReader(body))
 		req.Header.Set("Content-Type", "application/json")
 		if aff.APIKey != "" {
 			req.Header.Set("Authorization", "Bearer "+aff.APIKey)
