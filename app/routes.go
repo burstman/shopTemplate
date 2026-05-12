@@ -182,9 +182,10 @@ func InitializeRoutes(router *chi.Mux) {
 		csrf.Secure(kit.IsProduction()),
 		csrf.Path("/"),
 		csrf.SameSite(csrf.SameSiteStrictMode),
-		csrf.TrustedOrigins([]string{"localhost:7331", "localhost:3000"}),
+		csrf.TrustedOrigins([]string{"localhost:7331", "localhost:3000", "shoptemplate-3t7u.onrender.com"}),
 		csrf.ErrorHandler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			slog.Warn("CSRF validation failed", "path", r.URL.Path, "method", r.Method, "error", csrf.FailureReason(r).Error())
+			services.ReportWarning(r, csrf.FailureReason(r).Error())
 			http.Error(w, "Forbidden - CSRF token invalid", http.StatusForbidden)
 		})),
 	)
