@@ -16,6 +16,7 @@ import (
 	"shopTemplate/app/db"
 	"shopTemplate/app/helpers"
 	"shopTemplate/app/models"
+	"shopTemplate/app/services"
 	viewerrors "shopTemplate/app/views/errors"
 	"shopTemplate/app/views/products"
 
@@ -294,6 +295,7 @@ func HandleProductDelete(kit *kit.Kit) error {
 		if len(img) > 1 && img[0] == '/' {
 			if err := os.Remove(strings.TrimPrefix(img, "/")); err != nil {
 				slog.Warn("failed to remove product image", "path", img, "error", err)
+				services.ReportWarning(kit.Request, err.Error())
 			}
 		}
 	}
@@ -443,6 +445,7 @@ func HandleProductUpdate(kit *kit.Kit) error {
 				if len(img) > 1 && img[0] == '/' {
 					if err := os.Remove(strings.TrimPrefix(img, "/")); err != nil {
 						slog.Warn("failed to remove deleted product image", "path", img, "error", err)
+						services.ReportWarning(kit.Request, err.Error())
 					}
 				}
 			} else {

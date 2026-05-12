@@ -340,6 +340,7 @@ func NotFoundHandler(kit *kit.Kit) error {
 	}
 
 	slog.Warn("not found", "path", kit.Request.URL.Path)
+	services.ReportWarning(kit.Request, "not found: "+kit.Request.URL.Path)
 	return kit.Render(errors.Error404())
 }
 
