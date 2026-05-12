@@ -182,7 +182,7 @@ func InitializeRoutes(router *chi.Mux) {
 		csrf.Secure(kit.IsProduction()),
 		csrf.Path("/"),
 		csrf.SameSite(csrf.SameSiteStrictMode),
-		csrf.TrustedOrigins([]string{"localhost:7331", "localhost:3000", "shoptemplate-3t7u.onrender.com"}),
+		csrf.TrustedOrigins(getTrustedOrigins()),
 		csrf.ErrorHandler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			slog.Warn("CSRF validation failed", "path", r.URL.Path, "method", r.Method, "error", csrf.FailureReason(r).Error())
 			services.ReportWarning(r, csrf.FailureReason(r).Error())
@@ -308,6 +308,19 @@ func plaintextCSRFMiddleware(next http.Handler) http.Handler {
 		}
 		next.ServeHTTP(w, r)
 	})
+}
+
+func getTrustedOrigins() []string {
+	var affiliates []models.Affiliate
+	origins := []string{"localhost:7331", "localhost:3000"}
+	if err := db.Get().Find(&affiliates).Error; err == nil {
+		for _, a := range affiliates {
+			if a.ShopURL != "" {
+				origins = append(origins, a.ShopURL)
+			}
+		}
+	}
+	return origins
 }
 
 func getCSRFKey() []byte {
