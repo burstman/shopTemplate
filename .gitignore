@@ -1,7 +1,6 @@
 bin
 node_modules
 tmp
-.env
 app_db
 
 # Ignore uploaded images
