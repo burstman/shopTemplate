@@ -77,6 +77,22 @@ func HandleSetupCreate(kit *kit.Kit) error {
 		return kit.Render(admin.SetupPage("", "", "", "All fields are required."))
 	}
 
+	// Check if the email is authorized
+	var authorizedEmails []string
+	db.Get().Model(&models.Affiliate{}).Where("authorized_email <> ''").Pluck("authorized_email", &authorizedEmails)
+	if len(authorizedEmails) > 0 {
+		authorized := false
+		for _, ae := range authorizedEmails {
+			if ae == email {
+				authorized = true
+				break
+			}
+		}
+		if !authorized {
+			return kit.Render(admin.SetupPage("", "", "", "Your email is not authorized for setup. Contact the shop owner."))
+		}
+	}
+
 	scheme := "https"
 	if kit.Request.TLS == nil {
 		scheme = "http"
