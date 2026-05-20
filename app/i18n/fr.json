@@ -75,5 +75,11 @@
   "start_chat": "Démarrer une conversation",
   "chat_loading": "Chargement des messages...",
   "remaining_balance": "Solde Restant",
-  "balance": "Solde"
+  "balance": "Solde",
+  "reset_password_title": "Réinitialiser le mot de passe",
+  "reset_password_instruction": "Entrez votre e-mail et nous vous enverrons un nouveau mot de passe.",
+  "reset_password_sent": "Mot de passe réinitialisé",
+  "reset_password_check_email": "Un nouveau mot de passe a été envoyé à votre adresse e-mail. Vérifiez votre boîte de réception.",
+  "reset_password_button": "Envoyer le nouveau mot de passe",
+  "back_to_login": "Retour à la connexion"
 }

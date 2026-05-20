@@ -85,6 +85,7 @@ templ LoginForm(values LoginFormValues, errors v.Errors, authError string) {
 		</button>
 		<div class="flex justify-between">
 			<a class="text-xs underline" href="/signup">{ services.GetI18n().T(ctx, "no_account_link") }</a>
+			<a class="text-xs underline" href="/reset-password">{ services.GetI18n().T(ctx, "reset_password_link") }</a>
 		</div>
 	</form>
 }

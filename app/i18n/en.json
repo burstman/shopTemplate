@@ -75,5 +75,11 @@
   "start_chat": "Start a chat",
   "chat_loading": "Loading messages...",
   "remaining_balance": "Remaining Balance",
-  "balance": "Balance"
+  "balance": "Balance",
+  "reset_password_title": "Reset Password",
+  "reset_password_instruction": "Enter your email and we'll send you a new password.",
+  "reset_password_sent": "Password Reset",
+  "reset_password_check_email": "A new password has been sent to your email. Check your inbox.",
+  "reset_password_button": "Send New Password",
+  "back_to_login": "Back to Login"
 }
