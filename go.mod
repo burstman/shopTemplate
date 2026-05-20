@@ -6,7 +6,7 @@ go 1.26.2
 // replace github.com/anthdm/superkit => ../
 
 require (
-	github.com/a-h/templ v0.3.1001
+	github.com/a-h/templ v0.3.1020
 	github.com/anthdm/superkit v0.0.0-20240701091803-e7f8e0aad3e9
 	github.com/cloudinary/cloudinary-go/v2 v2.15.0
 	github.com/go-chi/chi/v5 v5.2.5

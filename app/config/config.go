@@ -298,22 +298,12 @@ func defaultConfig() *Config {
 					Title: "Shop",
 					Links: []MenuItem{
 						{Title: "Products", Link: "/products"},
-						{Title: "Best Sellers", Link: "/best-sellers"},
-						{Title: "New Arrivals", Link: "/new-arrivals"},
-					},
-				},
-				{
-					Title: "About",
-					Links: []MenuItem{
-						{Title: "Our Story", Link: "/about"},
-						{Title: "FAQs", Link: "/faq"},
 					},
 				},
 				{
 					Title: "Legal",
 					Links: []MenuItem{
 						{Title: "Privacy Policy", Link: "/privacy"},
-						{Title: "Terms of Service", Link: "/terms"},
 					},
 				},
 			},
