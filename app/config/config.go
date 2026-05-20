@@ -300,12 +300,6 @@ func defaultConfig() *Config {
 						{Title: "Products", Link: "/products"},
 					},
 				},
-				{
-					Title: "Legal",
-					Links: []MenuItem{
-						{Title: "Privacy Policy", Link: "/privacy"},
-					},
-				},
 			},
 		},
 		Chat: ChatConfig{
