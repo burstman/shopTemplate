@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"log/slog"
 	"net/http"
+	"net/url"
 	"os"
 	"shopTemplate/app/config"
 	"shopTemplate/app/db"
@@ -31,12 +32,25 @@ var (
 		ReadBufferSize:  1024,
 		WriteBufferSize: 1024,
 		CheckOrigin: func(r *http.Request) bool {
+			origin := r.Header.Get("Origin")
+			if origin == "" {
+				return true
+			}
+			// Allow if ALLOWED_ORIGIN is set to "*" or empty
 			allowedOrigin := strings.TrimSpace(os.Getenv("ALLOWED_ORIGIN"))
 			if allowedOrigin == "" || allowedOrigin == "*" {
 				return true
 			}
-			origin := r.Header.Get("Origin")
-			return origin == allowedOrigin
+			// Exact match against ALLOWED_ORIGIN
+			if origin == allowedOrigin {
+				return true
+			}
+			// Allow if origin matches the request host (same-origin)
+			parsedOrigin, err := url.Parse(origin)
+			if err == nil && parsedOrigin.Host == r.Host {
+				return true
+			}
+			return false
 		},
 	}
 	// Active connections mapped by chat identifier
