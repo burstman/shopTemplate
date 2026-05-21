@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"shopTemplate/app/config"
+	"shopTemplate/app/db"
 	"shopTemplate/app/models"
 )
 
@@ -24,7 +25,11 @@ type errorPayload struct {
 
 func sendError(r *http.Request, msg string) {
 	aff := config.AffiliateFromContext(r.Context())
-	if aff == nil || aff.DashboardURL == "" {
+	if aff == nil {
+		return
+	}
+	dashboardURL, err := db.GetConfig("dashboard_url")
+	if err != nil || dashboardURL == "" {
 		return
 	}
 
@@ -43,7 +48,7 @@ func sendError(r *http.Request, msg string) {
 
 	go func() {
 		body, _ := json.Marshal(payload)
-		req, _ := http.NewRequest("POST", aff.DashboardURL+"/api/error", bytes.NewReader(body))
+		req, _ := http.NewRequest("POST", dashboardURL+"/api/error", bytes.NewReader(body))
 		req.Header.Set("Content-Type", "application/json")
 		if aff.APIKey != "" {
 			req.Header.Set("Authorization", "Bearer "+aff.APIKey)
@@ -80,12 +85,16 @@ func ReportPanic(r *http.Request, rvr any) {
 }
 
 func sendWarning(aff *models.Affiliate, message string) {
-	if aff == nil || aff.DashboardURL == "" {
+	if aff == nil {
+		return
+	}
+	dashboardURL, err := db.GetConfig("dashboard_url")
+	if err != nil || dashboardURL == "" {
 		return
 	}
 
 	payload := warnPayload{Message: message}
-	url := aff.DashboardURL + "/api/warn"
+	url := dashboardURL + "/api/warn"
 	slog.Info("sending warning to dashboard", "url", url, "message", message)
 
 	go func() {

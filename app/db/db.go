@@ -26,6 +26,16 @@ import (
 // Change this type based on the database package of your likings.
 var dbInstance *gorm.DB
 
+// GetConfig returns a config value by key from the shared config table.
+func GetConfig(key string) (string, error) {
+	var value string
+	err := dbInstance.Raw("SELECT COALESCE(value, '') FROM config WHERE key = ?", key).Scan(&value).Error
+	if err != nil {
+		return "", fmt.Errorf("failed to get config %q: %w", key, err)
+	}
+	return value, nil
+}
+
 // Get returns the instantiated DB instance.
 func Get() *gorm.DB {
 	return dbInstance
