@@ -22,7 +22,7 @@ func AffiliateAPIMiddleware(next http.Handler) http.Handler {
 		token := strings.TrimPrefix(auth, "Bearer ")
 
 		var affiliate models.Affiliate
-		if err := db.Get().Where("api_token = ? AND active = ?", token, true).First(&affiliate).Error; err != nil {
+		if err := db.Get().Where("api_key = ? AND active = ?", token, true).First(&affiliate).Error; err != nil {
 			http.Error(w, `{"error":"unauthorized"}`, http.StatusUnauthorized)
 			return
 		}

@@ -60,17 +60,17 @@ func StoreDomainMiddleware(next http.Handler) http.Handler {
 		var count int64
 		db.Get().Model(&models.Affiliate{}).Count(&count)
 		affiliateID := fmt.Sprintf("AFF-%03d", count+1)
-		tokenBytes := make([]byte, 32)
-		if _, err := rand.Read(tokenBytes); err != nil {
-			slog.Error("failed to generate api_token", "err", err)
+		keyBytes := make([]byte, 32)
+		if _, err := rand.Read(keyBytes); err != nil {
+			slog.Error("failed to generate api_key", "err", err)
 			next.ServeHTTP(w, r)
 			return
 		}
 		newAff := models.Affiliate{
 			AffiliateID: affiliateID,
 			Name:        r.Host,
-			ShopURL:     r.Host, // raw host without scheme; LookupAffiliateByShopURL checks all variations
-			APIToken:    hex.EncodeToString(tokenBytes),
+			ShopURL:     r.Host,
+			APIKey:      hex.EncodeToString(keyBytes),
 			Active:      true,
 		}
 		if err := db.Get().Create(&newAff).Error; err != nil {
