@@ -2,6 +2,7 @@ package app
 
 import (
 	"context"
+	"fmt"
 	"log/slog"
 	"net/http"
 	"os"
@@ -37,7 +38,7 @@ func InitializeMiddleware(router *chi.Mux) {
 
 // StoreDomainMiddleware looks up the affiliate by the shop URL
 // and stores it in the request context for shop-scoped config access.
-// If no affiliate matches, it auto-updates the first affiliate's shop_url.
+// If no affiliate matches, it auto-creates a new one for this host.
 func StoreDomainMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		// Skip setup — no shop context available yet
@@ -53,18 +54,24 @@ func StoreDomainMiddleware(next http.Handler) http.Handler {
 			return
 		}
 
-		// Auto-register: update first affiliate's shop_url to match the new host
-		var first models.Affiliate
-		if err := db.Get().First(&first).Error; err == nil {
-			first.ShopURL = r.Host
-			db.Get().Save(&first)
-			slog.Info("auto-updated affiliate shop_url", "affiliate_id", first.AffiliateID, "shop_url", r.Host)
-			ctx := config.WithAffiliate(r.Context(), &first)
-			next.ServeHTTP(w, r.WithContext(ctx))
+		// Auto-register: create a new affiliate for this host
+		var count int64
+		db.Get().Model(&models.Affiliate{}).Count(&count)
+		affiliateID := fmt.Sprintf("AFF-%03d", count+1)
+		newAff := models.Affiliate{
+			AffiliateID: affiliateID,
+			Name:        r.Host,
+			ShopURL:     r.Host, // raw host without scheme; LookupAffiliateByShopURL checks all variations
+			Active:      true,
+		}
+		if err := db.Get().Create(&newAff).Error; err != nil {
+			slog.Error("failed to auto-create affiliate", "host", r.Host, "err", err)
+			next.ServeHTTP(w, r)
 			return
 		}
-
-		next.ServeHTTP(w, r)
+		slog.Info("auto-created new affiliate", "affiliate_id", affiliateID, "shop_url", newAff.ShopURL)
+		ctx := config.WithAffiliate(r.Context(), &newAff)
+		next.ServeHTTP(w, r.WithContext(ctx))
 	})
 }
 
