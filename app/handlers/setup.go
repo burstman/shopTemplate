@@ -1,15 +1,11 @@
 package handlers
 
 import (
-	"bytes"
 	"crypto/rand"
 	"database/sql"
-	"encoding/json"
 	"fmt"
-	"io"
 	"math/big"
 	"net/http"
-	"os"
 	"shopTemplate/app/config"
 	"shopTemplate/app/db"
 	"shopTemplate/app/models"
@@ -152,43 +148,6 @@ func HandleSetupCreate(kit *kit.Kit) error {
 		cfg.Site.AffiliateID = affiliateID
 		if err := config.Save(cfg); err != nil {
 			return kit.Render(admin.SetupPage("", "", "", "Failed to save affiliate ID to config: "+err.Error()))
-		}
-
-		// Register with the dashboard
-		dashboardURL := os.Getenv("DASHBOARD_URL")
-		regSecret := os.Getenv("REGISTRATION_SECRET")
-		if dashboardURL != "" && regSecret != "" {
-			regPayload := map[string]any{
-				"affiliate_id": affiliateID,
-				"name":         name,
-				"email":        email,
-				"shop_url":     shopURL,
-				"rate":         0,
-			}
-			body, _ := json.Marshal(regPayload)
-			req, _ := http.NewRequest("POST", dashboardURL+"/api/affiliates/register", bytes.NewReader(body))
-			req.Header.Set("Content-Type", "application/json")
-			req.Header.Set("Authorization", "Bearer "+regSecret)
-			resp, err := http.DefaultClient.Do(req)
-			if err != nil {
-				return kit.Render(admin.SetupPage("", "", "", "Failed to register with dashboard: "+err.Error()))
-			}
-			defer resp.Body.Close()
-			if resp.StatusCode != http.StatusOK {
-				respBody, _ := io.ReadAll(resp.Body)
-				return kit.Render(admin.SetupPage("", "", "", fmt.Sprintf("Dashboard registration failed (%d): %s", resp.StatusCode, string(respBody))))
-			}
-			var regResp struct {
-				APIKey       string `json:"api_key"`
-				DashboardURL string `json:"dashboard_url"`
-			}
-			if err := json.NewDecoder(resp.Body).Decode(&regResp); err != nil {
-				return kit.Render(admin.SetupPage("", "", "", "Failed to decode dashboard response: "+err.Error()))
-			}
-			db.Get().Model(&models.Affiliate{}).Where("affiliate_id = ?", affiliateID).Updates(map[string]any{
-				"api_key":       regResp.APIKey,
-				"dashboard_url": regResp.DashboardURL,
-			})
 		}
 	}
 
