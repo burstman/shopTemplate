@@ -72,6 +72,16 @@ func HandleSetupCreate(kit *kit.Kit) error {
 		return kit.Render(admin.SetupPage("", "", "", "All fields are required."))
 	}
 
+	// Check if email is already used by another affiliate
+	var existingAff models.Affiliate
+	excludeID := ""
+	if aff != nil {
+		excludeID = aff.AffiliateID
+	}
+	if err := db.Get().Where("email = ? AND affiliate_id != ?", email, excludeID).First(&existingAff).Error; err == nil {
+		return kit.Render(admin.SetupPage("", "", "", "This email is already registered to another shop. Each shop must use a unique email."))
+	}
+
 	// Check if the email is authorized
 	var authorizedEmails []string
 	db.Get().Model(&models.Affiliate{}).Where("authorized_email <> ''").Pluck("authorized_email", &authorizedEmails)
@@ -144,6 +154,8 @@ func HandleSetupCreate(kit *kit.Kit) error {
 		if err := db.Get().Create(&user).Error; err != nil {
 			return kit.Render(admin.SetupPage("", "", "", "Failed to create admin: "+err.Error()))
 		}
+	} else {
+		db.Get().Model(&existing).Update("password_hash", string(hash))
 	}
 
 	cfg := config.Get()
