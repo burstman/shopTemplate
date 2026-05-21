@@ -131,16 +131,19 @@ func HandleSetupCreate(kit *kit.Kit) error {
 		})
 	}
 
-	// Create user for this shop
-	user := models.User{
-		Email:           email,
-		FirstName:       name,
-		PasswordHash:    string(hash),
-		Role:            "admin",
-		EmailVerifiedAt: sql.NullTime{Time: time.Now(), Valid: true},
-	}
-	if err := db.Get().Create(&user).Error; err != nil {
-		return kit.Render(admin.SetupPage("", "", "", "Failed to create admin: "+err.Error()))
+	// Create or reuse user for this shop
+	var existing models.User
+	if err := db.Get().Where("email = ?", email).First(&existing).Error; err != nil {
+		user := models.User{
+			Email:           email,
+			FirstName:       name,
+			PasswordHash:    string(hash),
+			Role:            "admin",
+			EmailVerifiedAt: sql.NullTime{Time: time.Now(), Valid: true},
+		}
+		if err := db.Get().Create(&user).Error; err != nil {
+			return kit.Render(admin.SetupPage("", "", "", "Failed to create admin: "+err.Error()))
+		}
 	}
 
 	cfg := config.Get()
