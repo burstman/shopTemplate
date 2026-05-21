@@ -43,8 +43,7 @@ func InitializeMiddleware(router *chi.Mux) {
 // If no affiliate matches, it auto-creates a new one for this host.
 func StoreDomainMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		// Skip setup — no shop context available yet
-		if r.URL.Path == "/setup" || strings.HasPrefix(r.URL.Path, "/public/") || strings.HasPrefix(r.URL.Path, "/_templ/") {
+		if strings.HasPrefix(r.URL.Path, "/public/") || strings.HasPrefix(r.URL.Path, "/_templ/") {
 			next.ServeHTTP(w, r)
 			return
 		}
@@ -305,9 +304,8 @@ func adminSetupMiddleware(next http.Handler) http.Handler {
 			next.ServeHTTP(w, r)
 			return
 		}
-		var count int64
-		db.Get().Model(&models.User{}).Where("role = ?", "admin").Count(&count)
-		if count == 0 {
+		aff := config.AffiliateFromContext(r.Context())
+		if aff == nil || aff.PasswordHash == "" {
 			http.Redirect(w, r, "/setup", http.StatusSeeOther)
 			return
 		}

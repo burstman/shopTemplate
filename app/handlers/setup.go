@@ -55,20 +55,15 @@ func generateAffiliateID() (string, error) {
 }
 
 func HandleSetupIndex(kit *kit.Kit) error {
-	var count int64
-	db.Get().Model(&models.User{}).Where("role = ?", "admin").Count(&count)
-	if count > 0 {
+	aff := config.AffiliateFromContext(kit.Request.Context())
+	if aff != nil && aff.PasswordHash != "" {
 		return kit.Redirect(http.StatusSeeOther, "/login")
 	}
 	return kit.Render(admin.SetupPage("", "", "", ""))
 }
 
 func HandleSetupCreate(kit *kit.Kit) error {
-	var count int64
-	db.Get().Model(&models.User{}).Where("role = ?", "admin").Count(&count)
-	if count > 0 {
-		return kit.Redirect(http.StatusSeeOther, "/login")
-	}
+	aff := config.AffiliateFromContext(kit.Request.Context())
 
 	name := kit.Request.FormValue("name")
 	email := kit.Request.FormValue("email")
@@ -109,28 +104,13 @@ func HandleSetupCreate(kit *kit.Kit) error {
 		return err
 	}
 
-	user := models.User{
-		Email:           email,
-		FirstName:       name,
-		PasswordHash:    string(hash),
-		Role:            "admin",
-		EmailVerifiedAt: sql.NullTime{Time: time.Now(), Valid: true},
-	}
-
-	if err := db.Get().Create(&user).Error; err != nil {
-		return kit.Render(admin.SetupPage("", "", "", "Failed to create admin: "+err.Error()))
-	}
-
-	// Auto-create affiliate only if one doesn't exist
-	var affCount int64
-	db.Get().Model(&models.Affiliate{}).Count(&affCount)
-	if affCount == 0 {
+	// Update or create affiliate for this host
+	if aff == nil {
 		affiliateID, err := generateAffiliateID()
 		if err != nil {
 			return kit.Render(admin.SetupPage("", "", "", "Failed to generate affiliate ID: "+err.Error()))
 		}
-
-		affiliate := models.Affiliate{
+		aff = &models.Affiliate{
 			AffiliateID:  affiliateID,
 			Name:         name,
 			Email:        email,
@@ -140,15 +120,33 @@ func HandleSetupCreate(kit *kit.Kit) error {
 			ShopURL:      shopURL,
 			Balance:      models.NewCurrency(100.00),
 		}
-		if err := db.Get().Create(&affiliate).Error; err != nil {
+		if err := db.Get().Create(aff).Error; err != nil {
 			return kit.Render(admin.SetupPage("", "", "", "Failed to create affiliate: "+err.Error()))
 		}
+	} else {
+		db.Get().Model(aff).Updates(map[string]interface{}{
+			"name":          name,
+			"email":         email,
+			"password_hash": string(hash),
+		})
+	}
 
-		cfg := config.Get()
-		cfg.Site.AffiliateID = affiliateID
-		if err := config.Save(cfg); err != nil {
-			return kit.Render(admin.SetupPage("", "", "", "Failed to save affiliate ID to config: "+err.Error()))
-		}
+	// Create user for this shop
+	user := models.User{
+		Email:           email,
+		FirstName:       name,
+		PasswordHash:    string(hash),
+		Role:            "admin",
+		EmailVerifiedAt: sql.NullTime{Time: time.Now(), Valid: true},
+	}
+	if err := db.Get().Create(&user).Error; err != nil {
+		return kit.Render(admin.SetupPage("", "", "", "Failed to create admin: "+err.Error()))
+	}
+
+	cfg := config.Get()
+	cfg.Site.AffiliateID = aff.AffiliateID
+	if err := config.Save(cfg); err != nil {
+		return kit.Render(admin.SetupPage("", "", "", "Failed to save affiliate ID to config: "+err.Error()))
 	}
 
 	return kit.Render(admin.SetupPage(email, password, shopURL, ""))
