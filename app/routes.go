@@ -111,11 +111,13 @@ func I18nMiddleware(next http.Handler) http.Handler {
 		if cookie, err := r.Cookie("lang"); err == nil {
 			lang = cookie.Value
 		} else {
-			// Check Accept-Language header
-			accept := r.Header.Get("Accept-Language")
-			if strings.HasPrefix(accept, "fr") {
-				lang = "fr"
-			}
+		// Check Accept-Language header
+		accept := r.Header.Get("Accept-Language")
+		if strings.HasPrefix(accept, "fr") {
+			lang = "fr"
+		} else if strings.HasPrefix(accept, "ar") {
+			lang = "ar"
+		}
 		}
 
 		ctx := context.WithValue(r.Context(), "lang", lang)
@@ -125,7 +127,7 @@ func I18nMiddleware(next http.Handler) http.Handler {
 
 func HandleSetLang(kit *kit.Kit) error {
 	lang := chi.URLParam(kit.Request, "lang")
-	if lang != "en" && lang != "fr" {
+	if lang != "en" && lang != "fr" && lang != "ar" {
 		lang = "en"
 	}
 

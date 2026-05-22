@@ -1,6 +1,7 @@
 package layouts
 
 import (
+	"context"
 	"fmt"
 	"shopTemplate/app/config"
 	"shopTemplate/app/models"
@@ -16,7 +17,7 @@ script initFacebookPixel(id string) {
 
 templ App(user models.AuthUser, cfg *config.Config, categories []models.Category, cartCount int, content templ.Component, csrfToken string) {
 	<!DOCTYPE html>
-	<html lang="en" class="h-full">
+	<html lang={ fmt.Sprint(ctx.Value("lang")) } class="h-full" dir={ getDir(ctx) }>
 		<head>
 			<meta charset="UTF-8"/>
 			<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -103,6 +104,13 @@ func getPageStyle(cfg *config.Config) string {
 	return fmt.Sprintf("background-color: %s;", cfg.Theme.PageBgColor)
 }
 
+func getDir(ctx context.Context) string {
+	if lang, ok := ctx.Value("lang").(string); ok && lang == "ar" {
+		return "rtl"
+	}
+	return "ltr"
+}
+
 func GetContentStyle(cfg *config.Config) string {
 	if !cfg.Theme.ContentBgColorEnabled {
 		return ""
@@ -116,7 +124,7 @@ func GetContentStyle(cfg *config.Config) string {
 
 templ AdminPage(user models.AuthUser, cfg *config.Config, categories []models.Category, cartCount int, sidebar []config.MenuItem, activePath string, content templ.Component, csrfToken string) {
 	<!DOCTYPE html>
-	<html lang="en" class="h-full bg-gray-100">
+	<html lang={ fmt.Sprint(ctx.Value("lang")) } class="h-full bg-gray-100" dir={ getDir(ctx) }>
 		<head>
 			<meta charset="UTF-8"/>
 			<meta name="viewport" content="width=device-width, initial-scale=1.0"/>

@@ -43,6 +43,7 @@ templ Navigation(user models.AuthUser, cfg *config.Config, categories []models.C
 						>
 							<a href="/set-lang/en" class={ "block px-4 py-2 text-xs hover:bg-gray-100", templ.KV("text-primary font-bold", ctx.Value("lang") == "en" || ctx.Value("lang") == nil) }>English</a>
 							<a href="/set-lang/fr" class={ "block px-4 py-2 text-xs hover:bg-gray-100", templ.KV("text-primary font-bold", ctx.Value("lang") == "fr") }>Français</a>
+							<a href="/set-lang/ar" class={ "block px-4 py-2 text-xs hover:bg-gray-100", templ.KV("text-primary font-bold", ctx.Value("lang") == "ar") }>العربية</a>
 						</div>
 					</div>
 					<div id="cart-icon-container" class="ml-4 flow-root lg:ml-6">

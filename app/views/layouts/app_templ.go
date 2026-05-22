@@ -9,6 +9,7 @@ import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
 import (
+	"context"
 	"fmt"
 	"shopTemplate/app/config"
 	"shopTemplate/app/models"
@@ -49,57 +50,83 @@ func App(user models.AuthUser, cfg *config.Config, categories []models.Category,
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<!doctype html><html lang=\"en\" class=\"h-full\"><head><meta charset=\"UTF-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"><meta name=\"csrf-token\" content=\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<!doctype html><html lang=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var2 string
-		templ_7745c5c3_Var2, templ_7745c5c3_Err = templ.ResolveAttributeValue(csrfToken)
+		templ_7745c5c3_Var2, templ_7745c5c3_Err = templ.ResolveAttributeValue(fmt.Sprint(ctx.Value("lang")))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/layouts/app.templ`, Line: 23, Col: 46}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/layouts/app.templ`, Line: 20, Col: 43}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var2)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "\"><title>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "\" class=\"h-full\" dir=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var3 string
-		templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinStringErrs(cfg.Site.Name)
+		templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.ResolveAttributeValue(getDir(ctx))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/layouts/app.templ`, Line: 24, Col: 25}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/layouts/app.templ`, Line: 20, Col: 78}
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var3))
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var3)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "</title>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "\"><head><meta charset=\"UTF-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"><meta name=\"csrf-token\" content=\"")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		var templ_7745c5c3_Var4 string
+		templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.ResolveAttributeValue(csrfToken)
+		if templ_7745c5c3_Err != nil {
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/layouts/app.templ`, Line: 24, Col: 46}
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var4)
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 4, "\"><title>")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		var templ_7745c5c3_Var5 string
+		templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinStringErrs(cfg.Site.Name)
+		if templ_7745c5c3_Err != nil {
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/layouts/app.templ`, Line: 25, Col: 25}
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var5))
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 5, "</title>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		if cfg.FacebookPixel.DomainVerification != "" {
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 4, "<meta name=\"facebook-domain-verification\" content=\"")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 6, "<meta name=\"facebook-domain-verification\" content=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			var templ_7745c5c3_Var4 string
-			templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.ResolveAttributeValue(cfg.FacebookPixel.DomainVerification)
+			var templ_7745c5c3_Var6 string
+			templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.ResolveAttributeValue(cfg.FacebookPixel.DomainVerification)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/layouts/app.templ`, Line: 26, Col: 92}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/layouts/app.templ`, Line: 27, Col: 92}
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var4)
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var6)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 5, "\">")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 7, "\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 		}
 		if cfg.FacebookPixel.PixelID != "" {
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 6, "<!-- Facebook Pixel Code --> <script>\n\t\t\t\t\t!function(f,b,e,v,n,t,s)\n\t\t\t\t\t{if(f.fbq)return;n=f.fbq=function(){n.callMethod?\n\t\t\t\t\tn.callMethod.apply(n,arguments):n.queue.push(arguments)};\n\t\t\t\t\tif(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';\n\t\t\t\t\tn.queue=[];t=b.createElement(e);t.async=!0;\n\t\t\t\t\tt.src=v;s=b.getElementsByTagName(e)[0];\n\t\t\t\t\ts.parentNode.insertBefore(t,s)}(window, document,'script',\n\t\t\t\t\t'https://connect.facebook.net/en_US/fbevents.js');\n\t\t\t\t</script> ")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 8, "<!-- Facebook Pixel Code --> <script>\n\t\t\t\t\t!function(f,b,e,v,n,t,s)\n\t\t\t\t\t{if(f.fbq)return;n=f.fbq=function(){n.callMethod?\n\t\t\t\t\tn.callMethod.apply(n,arguments):n.queue.push(arguments)};\n\t\t\t\t\tif(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';\n\t\t\t\t\tn.queue=[];t=b.createElement(e);t.async=!0;\n\t\t\t\t\tt.src=v;s=b.getElementsByTagName(e)[0];\n\t\t\t\t\ts.parentNode.insertBefore(t,s)}(window, document,'script',\n\t\t\t\t\t'https://connect.facebook.net/en_US/fbevents.js');\n\t\t\t\t</script> ")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -107,38 +134,38 @@ func App(user models.AuthUser, cfg *config.Config, categories []models.Category,
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 7, " <noscript><img height=\"1\" width=\"1\" style=\"display:none\" src=\"")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 9, " <noscript><img height=\"1\" width=\"1\" style=\"display:none\" src=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			var templ_7745c5c3_Var5 string
-			templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.ResolveAttributeValue(fmt.Sprintf("https://www.facebook.com/tr?id=%s&ev=PageView&noscript=1", cfg.FacebookPixel.PixelID))
+			var templ_7745c5c3_Var7 string
+			templ_7745c5c3_Var7, templ_7745c5c3_Err = templ.ResolveAttributeValue(fmt.Sprintf("https://www.facebook.com/tr?id=%s&ev=PageView&noscript=1", cfg.FacebookPixel.PixelID))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/layouts/app.templ`, Line: 42, Col: 108}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/layouts/app.templ`, Line: 43, Col: 108}
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var5)
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var7)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 8, "\"></noscript><!-- End Facebook Pixel Code -->")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 10, "\"></noscript><!-- End Facebook Pixel Code -->")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 9, "<link rel=\"stylesheet\" href=\"/public/assets/styles.css\"><script src=\"https://unpkg.com/htmx.org@1.9.10\"></script><script src=\"https://unpkg.com/htmx.org@1.9.10/dist/ext/ws.js\"></script><script src=\"/public/assets/index.js\"></script><style>\n\t\t\t\t[x-cloak] {\n\t\t\t\t\tdisplay: none !important;\n\t\t\t\t}\n\t\t\t</style><script defer src=\"https://cdn.jsdelivr.net/npm/alpinejs@3.13.3/dist/cdn.min.js\"></script><script>\n\t\t\t\tdocument.addEventListener('alpine:init', () => {\n\t\t\t\t\tAlpine.store('chat', {\n\t\t\t\t\t\twsError: false,\n\t\t\t\t\t\tsocket: null\n\t\t\t\t\t})\n\t\t\t\t})\n\t\t\t\tdocument.addEventListener('htmx:oobBeforeSwap', (evt) => {\n\t\t\t\t\tconst oob = evt.detail.elt.getAttribute('hx-swap-oob');\n\t\t\t\t\tif (oob && (oob === 'delete' || oob.startsWith('delete:'))) {\n\t\t\t\t\t\tconst selector = oob.includes(':') ? oob.split(':')[1] : null;\n\t\t\t\t\t\tconst target = selector ? document.querySelector(selector) : (evt.detail.target || document.getElementById(evt.detail.elt.id));\n\t\t\t\t\t\tif (target) target.remove();\n\t\t\t\t\t\tevt.preventDefault();\n\t\t\t\t\t}\n\t\t\t\t});\n\t\t\t\tdocument.addEventListener('htmx:configRequest', (evt) => {\n\t\t\t\t\tconst csrfToken = document.querySelector('meta[name=\"csrf-token\"]')?.getAttribute('content');\n\t\t\t\t\tif (csrfToken) {\n\t\t\t\t\t\tevt.detail.headers['X-CSRF-Token'] = csrfToken;\n\t\t\t\t\t}\n\t\t\t\t});\n\t\t\t</script></head><body class=\"h-full flex flex-col font-sans antialiased text-gray-900 pt-16 sm:pt-28\" style=\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 11, "<link rel=\"stylesheet\" href=\"/public/assets/styles.css\"><script src=\"https://unpkg.com/htmx.org@1.9.10\"></script><script src=\"https://unpkg.com/htmx.org@1.9.10/dist/ext/ws.js\"></script><script src=\"/public/assets/index.js\"></script><style>\n\t\t\t\t[x-cloak] {\n\t\t\t\t\tdisplay: none !important;\n\t\t\t\t}\n\t\t\t</style><script defer src=\"https://cdn.jsdelivr.net/npm/alpinejs@3.13.3/dist/cdn.min.js\"></script><script>\n\t\t\t\tdocument.addEventListener('alpine:init', () => {\n\t\t\t\t\tAlpine.store('chat', {\n\t\t\t\t\t\twsError: false,\n\t\t\t\t\t\tsocket: null\n\t\t\t\t\t})\n\t\t\t\t})\n\t\t\t\tdocument.addEventListener('htmx:oobBeforeSwap', (evt) => {\n\t\t\t\t\tconst oob = evt.detail.elt.getAttribute('hx-swap-oob');\n\t\t\t\t\tif (oob && (oob === 'delete' || oob.startsWith('delete:'))) {\n\t\t\t\t\t\tconst selector = oob.includes(':') ? oob.split(':')[1] : null;\n\t\t\t\t\t\tconst target = selector ? document.querySelector(selector) : (evt.detail.target || document.getElementById(evt.detail.elt.id));\n\t\t\t\t\t\tif (target) target.remove();\n\t\t\t\t\t\tevt.preventDefault();\n\t\t\t\t\t}\n\t\t\t\t});\n\t\t\t\tdocument.addEventListener('htmx:configRequest', (evt) => {\n\t\t\t\t\tconst csrfToken = document.querySelector('meta[name=\"csrf-token\"]')?.getAttribute('content');\n\t\t\t\t\tif (csrfToken) {\n\t\t\t\t\t\tevt.detail.headers['X-CSRF-Token'] = csrfToken;\n\t\t\t\t\t}\n\t\t\t\t});\n\t\t\t</script></head><body class=\"h-full flex flex-col font-sans antialiased text-gray-900 pt-16 sm:pt-28\" style=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		var templ_7745c5c3_Var6 string
-		templ_7745c5c3_Var6, templ_7745c5c3_Err = templruntime.SanitizeStyleAttributeValues(getPageStyle(cfg))
+		var templ_7745c5c3_Var8 string
+		templ_7745c5c3_Var8, templ_7745c5c3_Err = templruntime.SanitizeStyleAttributeValues(getPageStyle(cfg))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/layouts/app.templ`, Line: 81, Col: 28}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/layouts/app.templ`, Line: 82, Col: 28}
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var6))
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var8))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 10, "\" hx-ext=\"ws\" ws-connect=\"/api/chat/ws\" x-data=\"{}\" @htmx:ws-error=\"$store.chat.wsError = true\" @htmx:ws-close=\"$store.chat.wsError = true\" @htmx:ws-open=\"$store.chat.wsError = false; $store.chat.socket = $event.detail.socket\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 12, "\" hx-ext=\"ws\" ws-connect=\"/api/chat/ws\" x-data=\"{}\" @htmx:ws-error=\"$store.chat.wsError = true\" @htmx:ws-close=\"$store.chat.wsError = true\" @htmx:ws-open=\"$store.chat.wsError = false; $store.chat.socket = $event.detail.socket\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -146,7 +173,7 @@ func App(user models.AuthUser, cfg *config.Config, categories []models.Category,
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 11, "<main class=\"flex-grow\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 13, "<main class=\"flex-grow\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -154,7 +181,7 @@ func App(user models.AuthUser, cfg *config.Config, categories []models.Category,
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 12, "</main>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 14, "</main>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -168,7 +195,7 @@ func App(user models.AuthUser, cfg *config.Config, categories []models.Category,
 				return templ_7745c5c3_Err
 			}
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 13, "<audio id=\"chat-ping-sound\" src=\"/public/assets/ping.wav\" preload=\"auto\" class=\"hidden\"></audio></body></html>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 15, "<audio id=\"chat-ping-sound\" src=\"/public/assets/ping.wav\" preload=\"auto\" class=\"hidden\"></audio></body></html>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -178,6 +205,13 @@ func App(user models.AuthUser, cfg *config.Config, categories []models.Category,
 
 func getPageStyle(cfg *config.Config) string {
 	return fmt.Sprintf("background-color: %s;", cfg.Theme.PageBgColor)
+}
+
+func getDir(ctx context.Context) string {
+	if lang, ok := ctx.Value("lang").(string); ok && lang == "ar" {
+		return "rtl"
+	}
+	return "ltr"
 }
 
 func GetContentStyle(cfg *config.Config) string {
@@ -207,38 +241,64 @@ func AdminPage(user models.AuthUser, cfg *config.Config, categories []models.Cat
 			}()
 		}
 		ctx = templ.InitializeContext(ctx)
-		templ_7745c5c3_Var7 := templ.GetChildren(ctx)
-		if templ_7745c5c3_Var7 == nil {
-			templ_7745c5c3_Var7 = templ.NopComponent
+		templ_7745c5c3_Var9 := templ.GetChildren(ctx)
+		if templ_7745c5c3_Var9 == nil {
+			templ_7745c5c3_Var9 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 14, "<!doctype html><html lang=\"en\" class=\"h-full bg-gray-100\"><head><meta charset=\"UTF-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"><meta name=\"csrf-token\" content=\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 16, "<!doctype html><html lang=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		var templ_7745c5c3_Var8 string
-		templ_7745c5c3_Var8, templ_7745c5c3_Err = templ.ResolveAttributeValue(csrfToken)
+		var templ_7745c5c3_Var10 string
+		templ_7745c5c3_Var10, templ_7745c5c3_Err = templ.ResolveAttributeValue(fmt.Sprint(ctx.Value("lang")))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/layouts/app.templ`, Line: 123, Col: 46}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/layouts/app.templ`, Line: 127, Col: 43}
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var8)
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 15, "\"><title>Admin Dashboard</title><link rel=\"stylesheet\" href=\"/public/assets/styles.css\"><script src=\"https://unpkg.com/htmx.org@1.9.10\"></script><script src=\"https://unpkg.com/htmx.org@1.9.10/dist/ext/ws.js\"></script><script src=\"/public/assets/index.js\"></script><script src=\"https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js\"></script><script defer src=\"https://cdn.jsdelivr.net/npm/alpinejs@3.13.3/dist/cdn.min.js\"></script><style>\n\t\t\t\t[x-cloak] {\n\t\t\t\t\tdisplay: none !important;\n\t\t\t\t}\n\t\t\t</style><script>\n\t\t\t\tdocument.addEventListener('alpine:init', () => {\n\t\t\t\t\tAlpine.store('chat', {\n\t\t\t\t\t\twsError: false,\n\t\t\t\t\t\tsocket: null\n\t\t\t\t\t})\n\t\t\t\t})\n\t\t\t\tdocument.addEventListener('htmx:oobBeforeSwap', (evt) => {\n\t\t\t\t\tconst oob = evt.detail.elt.getAttribute('hx-swap-oob');\n\t\t\t\t\tif (oob && (oob === 'delete' || oob.startsWith('delete:'))) {\n\t\t\t\t\t\tconst selector = oob.includes(':') ? oob.split(':')[1] : null;\n\t\t\t\t\t\tconst target = selector ? document.querySelector(selector) : (evt.detail.target || document.getElementById(evt.detail.elt.id));\n\t\t\t\t\t\tif (target) target.remove();\n\t\t\t\t\t\tevt.preventDefault();\n\t\t\t\t\t}\n\t\t\t\t});\n\t\t\t\tdocument.addEventListener('htmx:configRequest', (evt) => {\n\t\t\t\t\tconst csrfToken = document.querySelector('meta[name=\"csrf-token\"]')?.getAttribute('content');\n\t\t\t\t\tif (csrfToken) {\n\t\t\t\t\t\tevt.detail.headers['X-CSRF-Token'] = csrfToken;\n\t\t\t\t\t}\n\t\t\t\t});\n\t\t\t</script></head><body class=\"h-screen overflow-hidden flex flex-col font-sans antialiased text-gray-900 pt-16 sm:pt-28\" style=\"")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var10)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		var templ_7745c5c3_Var9 string
-		templ_7745c5c3_Var9, templ_7745c5c3_Err = templruntime.SanitizeStyleAttributeValues(getPageStyle(cfg))
-		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/layouts/app.templ`, Line: 162, Col: 28}
-		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var9))
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 17, "\" class=\"h-full bg-gray-100\" dir=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 16, "\" hx-ext=\"ws\" ws-connect=\"/api/chat/ws\" x-data=\"{ mobileMenuOpen: false }\" @htmx:ws-error=\"$store.chat.wsError = true\" @htmx:ws-close=\"$store.chat.wsError = true\" @htmx:ws-open=\"$store.chat.wsError = false; $store.chat.socket = $event.detail.socket\">")
+		var templ_7745c5c3_Var11 string
+		templ_7745c5c3_Var11, templ_7745c5c3_Err = templ.ResolveAttributeValue(getDir(ctx))
+		if templ_7745c5c3_Err != nil {
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/layouts/app.templ`, Line: 127, Col: 90}
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var11)
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 18, "\"><head><meta charset=\"UTF-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"><meta name=\"csrf-token\" content=\"")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		var templ_7745c5c3_Var12 string
+		templ_7745c5c3_Var12, templ_7745c5c3_Err = templ.ResolveAttributeValue(csrfToken)
+		if templ_7745c5c3_Err != nil {
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/layouts/app.templ`, Line: 131, Col: 46}
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var12)
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 19, "\"><title>Admin Dashboard</title><link rel=\"stylesheet\" href=\"/public/assets/styles.css\"><script src=\"https://unpkg.com/htmx.org@1.9.10\"></script><script src=\"https://unpkg.com/htmx.org@1.9.10/dist/ext/ws.js\"></script><script src=\"/public/assets/index.js\"></script><script src=\"https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js\"></script><script defer src=\"https://cdn.jsdelivr.net/npm/alpinejs@3.13.3/dist/cdn.min.js\"></script><style>\n\t\t\t\t[x-cloak] {\n\t\t\t\t\tdisplay: none !important;\n\t\t\t\t}\n\t\t\t</style><script>\n\t\t\t\tdocument.addEventListener('alpine:init', () => {\n\t\t\t\t\tAlpine.store('chat', {\n\t\t\t\t\t\twsError: false,\n\t\t\t\t\t\tsocket: null\n\t\t\t\t\t})\n\t\t\t\t})\n\t\t\t\tdocument.addEventListener('htmx:oobBeforeSwap', (evt) => {\n\t\t\t\t\tconst oob = evt.detail.elt.getAttribute('hx-swap-oob');\n\t\t\t\t\tif (oob && (oob === 'delete' || oob.startsWith('delete:'))) {\n\t\t\t\t\t\tconst selector = oob.includes(':') ? oob.split(':')[1] : null;\n\t\t\t\t\t\tconst target = selector ? document.querySelector(selector) : (evt.detail.target || document.getElementById(evt.detail.elt.id));\n\t\t\t\t\t\tif (target) target.remove();\n\t\t\t\t\t\tevt.preventDefault();\n\t\t\t\t\t}\n\t\t\t\t});\n\t\t\t\tdocument.addEventListener('htmx:configRequest', (evt) => {\n\t\t\t\t\tconst csrfToken = document.querySelector('meta[name=\"csrf-token\"]')?.getAttribute('content');\n\t\t\t\t\tif (csrfToken) {\n\t\t\t\t\t\tevt.detail.headers['X-CSRF-Token'] = csrfToken;\n\t\t\t\t\t}\n\t\t\t\t});\n\t\t\t</script></head><body class=\"h-screen overflow-hidden flex flex-col font-sans antialiased text-gray-900 pt-16 sm:pt-28\" style=\"")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		var templ_7745c5c3_Var13 string
+		templ_7745c5c3_Var13, templ_7745c5c3_Err = templruntime.SanitizeStyleAttributeValues(getPageStyle(cfg))
+		if templ_7745c5c3_Err != nil {
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/layouts/app.templ`, Line: 170, Col: 28}
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var13))
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 20, "\" hx-ext=\"ws\" ws-connect=\"/api/chat/ws\" x-data=\"{ mobileMenuOpen: false }\" @htmx:ws-error=\"$store.chat.wsError = true\" @htmx:ws-close=\"$store.chat.wsError = true\" @htmx:ws-open=\"$store.chat.wsError = false; $store.chat.socket = $event.detail.socket\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -246,56 +306,56 @@ func AdminPage(user models.AuthUser, cfg *config.Config, categories []models.Cat
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 17, "<div class=\"flex-grow flex overflow-hidden\"><!-- Mobile Header --><div class=\"lg:hidden flex items-center justify-between bg-indigo-700 px-4 py-4 text-white\"><span class=\"font-bold text-xl\">Admin</span> <button @click=\"mobileMenuOpen = true\" class=\"p-2 rounded-md hover:bg-indigo-600 focus:outline-none\"><svg class=\"h-6 w-6\" fill=\"none\" viewBox=\"0 0 24 24\" stroke=\"currentColor\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M4 6h16M4 12h16M4 18h16\"></path></svg></button></div><!-- Sidebar Overlay --><div x-show=\"mobileMenuOpen\" x-cloak class=\"fixed inset-0 z-40 lg:hidden\" @click=\"mobileMenuOpen = false\"><div class=\"absolute inset-0 bg-gray-600 opacity-75\"></div></div><!-- Sidebar --><div :class=\"mobileMenuOpen ? 'translate-x-0' : '-translate-x-full'\" class=\"fixed inset-y-0 left-0 z-50 flex w-64 flex-col bg-indigo-700 pt-5 pb-4 overflow-y-auto transform transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-0 lg:flex lg:h-full\"><!-- Close button for mobile --><div class=\"lg:hidden absolute top-0 right-0 -mr-12 pt-2\" x-show=\"mobileMenuOpen\" x-cloak><button @click=\"mobileMenuOpen = false\" class=\"ml-1 flex items-center justify-center h-10 w-10 rounded-full focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white\"><svg class=\"h-6 w-6 text-white\" fill=\"none\" viewBox=\"0 0 24 24\" stroke=\"currentColor\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M6 18L18 6M6 6l12 12\"></path></svg></button></div><div class=\"flex items-center flex-shrink-0 px-4\"><span class=\"text-white font-bold text-xl\">Admin</span></div><nav class=\"mt-5 flex-1 flex flex-col divide-y divide-indigo-800 overflow-y-auto\" aria-label=\"Sidebar\"><div class=\"px-2 space-y-1\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 21, "<div class=\"flex-grow flex overflow-hidden\"><!-- Mobile Header --><div class=\"lg:hidden flex items-center justify-between bg-indigo-700 px-4 py-4 text-white\"><span class=\"font-bold text-xl\">Admin</span> <button @click=\"mobileMenuOpen = true\" class=\"p-2 rounded-md hover:bg-indigo-600 focus:outline-none\"><svg class=\"h-6 w-6\" fill=\"none\" viewBox=\"0 0 24 24\" stroke=\"currentColor\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M4 6h16M4 12h16M4 18h16\"></path></svg></button></div><!-- Sidebar Overlay --><div x-show=\"mobileMenuOpen\" x-cloak class=\"fixed inset-0 z-40 lg:hidden\" @click=\"mobileMenuOpen = false\"><div class=\"absolute inset-0 bg-gray-600 opacity-75\"></div></div><!-- Sidebar --><div :class=\"mobileMenuOpen ? 'translate-x-0' : '-translate-x-full'\" class=\"fixed inset-y-0 left-0 z-50 flex w-64 flex-col bg-indigo-700 pt-5 pb-4 overflow-y-auto transform transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-0 lg:flex lg:h-full\"><!-- Close button for mobile --><div class=\"lg:hidden absolute top-0 right-0 -mr-12 pt-2\" x-show=\"mobileMenuOpen\" x-cloak><button @click=\"mobileMenuOpen = false\" class=\"ml-1 flex items-center justify-center h-10 w-10 rounded-full focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white\"><svg class=\"h-6 w-6 text-white\" fill=\"none\" viewBox=\"0 0 24 24\" stroke=\"currentColor\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M6 18L18 6M6 6l12 12\"></path></svg></button></div><div class=\"flex items-center flex-shrink-0 px-4\"><span class=\"text-white font-bold text-xl\">Admin</span></div><nav class=\"mt-5 flex-1 flex flex-col divide-y divide-indigo-800 overflow-y-auto\" aria-label=\"Sidebar\"><div class=\"px-2 space-y-1\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		for _, item := range sidebar {
-			var templ_7745c5c3_Var10 = []any{"group flex items-center px-2 py-2 text-sm leading-6 font-medium rounded-md text-white hover:bg-indigo-600", templ.KV("bg-indigo-800", item.Link == activePath)}
-			templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var10...)
+			var templ_7745c5c3_Var14 = []any{"group flex items-center px-2 py-2 text-sm leading-6 font-medium rounded-md text-white hover:bg-indigo-600", templ.KV("bg-indigo-800", item.Link == activePath)}
+			templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var14...)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 18, "<a href=\"")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 22, "<a href=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			var templ_7745c5c3_Var11 templ.SafeURL
-			templ_7745c5c3_Var11, templ_7745c5c3_Err = templ.JoinURLErrs(templ.SafeURL(item.Link))
+			var templ_7745c5c3_Var15 templ.SafeURL
+			templ_7745c5c3_Var15, templ_7745c5c3_Err = templ.JoinURLErrs(templ.SafeURL(item.Link))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/layouts/app.templ`, Line: 207, Col: 42}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/layouts/app.templ`, Line: 215, Col: 42}
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var11))
-			if templ_7745c5c3_Err != nil {
-				return templ_7745c5c3_Err
-			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 19, "\" class=\"")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var15))
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			var templ_7745c5c3_Var12 string
-			templ_7745c5c3_Var12, templ_7745c5c3_Err = templ.ResolveAttributeValue(templ.CSSClasses(templ_7745c5c3_Var10).String())
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 23, "\" class=\"")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			var templ_7745c5c3_Var16 string
+			templ_7745c5c3_Var16, templ_7745c5c3_Err = templ.ResolveAttributeValue(templ.CSSClasses(templ_7745c5c3_Var14).String())
 			if templ_7745c5c3_Err != nil {
 				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/layouts/app.templ`, Line: 1, Col: 0}
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var12)
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var16)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 20, "\">")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 24, "\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			var templ_7745c5c3_Var13 string
-			templ_7745c5c3_Var13, templ_7745c5c3_Err = templ.JoinStringErrs(services.GetI18n().T(ctx, item.Title))
+			var templ_7745c5c3_Var17 string
+			templ_7745c5c3_Var17, templ_7745c5c3_Err = templ.JoinStringErrs(services.GetI18n().T(ctx, item.Title))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/layouts/app.templ`, Line: 208, Col: 48}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/layouts/app.templ`, Line: 216, Col: 48}
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var13))
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var17))
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 21, " ")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 25, " ")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -305,17 +365,17 @@ func AdminPage(user models.AuthUser, cfg *config.Config, categories []models.Cat
 					return templ_7745c5c3_Err
 				}
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 22, "</a>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 26, "</a>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 23, "</div></nav></div><!-- Global Polling for Admin Chat (if WebSocket fails) --><div id=\"admin-global-poller\" x-data=\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 27, "</div></nav></div><!-- Global Polling for Admin Chat (if WebSocket fails) --><div id=\"admin-global-poller\" x-data=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		var templ_7745c5c3_Var14 string
-		templ_7745c5c3_Var14, templ_7745c5c3_Err = templ.ResolveAttributeValue(`{ 
+		var templ_7745c5c3_Var18 string
+		templ_7745c5c3_Var18, templ_7745c5c3_Err = templ.ResolveAttributeValue(`{ 
 						activeChatId: null,
 						updateActiveId() {
 							const match = window.location.pathname.match(/\/admin\/chat\/(\d+)/);
@@ -323,18 +383,18 @@ func AdminPage(user models.AuthUser, cfg *config.Config, categories []models.Cat
 						}
 					}`)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/layouts/app.templ`, Line: 227, Col: 7}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/layouts/app.templ`, Line: 235, Col: 7}
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var14)
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var18)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 24, "\" x-init=\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 28, "\" x-init=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		var templ_7745c5c3_Var15 string
-		templ_7745c5c3_Var15, templ_7745c5c3_Err = templ.ResolveAttributeValue(`
+		var templ_7745c5c3_Var19 string
+		templ_7745c5c3_Var19, templ_7745c5c3_Err = templ.ResolveAttributeValue(`
 						updateActiveId();
 						htmx.on('htmx:afterSwap', (evt) => {
 							updateActiveId();
@@ -342,13 +402,13 @@ func AdminPage(user models.AuthUser, cfg *config.Config, categories []models.Cat
 						window.addEventListener('popstate', () => updateActiveId());
 					`)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/layouts/app.templ`, Line: 234, Col: 6}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/layouts/app.templ`, Line: 242, Col: 6}
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var15)
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var19)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 25, "\"><!-- Polling for Sidebar Session List --><div hx-get=\"/admin/chats/sidebar\" hx-target=\"#sidebar-session-list\" hx-swap=\"innerHTML\" x-bind:hx-trigger=\"$store.chat.wsError ? 'every 2s' : 'every 30s'\"></div><!-- Polling for Active Chat Messages --><template x-if=\"activeChatId\"><div :hx-get=\"'/admin/chat/' + activeChatId + '/messages'\" :hx-target=\"'#chat-messages-' + activeChatId\" hx-swap=\"innerHTML\" x-bind:hx-trigger=\"$store.chat.wsError ? 'every 1s' : 'every 10s'\"></div></template></div><div class=\"flex-1 flex flex-col overflow-hidden\"><div class=\"flex-grow overflow-y-auto custom-scrollbar\"><main class=\"pb-4\"><div class=\"mt-8\"><div class=\"max-w-7xl mx-auto px-4 sm:px-6 lg:px-8\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 29, "\"><!-- Polling for Sidebar Session List --><div hx-get=\"/admin/chats/sidebar\" hx-target=\"#sidebar-session-list\" hx-swap=\"innerHTML\" x-bind:hx-trigger=\"$store.chat.wsError ? 'every 2s' : 'every 30s'\"></div><!-- Polling for Active Chat Messages --><template x-if=\"activeChatId\"><div :hx-get=\"'/admin/chat/' + activeChatId + '/messages'\" :hx-target=\"'#chat-messages-' + activeChatId\" hx-swap=\"innerHTML\" x-bind:hx-trigger=\"$store.chat.wsError ? 'every 1s' : 'every 10s'\"></div></template></div><div class=\"flex-1 flex flex-col overflow-hidden\"><div class=\"flex-grow overflow-y-auto custom-scrollbar\"><main class=\"pb-4\"><div class=\"mt-8\"><div class=\"max-w-7xl mx-auto px-4 sm:px-6 lg:px-8\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -356,7 +416,7 @@ func AdminPage(user models.AuthUser, cfg *config.Config, categories []models.Cat
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 26, "</div></div></main></div>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 30, "</div></div></main></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -364,7 +424,7 @@ func AdminPage(user models.AuthUser, cfg *config.Config, categories []models.Cat
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 27, "<!-- Global Toast Container --><audio id=\"chat-ping-sound\" src=\"/public/assets/ping.wav\" preload=\"auto\" class=\"hidden\"></audio></div></div></body></html>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 31, "<!-- Global Toast Container --><audio id=\"chat-ping-sound\" src=\"/public/assets/ping.wav\" preload=\"auto\" class=\"hidden\"></audio></div></div></body></html>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
