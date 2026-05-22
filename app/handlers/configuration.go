@@ -82,6 +82,11 @@ func HandleAdminSettingsUpdate(kit *kit.Kit) error {
 	kit.Request.ParseMultipartForm(32 << 20) // Parse both multipart and standard form data
 
 	cfg := config.FromContext(kit.Request.Context())
+	aff := config.AffiliateFromContext(kit.Request.Context())
+	affID := "default"
+	if aff != nil {
+		affID = aff.AffiliateID
+	}
 
 	switch section {
 	case "site":
@@ -121,7 +126,7 @@ func HandleAdminSettingsUpdate(kit *kit.Kit) error {
 		// Handle site logo upload
 		if file, header, err := kit.Request.FormFile("site_logo"); err == nil {
 			defer file.Close()
-			imageURL, err := helpers.UploadImage(file, header, "site", "logo")
+			imageURL, err := helpers.UploadImage(file, header, affID, "site", "logo")
 			if err == nil {
 				// Defensive check for existing logo to avoid errors on deletion
 				if len(cfg.Site.Logo) > 1 && cfg.Site.Logo[0] == '/' {
@@ -194,7 +199,7 @@ func HandleAdminSettingsUpdate(kit *kit.Kit) error {
 			// Handle individual slide image upload from HeroSettings
 			if file, header, err := kit.Request.FormFile(prefix + "image"); err == nil {
 				defer file.Close()
-				imageURL, err := helpers.UploadImage(file, header, "carousel", "slide_"+fmt.Sprint(i))
+				imageURL, err := helpers.UploadImage(file, header, affID, "carousel", "slide_"+fmt.Sprint(i))
 				if err == nil {
 					if len(slide.Image) > 0 && slide.Image[0] == '/' {
 						os.Remove(slide.Image[1:])
@@ -276,7 +281,7 @@ func HandleAdminSettingsUpdate(kit *kit.Kit) error {
 
 					if file, header, err := kit.Request.FormFile(itemPrefix + "image"); err == nil {
 						defer file.Close()
-						imageURL, err := helpers.UploadImage(file, header, "sections", fmt.Sprintf("section_%d_item_%d", oldIdx, j))
+						imageURL, err := helpers.UploadImage(file, header, affID, "sections", fmt.Sprintf("section_%d_item_%d", oldIdx, j))
 						if err == nil {
 							item.Image = imageURL
 						}
@@ -293,7 +298,7 @@ func HandleAdminSettingsUpdate(kit *kit.Kit) error {
 			// Handle section image upload
 			if file, header, err := kit.Request.FormFile(prefix + "image"); err == nil {
 				defer file.Close()
-				imageURL, err := helpers.UploadImage(file, header, "sections", fmt.Sprintf("section_%d", oldIdx))
+				imageURL, err := helpers.UploadImage(file, header, affID, "sections", fmt.Sprintf("section_%d", oldIdx))
 				if err == nil {
 					if len(s.Image) > 0 && s.Image[0] == '/' {
 						os.Remove(s.Image[1:])

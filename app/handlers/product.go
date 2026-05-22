@@ -204,7 +204,12 @@ func HandleProductCreate(kit *kit.Kit) error {
 		if err != nil {
 			return err
 		}
-		url, err := helpers.UploadImage(file, header, "products", "plant")
+		aff := config.AffiliateFromContext(kit.Request.Context())
+		affID := "default"
+		if aff != nil {
+			affID = aff.AffiliateID
+		}
+		url, err := helpers.UploadImage(file, header, affID, "products", "plant")
 		file.Close()
 		if err != nil {
 			return err
@@ -422,7 +427,12 @@ func HandleProductUpdate(kit *kit.Kit) error {
 		if err != nil {
 			continue
 		}
-		url, uploadErr := helpers.UploadImage(file, header, "products", "plant")
+		aff := config.AffiliateFromContext(kit.Request.Context())
+		affID := "default"
+		if aff != nil {
+			affID = aff.AffiliateID
+		}
+		url, uploadErr := helpers.UploadImage(file, header, affID, "products", "plant")
 		file.Close()
 		if uploadErr == nil {
 			product.Images = append(product.Images, url)
