@@ -35,4 +35,5 @@ type User struct {
 	PasswordHash    string
 	EmailVerifiedAt sql.NullTime
 	Password        string `gorm:"-"`
+	AffiliateID     string `gorm:"size:20;index"`
 }

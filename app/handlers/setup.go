@@ -150,6 +150,7 @@ func HandleSetupCreate(kit *kit.Kit) error {
 			PasswordHash:    string(hash),
 			Role:            "admin",
 			EmailVerifiedAt: sql.NullTime{Time: time.Now(), Valid: true},
+			AffiliateID:     aff.AffiliateID,
 		}
 		if err := db.Get().Create(&user).Error; err != nil {
 			return kit.Render(admin.SetupPage("", "", "", "Failed to create admin: "+err.Error()))

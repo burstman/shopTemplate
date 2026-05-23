@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"net/http"
+	"shopTemplate/app/config"
 	"shopTemplate/app/db"
 	"shopTemplate/app/models"
 	"shopTemplate/app/views/admin"
@@ -22,10 +23,11 @@ func HandleAdminUsersIndex(kit *kit.Kit) error {
 		return kit.Redirect(http.StatusForbidden, "/")
 	}
 
+	affID := config.AffiliateIDFromContext(kit.Request.Context())
 	searchQuery := kit.Request.URL.Query().Get("search")
 
 	var users []models.User
-	query := db.Get().Order("created_at desc")
+	query := db.Get().Where("affiliate_id = ?", affID).Order("created_at desc")
 
 	if searchQuery != "" {
 		searchPattern := "%" + searchQuery + "%"

@@ -46,9 +46,10 @@ type User struct {
 	Role            string
 	PasswordHash    string
 	EmailVerifiedAt sql.NullTime
+	AffiliateID     string
 }
 
-func createUserFromFormValues(values SignupFormValues) (User, error) {
+func createUserFromFormValues(values SignupFormValues, affiliateID string) (User, error) {
 	hash, err := bcrypt.GenerateFromPassword([]byte(values.Password), bcrypt.DefaultCost)
 	if err != nil {
 		return User{}, err
@@ -59,6 +60,7 @@ func createUserFromFormValues(values SignupFormValues) (User, error) {
 		LastName:     values.LastName,
 		PasswordHash: string(hash),
 		Role:         "customer",
+		AffiliateID:  affiliateID,
 	}
 	result := db.Get().Create(&user)
 	return user, result.Error

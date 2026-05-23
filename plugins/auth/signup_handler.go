@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"shopTemplate/app/config"
 	"shopTemplate/app/db"
 	"shopTemplate/app/helpers"
 	"shopTemplate/app/models"
@@ -49,7 +50,7 @@ func HandleSignupCreate(kit *kit.Kit) error {
 		errors.Add("passwordConfirm", services.GetI18n().T(kit.Request.Context(), "passwords_dont_match"))
 		return kit.Render(SignupForm(values, errors))
 	}
-	user, err := createUserFromFormValues(values)
+	user, err := createUserFromFormValues(values, config.AffiliateIDFromContext(kit.Request.Context()))
 	if err != nil {
 		return err
 	}
