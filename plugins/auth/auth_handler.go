@@ -3,8 +3,10 @@ package auth
 import (
 	"database/sql"
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"os"
+	"shopTemplate/app/config"
 	"shopTemplate/app/db"
 	"shopTemplate/app/helpers"
 	"shopTemplate/app/models"
@@ -293,12 +295,14 @@ func handleSocialLogin(kit *kit.Kit, email, firstName, lastName string) error {
 	}
 
 	if err == gorm.ErrRecordNotFound {
+		affID := config.AffiliateIDFromContext(kit.Request.Context())
 		user = User{
 			Email:           email,
 			FirstName:       firstName,
 			LastName:        lastName,
 			Role:            "customer",
 			EmailVerifiedAt: sql.NullTime{Time: time.Now(), Valid: true},
+			AffiliateID:     affID,
 		}
 		if err := db.Get().Create(&user).Error; err != nil {
 			return err
@@ -331,20 +335,30 @@ func handleSocialLogin(kit *kit.Kit, email, firstName, lastName string) error {
 }
 
 func getGoogleConfig(kit *kit.Kit) *oauth2.Config {
+	scheme := "https"
+	if kit.Request.TLS == nil {
+		scheme = "http"
+	}
+	redirectURL := fmt.Sprintf("%s://%s/auth/google/callback", scheme, kit.Request.Host)
 	return &oauth2.Config{
 		ClientID:     kit.Getenv("GOOGLE_CLIENT_ID", ""),
 		ClientSecret: kit.Getenv("GOOGLE_CLIENT_SECRET", ""),
-		RedirectURL:  kit.Getenv("GOOGLE_REDIRECT_URL", ""),
+		RedirectURL:  redirectURL,
 		Scopes:       []string{"https://www.googleapis.com/auth/userinfo.email", "https://www.googleapis.com/auth/userinfo.profile"},
 		Endpoint:     google.Endpoint,
 	}
 }
 
 func getFacebookConfig(kit *kit.Kit) *oauth2.Config {
+	scheme := "https"
+	if kit.Request.TLS == nil {
+		scheme = "http"
+	}
+	redirectURL := fmt.Sprintf("%s://%s/auth/facebook/callback", scheme, kit.Request.Host)
 	return &oauth2.Config{
 		ClientID:     kit.Getenv("FACEBOOK_CLIENT_ID", ""),
 		ClientSecret: kit.Getenv("FACEBOOK_CLIENT_SECRET", ""),
-		RedirectURL:  kit.Getenv("FACEBOOK_REDIRECT_URL", ""),
+		RedirectURL:  redirectURL,
 		Scopes:       []string{"email", "public_profile"},
 		Endpoint:     facebook.Endpoint,
 	}
