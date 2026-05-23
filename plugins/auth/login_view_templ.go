@@ -370,9 +370,9 @@ func LoginForm(values LoginFormValues, errors v.Errors, authError string) templ.
 }
 
 func inputAttrs(hasError bool) templ.Attributes {
-	class := "block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
+	class := "block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary text-base py-3"
 	if hasError {
-		class = "block w-full rounded-md border-red-300 text-red-900 placeholder-red-300 focus:border-red-500 focus:ring-red-500 sm:text-sm"
+		class = "block w-full rounded-md border-red-300 text-red-900 placeholder-red-300 focus:border-red-500 focus:ring-red-500 text-base py-3"
 	}
 	return templ.Attributes{
 		"class": class,
