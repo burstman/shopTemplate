@@ -11,6 +11,7 @@ import templruntime "github.com/a-h/templ/runtime"
 import (
 	"fmt"
 	"shopTemplate/app/models"
+	"shopTemplate/app/services"
 )
 
 func DeleteModal(order models.Order) templ.Component {
@@ -34,72 +35,98 @@ func DeleteModal(order models.Order) templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<div id=\"modal\" class=\"fixed inset-0 bg-gray-500/75 flex items-center justify-center z-50\" hx-target=\"this\"><div class=\"bg-white rounded-lg shadow-xl p-6 w-full max-w-md\" role=\"dialog\" aria-modal=\"true\" @click.away=\"document.getElementById('modal').remove()\"><div class=\"flex justify-between items-center mb-4\"><h2 class=\"text-xl font-bold text-red-600\">Confirm Order Deletion</h2><button @click=\"document.getElementById('modal').remove()\" class=\"text-gray-400 hover:text-gray-600 focus:outline-none text-2xl\">&times;</button></div><div class=\"mb-6\"><p class=\"text-gray-700\">Are you sure you want to delete order <strong>#")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<div id=\"modal\" class=\"fixed inset-0 bg-gray-500/75 flex items-center justify-center z-50\" hx-target=\"this\"><div class=\"bg-white rounded-lg shadow-xl p-6 w-full max-w-md\" role=\"dialog\" aria-modal=\"true\" @click.away=\"document.getElementById('modal').remove()\"><div class=\"flex justify-between items-center mb-4\"><h2 class=\"text-xl font-bold text-red-600\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var2 string
-		templ_7745c5c3_Var2, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprint(order.ID))
+		templ_7745c5c3_Var2, templ_7745c5c3_Err = templ.JoinStringErrs(services.GetI18n().T(ctx, "confirm_deletion"))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/orders/delete_modal.templ`, Line: 16, Col: 98}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/orders/delete_modal.templ`, Line: 13, Col: 94}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var2))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "</strong> from <strong>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "</h2><button @click=\"document.getElementById('modal').remove()\" class=\"text-gray-400 hover:text-gray-600 focus:outline-none text-2xl\">&times;</button></div><div class=\"mb-6\"><p class=\"text-gray-700\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var3 string
-		templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinStringErrs(order.FirstName)
+		templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf(services.GetI18n().T(ctx, "delete_confirm_text"), fmt.Sprint(order.ID), order.FirstName+" "+order.LastName))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/orders/delete_modal.templ`, Line: 16, Col: 140}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/orders/delete_modal.templ`, Line: 17, Col: 154}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var3))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, " ")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "</p><p class=\"text-sm text-gray-500 mt-2\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var4 string
-		templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinStringErrs(order.LastName)
+		templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinStringErrs(services.GetI18n().T(ctx, "delete_permanent"))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/orders/delete_modal.templ`, Line: 16, Col: 159}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/orders/delete_modal.templ`, Line: 18, Col: 89}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var4))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 4, "</strong>?</p><p class=\"text-sm text-gray-500 mt-2\">This action is permanent and cannot be undone.</p></div><div class=\"flex justify-end gap-3\"><button type=\"button\" @click=\"document.getElementById('modal').remove()\" class=\"px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition-colors\">Cancel</button> <button type=\"button\" hx-delete=\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 4, "</p></div><div class=\"flex justify-end gap-3\"><button type=\"button\" @click=\"document.getElementById('modal').remove()\" class=\"px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition-colors\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var5 string
-		templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.ResolveAttributeValue(fmt.Sprintf("/admin/orders/%d", order.ID))
+		templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinStringErrs(services.GetI18n().T(ctx, "cancel"))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/orders/delete_modal.templ`, Line: 23, Col: 58}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/orders/delete_modal.templ`, Line: 21, Col: 205}
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var5)
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var5))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 5, "\" hx-target=\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 5, "</button> <button type=\"button\" hx-delete=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var6 string
-		templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.ResolveAttributeValue(fmt.Sprintf("#order-row-%d", order.ID))
+		templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.ResolveAttributeValue(fmt.Sprintf("/admin/orders/%d", order.ID))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/orders/delete_modal.templ`, Line: 24, Col: 55}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/orders/delete_modal.templ`, Line: 24, Col: 58}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var6)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 6, "\" hx-swap=\"outerHTML\" hx-on::after-request=\"document.getElementById('modal').remove()\" class=\"px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors\">Delete Order</button></div></div></div>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 6, "\" hx-target=\"")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		var templ_7745c5c3_Var7 string
+		templ_7745c5c3_Var7, templ_7745c5c3_Err = templ.ResolveAttributeValue(fmt.Sprintf("#order-row-%d", order.ID))
+		if templ_7745c5c3_Err != nil {
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/orders/delete_modal.templ`, Line: 25, Col: 55}
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var7)
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 7, "\" hx-swap=\"outerHTML\" hx-on::after-request=\"document.getElementById('modal').remove()\" class=\"px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors\">")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		var templ_7745c5c3_Var8 string
+		templ_7745c5c3_Var8, templ_7745c5c3_Err = templ.JoinStringErrs(services.GetI18n().T(ctx, "delete_order"))
+		if templ_7745c5c3_Err != nil {
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/orders/delete_modal.templ`, Line: 29, Col: 48}
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var8))
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 8, "</button></div></div></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
