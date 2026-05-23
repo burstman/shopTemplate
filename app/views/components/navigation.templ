@@ -81,14 +81,6 @@ templ Navigation(user models.AuthUser, cfg *config.Config, categories []models.C
 								<button hx-delete="/logout" hx-target="body" class="w-full text-left block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer">{ services.GetI18n().T(ctx, "logout") }</button>
 							} else {
 								<a href="/login" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">{ services.GetI18n().T(ctx, "login") }</a>
-								<a href="/auth/google" class="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-									<img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" class="w-4 h-4" />
-									{ services.GetI18n().T(ctx, "login_google") }
-								</a>
-								<a href="/auth/facebook" class="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-									<img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/facebook.svg" class="w-4 h-4" />
-									{ services.GetI18n().T(ctx, "login_facebook") }
-								</a>
 								<a href="/signup" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">{ services.GetI18n().T(ctx, "signup") }</a>
 							}
 						</div>
