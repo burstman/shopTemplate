@@ -1,6 +1,9 @@
 package components
 
-import "fmt"
+import (
+	"fmt"
+	"shopTemplate/app/services"
+)
 
 templ CartIcon(count int, attrs templ.Attributes) {
 	<a href="/cart" class="group -m-2 flex items-center p-2 relative">
@@ -12,6 +15,6 @@ templ CartIcon(count int, attrs templ.Attributes) {
 		} else {
 			<span class="ml-2 text-sm font-medium text-gray-700 group-hover:text-gray-800">0</span>
 		}
-		<span class="sr-only">items in cart, view bag</span>
+		<span class="sr-only">{ services.GetI18n().T(ctx, "items_in_cart") }</span>
 	</a>
 }

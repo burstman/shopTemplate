@@ -5,6 +5,7 @@ import (
 	"shopTemplate/app/config"
 	"shopTemplate/app/helpers"
 	"shopTemplate/app/models"
+	"shopTemplate/app/services"
 	"shopTemplate/app/views/layouts"
 	"sort"
 )
@@ -54,11 +55,11 @@ templ Show(product models.Product, cfg *config.Config) {
 							<div class="flex items-center space-x-2">
 								if product.Stock > 0 {
 									<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-										In Stock ({ fmt.Sprint(product.Stock) })
+										{ fmt.Sprintf(services.GetI18n().T(ctx, "in_stock"), fmt.Sprint(product.Stock)) }
 									</span>
 								} else {
 									<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
-										Out of Stock
+										{ services.GetI18n().T(ctx, "out_of_stock") }
 									</span>
 								}
 							</div>
@@ -66,7 +67,7 @@ templ Show(product models.Product, cfg *config.Config) {
 					</div>
 
 					<div class="prose prose-sm text-muted-foreground border-t border-b border-border py-8">
-						<h3 class="text-foreground font-semibold text-lg mb-4">Description</h3>
+						<h3 class="text-foreground font-semibold text-lg mb-4">{ services.GetI18n().T(ctx, "description") }</h3>
 						<p class="leading-relaxed whitespace-pre-line">{ product.Description }</p>
 					</div>
 
@@ -85,7 +86,7 @@ templ Show(product models.Product, cfg *config.Config) {
 							}}
 							if len(bundles) > 0 {
 							<div class="mb-6">
-								<h3 class="text-sm font-bold text-foreground uppercase tracking-tight mb-4">Choose a Bundle</h3>
+								<h3 class="text-sm font-bold text-foreground uppercase tracking-tight mb-4">{ services.GetI18n().T(ctx, "choose_bundle") }</h3>
 								<div class="grid grid-cols-1 gap-3 sm:grid-cols-3">
 									<button
 										type="button"
@@ -93,7 +94,7 @@ templ Show(product models.Product, cfg *config.Config) {
 										:class="quantity === 1 ? 'ring-2 ring-primary border-primary bg-primary/5' : 'border-border bg-background'"
 										class="flex flex-col items-center justify-center rounded-xl border p-4 text-center transition-all hover:border-primary/50"
 									>
-										<span class="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">1 Pack</span>
+										<span class="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">{ fmt.Sprintf("1 %s", services.GetI18n().T(ctx, "pack")) }</span>
 										<span class="mt-1 text-base font-extrabold text-foreground">
 											if product.PromotionPrice > 0 {
 												{ product.PromotionPrice.String() }
@@ -110,9 +111,9 @@ templ Show(product models.Product, cfg *config.Config) {
 											:class={ fmt.Sprintf("quantity === %d ? 'ring-2 ring-primary border-primary bg-primary/5' : 'border-border bg-background'", b.Quantity) }
 											class="flex flex-col items-center justify-center rounded-xl border p-4 text-center transition-all hover:border-primary/50"
 										>
-											<span class="text-[10px] font-bold text-primary uppercase tracking-widest">{ fmt.Sprint(b.Quantity) } Pack</span>
+											<span class="text-[10px] font-bold text-primary uppercase tracking-widest">{ fmt.Sprintf("%s %s", fmt.Sprint(b.Quantity), services.GetI18n().T(ctx, "pack")) }</span>
 											<span class="mt-1 text-base font-extrabold text-foreground">{ helpers.CalculateBundlePrice(product, b).String() } { cfg.Site.Currency }</span>
-											<span class="mt-1 inline-flex items-center rounded-full bg-green-100 px-2 py-0.5 text-[10px] font-bold text-green-700">Save { fmt.Sprint(b.DiscountPercentage) }%</span>
+											<span class="mt-1 inline-flex items-center rounded-full bg-green-100 px-2 py-0.5 text-[10px] font-bold text-green-700">{ fmt.Sprintf(services.GetI18n().T(ctx, "save_percent"), fmt.Sprint(b.DiscountPercentage)) }</span>
 										</button>
 									}
 								</div>
@@ -128,8 +129,8 @@ templ Show(product models.Product, cfg *config.Config) {
 							class="w-full flex items-center justify-center rounded-lg border border-transparent px-8 py-4 text-lg font-bold text-white shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
 							disabled?={ product.Stock <= 0 }
 						>
-							<span x-show="!added">Add to Cart</span>
-							<span x-show="added" x-cloak>Added to Cart!</span>
+							<span x-show="!added">{ services.GetI18n().T(ctx, "add_to_cart") }</span>
+							<span x-show="added" x-cloak>{ services.GetI18n().T(ctx, "added_to_cart") }</span>
 						</button>
 						
 						<button 
@@ -138,12 +139,12 @@ templ Show(product models.Product, cfg *config.Config) {
 							class="w-full flex items-center justify-center rounded-lg border border-border bg-background px-8 py-4 text-lg font-bold text-foreground shadow-sm hover:bg-muted transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
 							disabled?={ product.Stock <= 0 }
 						>
-							Order Now
+							{ services.GetI18n().T(ctx, "order_now") }
 						</button>
 					</div>
 
 					<div class="pt-8">
-						<h3 class="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-4">Categories</h3>
+						<h3 class="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-4">{ services.GetI18n().T(ctx, "categories") }</h3>
 						<div class="flex flex-wrap gap-2">
 							for _, cat := range product.Categories {
 								<a href={ templ.URL(fmt.Sprintf("/categories/%d", cat.ID)) } class="inline-flex items-center rounded-full bg-secondary px-4 py-1.5 text-sm font-medium text-secondary-foreground hover:bg-secondary/80 transition-colors">

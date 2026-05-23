@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"shopTemplate/app/config"
 	"shopTemplate/app/models"
+	"shopTemplate/app/services"
 )
 
 func getTrackingPrice(p models.Product) float64 {
@@ -21,12 +22,12 @@ templ ProductCard(product models.Product, cfg *config.Config) {
 				<img src={ product.Image } alt={ product.Name } class="h-full w-full object-cover object-center lg:h-full lg:w-full"/>
 			} else {
 				<div class="flex h-full w-full items-center justify-center bg-gray-100">
-					<span class="text-gray-400">No image</span>
+					<span class="text-gray-400">{ services.GetI18n().T(ctx, "no_image") }</span>
 				</div>
 			}
 			if product.PromotionPrice > 0 {
 				<div class="absolute top-2 left-2 z-20 flex flex-col gap-1">
-					<span class="inline-flex items-center rounded bg-red-600 px-2 py-1 text-xs font-bold text-white uppercase tracking-wider w-fit">Sale</span>
+					<span class="inline-flex items-center rounded bg-red-600 px-2 py-1 text-xs font-bold text-white uppercase tracking-wider w-fit">{ services.GetI18n().T(ctx, "sale") }</span>
 					<span class="inline-flex items-center rounded bg-black/80 px-2 py-1 text-[10px] font-bold text-white uppercase tracking-wider w-fit">
 						-{ fmt.Sprint(int(100 - (product.PromotionPrice.ToFloat() / product.Price.ToFloat() * 100))) }%
 					</span>
@@ -41,7 +42,7 @@ templ ProductCard(product models.Product, cfg *config.Config) {
 							hx-swap="beforeend"
 							class="w-full bg-white/95 text-gray-900 px-3 py-1.5 rounded-full text-xs font-medium shadow-sm hover:bg-white transition-all transform hover:scale-105"
 						>
-							Quick View
+							{ services.GetI18n().T(ctx, "quick_view") }
 						</button>
 					}
 					<button
@@ -52,8 +53,8 @@ templ ProductCard(product models.Product, cfg *config.Config) {
 						:class="added ? 'bg-green-600 text-white' : 'bg-white/95 text-gray-900'"
 						class="w-full px-3 py-1.5 rounded-full text-xs font-medium shadow-sm hover:opacity-90 transition-all transform hover:scale-105"
 					>
-						<span x-show="!added">Add to Cart</span>
-						<span x-show="added" x-cloak>Added!</span>
+						<span x-show="!added">{ services.GetI18n().T(ctx, "add_to_cart") }</span>
+						<span x-show="added" x-cloak>{ services.GetI18n().T(ctx, "added_to_cart") }</span>
 					</button>
 					if cfg.Site.ShowOrderNow {
 						<button
@@ -61,7 +62,7 @@ templ ProductCard(product models.Product, cfg *config.Config) {
 							onclick={ templ.JSFuncCall("trackInitiateCheckout", product.ID, product.Name, getTrackingPrice(product), cfg.Site.Currency) }
 							class="w-full bg-primary text-white px-3 py-1.5 rounded-full text-xs font-medium shadow-sm hover:bg-primary/90 transition-all transform hover:scale-105"
 						>
-							Order Now
+							{ services.GetI18n().T(ctx, "order_now") }
 						</button>
 					}
 				</div>
