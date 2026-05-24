@@ -61,6 +61,7 @@
   "order_placed": "Commande effectuée !",
   "thank_you_purchase": "Merci pour votre achat. Nous avons bien reçu votre commande et nous la traitons actuellement.",
   "confirmation_email_shortly": "Vous recevrez bientôt un e-mail de confirmation.",
+  "add_to_cart": "Ajouter au panier",
   "back_to_home_btn": "Retour à l'accueil",
   "chat_support": "Support par Chat",
   "chat_connection_degraded": "Connexion dégradée, les messages peuvent être retardés",
