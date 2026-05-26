@@ -3273,12 +3273,15 @@ label {
 .admin-content {
   flex: 1;
   overflow-y: auto;
-  padding: 24px 24px 112px;
+  padding: 24px 24px 80px;
 }
 
 .admin-content-inner {
   max-width: 900px;
   margin: 0 auto;
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
 .admin-page-head {
