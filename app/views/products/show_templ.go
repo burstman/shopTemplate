@@ -496,7 +496,7 @@ func Show(product models.Product, cfg *config.Config) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 45, "\" hx-include=\"#product-show-quantity\" class=\"w-full flex items-center justify-center rounded-lg border border-border bg-background px-8 py-4 text-lg font-bold text-foreground shadow-sm hover:bg-muted transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 45, "\" hx-include=\"#product-show-quantity\" class=\"w-full flex items-center justify-center rounded-lg bg-gray-900 text-white px-8 py-4 text-lg font-bold shadow-sm hover:bg-gray-800 transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
