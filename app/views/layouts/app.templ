@@ -168,15 +168,76 @@ func GetContentStyle(cfg *config.Config) string {
 	return fmt.Sprintf("background-color: %s;", cfg.Theme.ContentBgColor)
 }
 
-templ AdminPage(user models.AuthUser, cfg *config.Config, categories []models.Category, cartCount int, sidebar []config.MenuItem, activePath string, content templ.Component, csrfToken string) {
+func pageTitleFromPath(path string) string {
+	switch {
+	case path == "/admin/dashboard" || path == "/":
+		return "Dashboard"
+	case path == "/admin/site":
+		return "Site Settings"
+	case path == "/admin/hero":
+		return "Hero Section"
+	case path == "/admin/sections":
+		return "Homepage Sections"
+	case path == "/admin/theme":
+		return "Theme"
+	case path == "/admin/notifications":
+		return "Notifications"
+	case path == "/admin/facebook_pixel":
+		return "Facebook Pixel"
+	case path == "/admin/categories":
+		return "Categories"
+	case path == "/admin/products":
+		return "Products"
+	case path == "/admin/orders":
+		return "Orders"
+	case path == "/admin/payment":
+		return "Payment Methods"
+	case path == "/admin/chat_settings":
+		return "Chat Settings"
+	case path == "/admin/social_links":
+		return "Social Links"
+	case path == "/products/new":
+		return "New Product"
+	default:
+		return "Admin"
+	}
+}
+
+func isItemActive(item config.MenuItem, activePath string) bool {
+	return item.Link == activePath
+}
+
+templ iconFor(name string) {
+	if code, ok := map[string]string{
+		"search":          "&#xea64;",
+		"arrow-left":      "&#xea5c;",
+		"image":           "&#xea88;",
+		"layout-grid":     "&#xea6b;",
+		"palette":         "&#xea7f;",
+		"bell":            "&#xea34;",
+		"folder-tree":     "&#xeab1;",
+		"shopping-bag":    "&#xea51;",
+		"clipboard-list":  "&#xea68;",
+		"credit-card":     "&#xea3c;",
+		"facebook":        "&#xea84;",
+		"message-square":  "&#xea2f;",
+		"share-2":         "&#xea75;",
+		"settings":        "&#xea71;",
+	}[name]; ok {
+		@templ.Raw(fmt.Sprintf(`<i class="i">%s</i>`, code))
+	}
+}
+
+templ AdminPage(user models.AuthUser, cfg *config.Config, categories []models.Category, cartCount int, sidebar []config.SidebarGroup, activePath string, content templ.Component, csrfToken string) {
 	<!DOCTYPE html>
-	<html lang={ fmt.Sprint(ctx.Value("lang")) } class="h-full bg-gray-100" dir={ getDir(ctx) }>
+	<html lang={ fmt.Sprint(ctx.Value("lang")) } class="h-full" dir={ getDir(ctx) }>
 		<head>
 			<meta charset="UTF-8"/>
 			<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 			<meta name="csrf-token" content={ csrfToken } />
-			<title>Admin Dashboard</title>
+			<title>{ pageTitleFromPath(activePath) } — { cfg.Site.Name }</title>
 			<link rel="stylesheet" href="/public/assets/styles.css"/>
+			<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lucide-static@latest/font/lucide.css">
 			<style>
 				:root { --primary: { fmt.Sprintf("%.0f %.0f%% %.0f%%", hexToHSL(cfg.Theme.PrimaryColor)) }; }
 			</style>
@@ -186,9 +247,7 @@ templ AdminPage(user models.AuthUser, cfg *config.Config, categories []models.Ca
 			<script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
 			<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.3/dist/cdn.min.js"></script>
 			<style>
-				[x-cloak] {
-					display: none !important;
-				}
+				[x-cloak] { display: none !important; }
 			</style>
 			<script>
 				document.addEventListener('alpine:init', () => {
@@ -215,8 +274,8 @@ templ AdminPage(user models.AuthUser, cfg *config.Config, categories []models.Ca
 			</script>
 		</head>
 		<body 
-			class="h-screen overflow-hidden flex flex-col font-sans antialiased text-gray-900 pt-16 sm:pt-28" 
-			style={ getPageStyle(cfg) }
+			class="font-sans antialiased"
+			style="background: var(--admin-bg); color: var(--foreground);"
 			hx-ext="ws" 
 			ws-connect="/api/chat/ws"
 			x-data="{ mobileMenuOpen: false }"
@@ -224,92 +283,148 @@ templ AdminPage(user models.AuthUser, cfg *config.Config, categories []models.Ca
 			@htmx:ws-close="$store.chat.wsError = true"
 			@htmx:ws-open="$store.chat.wsError = false; $store.chat.socket = $event.detail.socket"
 		>
-			@components.Navigation(user, cfg, categories, cartCount, nil)
-			<div class="flex-grow flex overflow-hidden">
-				<!-- Mobile Header -->
-				<div class="lg:hidden flex items-center justify-between bg-indigo-700 px-4 py-4 text-white">
-					<span class="font-bold text-xl">Admin</span>
-					<button @click="mobileMenuOpen = true" class="p-2 rounded-md hover:bg-indigo-600 focus:outline-none">
-						<svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-						</svg>
-					</button>
-				</div>
-
-				<!-- Sidebar Overlay -->
-				<div x-show="mobileMenuOpen" x-cloak class="fixed inset-0 z-40 lg:hidden" @click="mobileMenuOpen = false">
-					<div class="absolute inset-0 bg-gray-600 opacity-75"></div>
-				</div>
-
+			<div class="admin-layout">
 				<!-- Sidebar -->
-				<div 
-					:class="mobileMenuOpen ? 'translate-x-0' : '-translate-x-full'"
-					class="fixed inset-y-0 left-0 z-50 flex w-64 flex-col bg-indigo-700 pt-5 pb-4 overflow-y-auto transform transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-0 lg:flex lg:h-full"
-				>
-					<!-- Close button for mobile -->
-					<div class="lg:hidden absolute top-0 right-0 -mr-12 pt-2" x-show="mobileMenuOpen" x-cloak>
-						<button @click="mobileMenuOpen = false" class="ml-1 flex items-center justify-center h-10 w-10 rounded-full focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white">
-							<svg class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+				<aside class="admin-sidebar">
+					<div class="admin-sidebar-head">
+						<div class="admin-brand">
+							<div class="admin-brand-logo">BS</div>
+							<div style="flex:1; min-width:0;">
+								<div class="admin-brand-title">{ cfg.Site.Name }</div>
+								<div class="admin-brand-sub">Admin Panel</div>
+							</div>
+						</div>
+						<div class="admin-search">
+							@iconFor("search")
+							<input placeholder="Search…" />
+						</div>
+					</div>
+
+						<a href="/" class="admin-back-btn">@iconFor("arrow-left") Back to store</a>
+
+					<nav class="admin-nav">
+						for _, group := range sidebar {
+							<div class="admin-nav-group">
+								<div class="admin-nav-group-label">{ services.GetI18n().T(ctx, group.Label) }</div>
+								for _, item := range group.Items {
+									<a 
+										href={ templ.SafeURL(item.Link) } 
+										class={ "admin-nav-item", templ.KV("active", isItemActive(item, activePath)) }
+									>
+										@iconFor(item.Icon)
+										<span>{ services.GetI18n().T(ctx, item.Title) }</span>
+										if item.Badge != "" {
+											<span class="admin-badge-sm">{ item.Badge }</span>
+										}
+									</a>
+								}
+							</div>
+						}
+					</nav>
+				</aside>
+
+				<!-- Main -->
+				<div class="main" style="flex:1; display:flex; flex-direction:column; min-width:0;">
+
+					<!-- Mobile header -->
+					<div class="lg:hidden flex items-center justify-between" style="background:var(--admin-sidebar); padding:12px 16px; color:#fff;">
+						<span class="font-bold text-lg">{ cfg.Site.Name }</span>
+						<button @click="mobileMenuOpen = true" class="p-2 rounded-md hover:opacity-80 focus:outline-none">
+							<svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
 							</svg>
 						</button>
 					</div>
 
-					<div class="flex items-center flex-shrink-0 px-4">
-						<span class="text-white font-bold text-xl">Admin</span>
+					<!-- Mobile sidebar overlay -->
+					<div x-show="mobileMenuOpen" x-cloak class="fixed inset-0 z-40 lg:hidden" @click="mobileMenuOpen = false">
+						<div class="absolute inset-0 bg-gray-600 opacity-75"></div>
 					</div>
-					<nav class="mt-5 flex-1 flex flex-col divide-y divide-indigo-800 overflow-y-auto" aria-label="Sidebar">
-						<div class="px-2 space-y-1">
-							for _, item := range sidebar {
-								<a href={ templ.SafeURL(item.Link) } class={ "group flex items-center px-2 py-2 text-sm leading-6 font-medium rounded-md text-white hover:bg-indigo-600", templ.KV("bg-indigo-800", item.Link == activePath) }>
-									{ services.GetI18n().T(ctx, item.Title) }
-									if item.Title == "Live Chat" || item.Title == "Chat Settings" {
-										@components.ChatNotificationDot(cfg, false, "", 0, templ.Attributes{"id": "admin-sidebar-chat-dot"})
-									}
-								</a>
-							}
-						</div>
-					</nav>
-				</div>
 
-				<!-- Global Polling for Admin Chat (if WebSocket fails) -->
-				<div 
-					id="admin-global-poller"
-					x-data={ `{ 
-						activeChatId: null,
-						updateActiveId() {
-							const match = window.location.pathname.match(/\/admin\/chat\/(\d+)/);
-							this.activeChatId = match ? match[1] : null;
-						}
-					}` }
-					x-init={ `
-						updateActiveId();
-						htmx.on('htmx:afterSwap', (evt) => {
-							updateActiveId();
-						});
-						window.addEventListener('popstate', () => updateActiveId());
-					` }
-				>
-					<!-- Polling for Sidebar Session List -->
-					<div hx-get="/admin/chats/sidebar" hx-target="#sidebar-session-list" hx-swap="innerHTML" x-bind:hx-trigger="$store.chat.wsError ? 'every 2s' : 'every 30s'"></div>
-					
-					<!-- Polling for Active Chat Messages -->
-					<template x-if="activeChatId">
-						<div :hx-get="'/admin/chat/' + activeChatId + '/messages'" :hx-target="'#chat-messages-' + activeChatId" hx-swap="innerHTML" x-bind:hx-trigger="$store.chat.wsError ? 'every 1s' : 'every 10s'"></div>
-					</template>
-				</div>
-				<div class="flex-1 flex flex-col overflow-hidden">
-					<div class="flex-grow overflow-y-auto custom-scrollbar">
-						<main class="pb-4 h-full">
-							<div class="mt-8 h-full flex flex-col">
-								<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex-1 flex flex-col">
-									@content
+					<!-- Mobile sidebar drawer -->
+					<div 
+						:class="mobileMenuOpen ? 'translate-x-0' : '-translate-x-full'"
+						class="fixed inset-y-0 left-0 z-50 flex w-64 flex-col transition-transform duration-300 ease-in-out lg:hidden"
+						style="background:var(--admin-sidebar); color:var(--admin-sidebar-fg);"
+					>
+						<div class="flex items-center justify-between px-4 py-4 border-b" style="border-color:var(--admin-sidebar-border);">
+							<span class="font-bold">{ cfg.Site.Name }</span>
+							<button @click="mobileMenuOpen = false" class="p-1 rounded hover:opacity-80">
+								<svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+								</svg>
+							</button>
+						</div>
+					<a href="/" class="admin-back-btn">@iconFor("arrow-left") Back to store</a>
+						<nav class="admin-nav">
+							for _, group := range sidebar {
+								<div class="admin-nav-group">
+									<div class="admin-nav-group-label">{ services.GetI18n().T(ctx, group.Label) }</div>
+									for _, item := range group.Items {
+										<a 
+											href={ templ.SafeURL(item.Link) } 
+											class={ "admin-nav-item", templ.KV("active", isItemActive(item, activePath)) }
+											@click="mobileMenuOpen = false"
+										>
+										@iconFor(item.Icon)
+											<span>{ services.GetI18n().T(ctx, item.Title) }</span>
+											if item.Badge != "" {
+												<span class="admin-badge-sm">{ item.Badge }</span>
+											}
+										</a>
+									}
 								</div>
-							</div>
-						</main>
+							}
+						</nav>
 					</div>
-					@components.Footer(user, cfg)
-					<!-- Global Toast Container -->
+
+					<!-- Global Polling for Admin Chat (if WebSocket fails) -->
+					<div 
+						id="admin-global-poller"
+						x-data={ `{ 
+							activeChatId: null,
+							updateActiveId() {
+								const match = window.location.pathname.match(/\/admin\/chat\/(\d+)/);
+								this.activeChatId = match ? match[1] : null;
+							}
+						}` }
+						x-init={ `
+							updateActiveId();
+							htmx.on('htmx:afterSwap', (evt) => {
+								updateActiveId();
+							});
+							window.addEventListener('popstate', () => updateActiveId());
+						` }
+					>
+						<div hx-get="/admin/chats/sidebar" hx-target="#sidebar-session-list" hx-swap="innerHTML" x-bind:hx-trigger="$store.chat.wsError ? 'every 2s' : 'every 30s'"></div>
+						<template x-if="activeChatId">
+							<div :hx-get="'/admin/chat/' + activeChatId + '/messages'" :hx-target="'#chat-messages-' + activeChatId" hx-swap="innerHTML" x-bind:hx-trigger="$store.chat.wsError ? 'every 1s' : 'every 10s'"></div>
+						</template>
+					</div>
+
+					<!-- Header bar -->
+					<header class="admin-header">
+						<div class="admin-breadcrumbs">
+							<span class="muted">Admin</span>
+							<i class="i">&#xea61;</i>
+							<span style="font-weight:500;">{ services.GetI18n().T(ctx, pageTitleFromPath(activePath)) }</span>
+						</div>
+						<div class="admin-header-actions">
+							if user.ID != 0 {
+								<span class="text-sm text-gray-500">{ user.Email }</span>
+							}
+							<a href="/logout" class="btn" style="height:32px; padding:0 12px; border-radius:6px; border:1px solid var(--border); background:var(--admin-card); font-size:13px; display:inline-flex; align-items:center; gap:6px; text-decoration:none; color:inherit;">Logout</a>
+						</div>
+					</header>
+
+					<div class="admin-body">
+						<div class="admin-content">
+							<div class="admin-content-inner">
+								@content
+							</div>
+						</div>
+					</div>
+
 					<audio id="chat-ping-sound" src="/public/assets/ping.wav" preload="auto" class="hidden"></audio>
 				</div>
 			</div>

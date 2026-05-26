@@ -183,25 +183,63 @@ type MenuItem struct {
 	Title string `json:"title"`
 	Link  string `json:"link"`
 	Icon  string `json:"icon,omitempty"`
+	Badge string `json:"badge,omitempty"`
 }
 
-func GetAdminSidebar() []MenuItem {
-	return []MenuItem{
-		{Title: "Back to Store", Link: "/", Icon: "arrow-left"},
+type SidebarGroup struct {
+	Label string     `json:"label"`
+	Items []MenuItem `json:"items"`
+}
 
-		{Title: "Site Settings", Link: "/admin/site", Icon: "settings"},
-		{Title: "Hero Section", Link: "/admin/hero", Icon: "image"},
-		{Title: "Homepage Sections", Link: "/admin/sections", Icon: "layout-grid"},
-		{Title: "Theme", Link: "/admin/theme", Icon: "palette"},
-		{Title: "Notifications", Link: "/admin/notifications", Icon: "bell"},
-		{Title: "Facebook Pixel", Link: "/admin/facebook_pixel", Icon: "facebook"},
-		{Title: "Categories", Link: "/admin/categories", Icon: "folder-tree"},
-		{Title: "Products", Link: "/admin/products", Icon: "shopping-bag"},
-		{Title: "Orders", Link: "/admin/orders", Icon: "clipboard-list"},
-		{Title: "Payment Methods", Link: "/admin/payment", Icon: "credit-card"},
-		{Title: "Chat Settings", Link: "/admin/chat_settings", Icon: "message-square"},
-		{Title: "Social Links", Link: "/admin/social_links", Icon: "share-2"},
+func GetAdminSidebarGroups() []SidebarGroup {
+	return []SidebarGroup{
+		{
+			Label: "Storefront",
+			Items: []MenuItem{
+				{Title: "Hero Section", Link: "/admin/hero", Icon: "image"},
+				{Title: "Homepage Sections", Link: "/admin/sections", Icon: "layout-grid"},
+				{Title: "Theme", Link: "/admin/theme", Icon: "palette"},
+				{Title: "Notifications", Link: "/admin/notifications", Icon: "bell"},
+			},
+		},
+		{
+			Label: "Catalog",
+			Items: []MenuItem{
+				{Title: "Categories", Link: "/admin/categories", Icon: "folder-tree"},
+				{Title: "Products", Link: "/admin/products", Icon: "shopping-bag"},
+			},
+		},
+		{
+			Label: "Operations",
+			Items: []MenuItem{
+				{Title: "Orders", Link: "/admin/orders", Icon: "clipboard-list"},
+				{Title: "Payment Methods", Link: "/admin/payment", Icon: "credit-card"},
+			},
+		},
+		{
+			Label: "Engagement",
+			Items: []MenuItem{
+				{Title: "Facebook Pixel", Link: "/admin/facebook_pixel", Icon: "facebook"},
+				{Title: "Chat Settings", Link: "/admin/chat_settings", Icon: "message-square"},
+				{Title: "Social Links", Link: "/admin/social_links", Icon: "share-2"},
+			},
+		},
+		{
+			Label: "Settings",
+			Items: []MenuItem{
+				{Title: "Site Settings", Link: "/admin/site", Icon: "settings"},
+			},
+		},
 	}
+}
+
+// kept for any code still referencing the flat list
+func GetAdminSidebar() []MenuItem {
+	var flat []MenuItem
+	for _, g := range GetAdminSidebarGroups() {
+		flat = append(flat, g.Items...)
+	}
+	return flat
 }
 
 func defaultConfig() *Config {

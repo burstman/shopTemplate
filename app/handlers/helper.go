@@ -24,7 +24,7 @@ func RenderWithLayout(kit *kit.Kit, content templ.Component) error {
 	return kit.Render(layouts.App(user, config.FromContext(kit.Request.Context()), categories, cart.Total, content, csrfToken))
 }
 
-func RenderAdminWithLayout(kit *kit.Kit, sidebar []config.MenuItem, activePath string, content templ.Component) error {
+func RenderAdminWithLayout(kit *kit.Kit, sidebar []config.SidebarGroup, activePath string, content templ.Component) error {
 	var user models.AuthUser
 	if authedUser, ok := kit.Auth().(models.AuthUser); ok {
 		user = authedUser

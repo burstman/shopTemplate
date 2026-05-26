@@ -51,7 +51,7 @@ func HandleAdminOrdersIndex(kit *kit.Kit) error {
 
 	cfg := config.FromContext(kit.Request.Context())
 	activePath := "/admin/orders"
-	sidebar := config.GetAdminSidebar()
+	sidebar := config.GetAdminSidebarGroups()
 	content := orders.Index(ordersList, page, totalPages, balance, cfg)
 	return RenderAdminWithLayout(kit, sidebar, activePath, content)
 }
@@ -77,7 +77,7 @@ func HandleAdminOrderShow(kit *kit.Kit) error {
 	}
 
 	activePath := "/admin/orders"
-	sidebar := config.GetAdminSidebar()
+	sidebar := config.GetAdminSidebarGroups()
 	content := orders.Show(order)
 	return RenderAdminWithLayout(kit, sidebar, activePath, content)
 }

@@ -38,7 +38,7 @@ func HandleAdminSettings(kit *kit.Kit) error {
 	}
 
 	activePath := "/admin/" + section
-	sidebar := config.GetAdminSidebar()
+	sidebar := config.GetAdminSidebarGroups()
 	var content templ.Component
 	switch section {
 	case "notifications":

@@ -29,7 +29,7 @@ func HandleAdminCategoriesIndex(kit *kit.Kit) error {
 	}
 
 	activePath := "/admin/categories"
-	sidebar := config.GetAdminSidebar()
+	sidebar := config.GetAdminSidebarGroups()
 	content := conf.CategoriesIndex(categories, allCategories)
 	return RenderAdminWithLayout(kit, sidebar, activePath, content)
 }

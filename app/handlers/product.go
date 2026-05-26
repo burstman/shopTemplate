@@ -54,7 +54,7 @@ func HandleAdminProductsIndex(kit *kit.Kit) error {
 	}
 
 	activePath := "/admin/products"
-	sidebar := config.GetAdminSidebar()
+	sidebar := config.GetAdminSidebarGroups()
 	cfg := config.Get()
 	content := products.AdminList(productsList, page, totalPages, cfg)
 	return RenderAdminWithLayout(kit, sidebar, activePath, content)
@@ -95,7 +95,7 @@ func HandleProductNew(kit *kit.Kit) error {
 	categories := helpers.GetCategoryTree()
 
 	activePath := "/products/new"
-	sidebar := config.GetAdminSidebar()
+	sidebar := config.GetAdminSidebarGroups()
 	cfg := config.Get()
 	csrfToken := csrf.Token(kit.Request)
 	content := products.New(categories, products.CreateForm{
@@ -179,7 +179,7 @@ func HandleProductCreate(kit *kit.Kit) error {
 		categories := helpers.GetCategoryTree()
 		cfg := config.Get()
 		activePath := "/products/new"
-		sidebar := config.GetAdminSidebar()
+		sidebar := config.GetAdminSidebarGroups()
 		form := products.CreateForm{
 			Values: map[string]string{
 				"name":            name,
@@ -353,7 +353,7 @@ func HandleProductEdit(kit *kit.Kit) error {
 	}
 
 	activePath := "/admin/products"
-	sidebar := config.GetAdminSidebar()
+	sidebar := config.GetAdminSidebarGroups()
 	return RenderAdminWithLayout(kit, sidebar, activePath, modal)
 }
 

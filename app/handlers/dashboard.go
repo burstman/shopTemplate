@@ -59,7 +59,7 @@ func HandleAdminDashboard(kit *kit.Kit) error {
 
 	cfg := config.FromContext(kit.Request.Context())
 	activePath := "/admin/dashboard"
-	sidebar := config.GetAdminSidebar()
+	sidebar := config.GetAdminSidebarGroups()
 	content := dashboard.Index(data, cfg)
 	return RenderAdminWithLayout(kit, sidebar, activePath, content)
 }
