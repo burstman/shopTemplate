@@ -64,14 +64,14 @@ func Index(cfg *config.Config, products []models.Product, categories []models.Ca
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "\" hx-trigger=\"change delay:500ms, keyup delay:1000ms changed\" hx-swap=\"none\" hx-indicator=\"#save-indicator\"><div class=\"flex-1 space-y-8 max-w-4xl mx-auto w-full px-2\"><input type=\"hidden\" name=\"csrf_token\" value=\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "\" hx-trigger=\"change delay:500ms, keyup delay:1000ms changed\" hx-swap=\"none\"><div class=\"flex-1 space-y-8 max-w-4xl mx-auto w-full px-2\"><input type=\"hidden\" name=\"csrf_token\" value=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var4 string
 		templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.ResolveAttributeValue(csrfToken)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 25, Col: 59}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 24, Col: 59}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var4)
 		if templ_7745c5c3_Err != nil {
@@ -123,33 +123,20 @@ func Index(cfg *config.Config, products []models.Product, categories []models.Ca
 				return templ_7745c5c3_Err
 			}
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 5, "</div><div class=\"sticky bottom-0 z-40 bg-white border-t border-gray-200 shadow-lg\"><div class=\"max-w-4xl mx-auto px-6 py-4 flex justify-between items-center\"><div id=\"save-indicator\" class=\"htmx-indicator flex items-center text-sm text-green-600 font-medium\"><svg class=\"animate-spin h-4 w-4 mr-2\" xmlns=\"http://www.w3.org/2000/svg\" fill=\"none\" viewBox=\"0 0 24 24\"><circle class=\"opacity-25\" cx=\"12\" cy=\"12\" r=\"10\" stroke=\"currentColor\" stroke-width=\"4\"></circle> <path class=\"opacity-75\" fill=\"currentColor\" d=\"M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z\"></path></svg> ")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 5, "</div><div class=\"sticky bottom-0 z-40 flex justify-end\"><button type=\"submit\" class=\"inline-flex items-center px-8 py-3 text-base font-bold text-white bg-green-600 border border-green-700 rounded-lg shadow-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-all transform active:scale-95\"><svg class=\"w-5 h-5 mr-2\" fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4\"></path></svg> ")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var5 string
-		templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinStringErrs(services.GetI18n().T(ctx, "saving"))
+		templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinStringErrs(services.GetI18n().T(ctx, "save_changes"))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 52, Col: 42}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 49, Col: 47}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var5))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 6, "</div><div class=\"flex-grow\"></div><button type=\"submit\" class=\"inline-flex items-center px-8 py-3 text-base font-bold text-white bg-green-600 border border-green-700 rounded-lg shadow-sm hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-all transform active:scale-95\"><svg class=\"w-5 h-5 mr-2\" fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4\"></path></svg> ")
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		var templ_7745c5c3_Var6 string
-		templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.JoinStringErrs(services.GetI18n().T(ctx, "save_changes"))
-		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 59, Col: 48}
-		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var6))
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 7, "</button></div></div></form>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 6, "</button></div></form>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -173,218 +160,218 @@ func siteSettingsForm(cfg *config.Config) templ.Component {
 			}()
 		}
 		ctx = templ.InitializeContext(ctx)
-		templ_7745c5c3_Var7 := templ.GetChildren(ctx)
-		if templ_7745c5c3_Var7 == nil {
-			templ_7745c5c3_Var7 = templ.NopComponent
+		templ_7745c5c3_Var6 := templ.GetChildren(ctx)
+		if templ_7745c5c3_Var6 == nil {
+			templ_7745c5c3_Var6 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 8, "<div class=\"p-6 bg-white rounded-lg shadow\"><h3 class=\"text-lg font-medium leading-6 text-gray-900\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 7, "<div class=\"p-6 bg-white rounded-lg shadow\"><h3 class=\"text-lg font-medium leading-6 text-gray-900\">")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		var templ_7745c5c3_Var7 string
+		templ_7745c5c3_Var7, templ_7745c5c3_Err = templ.JoinStringErrs(services.GetI18n().T(ctx, "site_settings"))
+		if templ_7745c5c3_Err != nil {
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 57, Col: 102}
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var7))
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 8, "</h3><div class=\"mt-6 grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6\"><div class=\"sm:col-span-4\"><label for=\"site_name\" class=\"block text-sm font-medium text-gray-700\">Site Name</label><div class=\"mt-1\"><input type=\"text\" name=\"site_name\" id=\"site_name\" value=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var8 string
-		templ_7745c5c3_Var8, templ_7745c5c3_Err = templ.JoinStringErrs(services.GetI18n().T(ctx, "site_settings"))
+		templ_7745c5c3_Var8, templ_7745c5c3_Err = templ.ResolveAttributeValue(cfg.Site.Name)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 68, Col: 102}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 62, Col: 77}
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var8))
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var8)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 9, "</h3><div class=\"mt-6 grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6\"><div class=\"sm:col-span-4\"><label for=\"site_name\" class=\"block text-sm font-medium text-gray-700\">Site Name</label><div class=\"mt-1\"><input type=\"text\" name=\"site_name\" id=\"site_name\" value=\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 9, "\" class=\"block w-full border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500 sm:text-sm\"></div></div><div class=\"sm:col-span-4\"><label for=\"support_email\" class=\"block text-sm font-medium text-gray-700\">Support Email</label><div class=\"mt-1\"><input type=\"email\" name=\"support_email\" id=\"support_email\" value=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var9 string
-		templ_7745c5c3_Var9, templ_7745c5c3_Err = templ.ResolveAttributeValue(cfg.Site.Name)
+		templ_7745c5c3_Var9, templ_7745c5c3_Err = templ.ResolveAttributeValue(cfg.Site.SupportEmail)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 73, Col: 77}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 68, Col: 94}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var9)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 10, "\" class=\"block w-full border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500 sm:text-sm\"></div></div><div class=\"sm:col-span-4\"><label for=\"support_email\" class=\"block text-sm font-medium text-gray-700\">Support Email</label><div class=\"mt-1\"><input type=\"email\" name=\"support_email\" id=\"support_email\" value=\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 10, "\" class=\"block w-full border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500 sm:text-sm\"></div></div><div class=\"sm:col-span-4\"><label for=\"site_currency\" class=\"block text-sm font-medium text-gray-700\">Display Currency (e.g., TND, DT)</label><div class=\"mt-1\"><input type=\"text\" name=\"site_currency\" id=\"site_currency\" value=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var10 string
-		templ_7745c5c3_Var10, templ_7745c5c3_Err = templ.ResolveAttributeValue(cfg.Site.SupportEmail)
+		templ_7745c5c3_Var10, templ_7745c5c3_Err = templ.ResolveAttributeValue(cfg.Site.Currency)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 79, Col: 94}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 74, Col: 89}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var10)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 11, "\" class=\"block w-full border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500 sm:text-sm\"></div></div><div class=\"sm:col-span-4\"><label for=\"site_currency\" class=\"block text-sm font-medium text-gray-700\">Display Currency (e.g., TND, DT)</label><div class=\"mt-1\"><input type=\"text\" name=\"site_currency\" id=\"site_currency\" value=\"")
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		var templ_7745c5c3_Var11 string
-		templ_7745c5c3_Var11, templ_7745c5c3_Err = templ.ResolveAttributeValue(cfg.Site.Currency)
-		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 85, Col: 89}
-		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var11)
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 12, "\" class=\"block w-full border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500 sm:text-sm\" placeholder=\"TND\"></div></div><div class=\"sm:col-span-4\"><div class=\"flex items-start\"><div class=\"flex items-center h-5\"><input id=\"show_quick_view\" name=\"show_quick_view\" type=\"checkbox\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 11, "\" class=\"block w-full border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500 sm:text-sm\" placeholder=\"TND\"></div></div><div class=\"sm:col-span-4\"><div class=\"flex items-start\"><div class=\"flex items-center h-5\"><input id=\"show_quick_view\" name=\"show_quick_view\" type=\"checkbox\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		if cfg.Site.ShowQuickView {
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 13, " checked")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 12, " checked")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 14, " class=\"focus:ring-green-500 h-4 w-4 text-green-600 border-gray-300 rounded cursor-pointer\"></div><div class=\"ml-3 text-sm\"><label for=\"show_quick_view\" class=\"font-medium text-gray-700 cursor-pointer\">Show \"Quick View\" Button</label><p class=\"text-gray-500\">Enable or disable the Quick View modal on product cards.</p></div></div></div><div class=\"sm:col-span-4\"><div class=\"flex items-start\"><div class=\"flex items-center h-5\"><input id=\"show_order_now\" name=\"show_order_now\" type=\"checkbox\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 13, " class=\"focus:ring-green-500 h-4 w-4 text-green-600 border-gray-300 rounded cursor-pointer\"></div><div class=\"ml-3 text-sm\"><label for=\"show_quick_view\" class=\"font-medium text-gray-700 cursor-pointer\">Show \"Quick View\" Button</label><p class=\"text-gray-500\">Enable or disable the Quick View modal on product cards.</p></div></div></div><div class=\"sm:col-span-4\"><div class=\"flex items-start\"><div class=\"flex items-center h-5\"><input id=\"show_order_now\" name=\"show_order_now\" type=\"checkbox\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		if cfg.Site.ShowOrderNow {
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 15, " checked")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 14, " checked")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 16, " class=\"focus:ring-green-500 h-4 w-4 text-green-600 border-gray-300 rounded cursor-pointer\"></div><div class=\"ml-3 text-sm\"><label for=\"show_order_now\" class=\"font-medium text-gray-700 cursor-pointer\">Show \"Order Now\" Button</label><p class=\"text-gray-500\">Enable or disable the direct checkout button on product cards.</p></div></div></div><div class=\"sm:col-span-4\"><div class=\"flex items-start\"><div class=\"flex items-center h-5\"><input id=\"show_add_to_cart\" name=\"show_add_to_cart\" type=\"checkbox\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 15, " class=\"focus:ring-green-500 h-4 w-4 text-green-600 border-gray-300 rounded cursor-pointer\"></div><div class=\"ml-3 text-sm\"><label for=\"show_order_now\" class=\"font-medium text-gray-700 cursor-pointer\">Show \"Order Now\" Button</label><p class=\"text-gray-500\">Enable or disable the direct checkout button on product cards.</p></div></div></div><div class=\"sm:col-span-4\"><div class=\"flex items-start\"><div class=\"flex items-center h-5\"><input id=\"show_add_to_cart\" name=\"show_add_to_cart\" type=\"checkbox\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		if cfg.Site.ShowAddToCart {
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 17, " checked")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 16, " checked")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 18, " class=\"focus:ring-green-500 h-4 w-4 text-green-600 border-gray-300 rounded cursor-pointer\"></div><div class=\"ml-3 text-sm\"><label for=\"show_add_to_cart\" class=\"font-medium text-gray-700 cursor-pointer\">Show \"Add to Cart\" Button</label><p class=\"text-gray-500\">Enable or disable the add to cart button on product cards.</p></div></div></div><div class=\"sm:col-span-4\"><label for=\"site_logo\" class=\"block text-sm font-medium text-gray-700\">Site Logo</label><div class=\"mt-2 flex items-center gap-4\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 17, " class=\"focus:ring-green-500 h-4 w-4 text-green-600 border-gray-300 rounded cursor-pointer\"></div><div class=\"ml-3 text-sm\"><label for=\"show_add_to_cart\" class=\"font-medium text-gray-700 cursor-pointer\">Show \"Add to Cart\" Button</label><p class=\"text-gray-500\">Enable or disable the add to cart button on product cards.</p></div></div></div><div class=\"sm:col-span-4\"><label for=\"site_logo\" class=\"block text-sm font-medium text-gray-700\">Site Logo</label><div class=\"mt-2 flex items-center gap-4\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		if cfg.Site.Logo != "" {
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 19, "<div class=\"h-16 w-16 flex-shrink-0 overflow-hidden rounded-lg border border-gray-200\"><img src=\"")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 18, "<div class=\"h-16 w-16 flex-shrink-0 overflow-hidden rounded-lg border border-gray-200\"><img src=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			var templ_7745c5c3_Var12 string
-			templ_7745c5c3_Var12, templ_7745c5c3_Err = templ.ResolveAttributeValue(cfg.Site.Logo)
+			var templ_7745c5c3_Var11 string
+			templ_7745c5c3_Var11, templ_7745c5c3_Err = templ.ResolveAttributeValue(cfg.Site.Logo)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 126, Col: 31}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 115, Col: 31}
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var12)
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var11)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 20, "\" alt=\"Current Logo\" class=\"h-full w-full object-cover\"></div>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 19, "\" alt=\"Current Logo\" class=\"h-full w-full object-cover\"></div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 21, "<div class=\"flex-1\"><input type=\"file\" name=\"site_logo\" id=\"site_logo\" accept=\"image/*\" class=\"block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-green-50 file:text-green-700 hover:file:bg-green-100\"></div></div></div><div class=\"sm:col-span-6\"><label for=\"footer_copyright\" class=\"block text-sm font-medium text-gray-700\">Footer Copyright Text</label><div class=\"mt-1\"><input type=\"text\" name=\"footer_copyright\" id=\"footer_copyright\" value=\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 20, "<div class=\"flex-1\"><input type=\"file\" name=\"site_logo\" id=\"site_logo\" accept=\"image/*\" class=\"block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-green-50 file:text-green-700 hover:file:bg-green-100\"></div></div></div><div class=\"sm:col-span-6\"><label for=\"footer_copyright\" class=\"block text-sm font-medium text-gray-700\">Footer Copyright Text</label><div class=\"mt-1\"><input type=\"text\" name=\"footer_copyright\" id=\"footer_copyright\" value=\"")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		var templ_7745c5c3_Var12 string
+		templ_7745c5c3_Var12, templ_7745c5c3_Err = templ.ResolveAttributeValue(cfg.Footer.Copyright)
+		if templ_7745c5c3_Err != nil {
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 132, Col: 98}
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var12)
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 21, "\" class=\"block w-full border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500 sm:text-sm\"></div><p class=\"mt-2 text-xs text-gray-500 italic\">Example: © 2026 BEST SHOP. All rights reserved.</p></div><div class=\"sm:col-span-6 border-t border-gray-200 pt-6 mt-6\"><div class=\"flex items-center justify-between mb-4\"><div><h4 class=\"text-sm font-medium text-gray-900\">Bundle Options</h4><p class=\"text-xs text-gray-500\">Configure global discounts for purchasing multiple quantities at once.</p></div><button type=\"submit\" name=\"add_bundle\" value=\"true\" class=\"text-xs bg-green-50 text-green-700 px-3 py-1.5 rounded-md border border-green-200 hover:bg-green-100 font-medium\">+ Add Bundle</button></div><input type=\"hidden\" name=\"bundles_count\" value=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var13 string
-		templ_7745c5c3_Var13, templ_7745c5c3_Err = templ.ResolveAttributeValue(cfg.Footer.Copyright)
+		templ_7745c5c3_Var13, templ_7745c5c3_Err = templ.ResolveAttributeValue(strconv.Itoa(len(cfg.Site.Bundles)))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 143, Col: 98}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 146, Col: 89}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var13)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 22, "\" class=\"block w-full border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500 sm:text-sm\"></div><p class=\"mt-2 text-xs text-gray-500 italic\">Example: © 2026 BEST SHOP. All rights reserved.</p></div><div class=\"sm:col-span-6 border-t border-gray-200 pt-6 mt-6\"><div class=\"flex items-center justify-between mb-4\"><div><h4 class=\"text-sm font-medium text-gray-900\">Bundle Options</h4><p class=\"text-xs text-gray-500\">Configure global discounts for purchasing multiple quantities at once.</p></div><button type=\"submit\" name=\"add_bundle\" value=\"true\" class=\"text-xs bg-green-50 text-green-700 px-3 py-1.5 rounded-md border border-green-200 hover:bg-green-100 font-medium\">+ Add Bundle</button></div><input type=\"hidden\" name=\"bundles_count\" value=\"")
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		var templ_7745c5c3_Var14 string
-		templ_7745c5c3_Var14, templ_7745c5c3_Err = templ.ResolveAttributeValue(strconv.Itoa(len(cfg.Site.Bundles)))
-		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 157, Col: 89}
-		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var14)
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 23, "\"><div class=\"grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 22, "\"><div class=\"grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		for j, bundle := range cfg.Site.Bundles {
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 24, "<div class=\"border rounded-md p-4 bg-gray-50 relative group\"><button type=\"submit\" name=\"")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 23, "<div class=\"border rounded-md p-4 bg-gray-50 relative group\"><button type=\"submit\" name=\"")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			var templ_7745c5c3_Var14 string
+			templ_7745c5c3_Var14, templ_7745c5c3_Err = templ.ResolveAttributeValue(fmt.Sprintf("bundle_%d_delete", j))
+			if templ_7745c5c3_Err != nil {
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 151, Col: 48}
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var14)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 24, "\" value=\"on\" class=\"absolute top-2 right-2 text-gray-400 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer\"><svg class=\"h-4 w-4\" fill=\"none\" viewBox=\"0 0 24 24\" stroke=\"currentColor\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M6 18L18 6M6 6l12 12\"></path></svg></button><div class=\"space-y-3\"><div><label class=\"block text-xs font-medium text-gray-500\">Quantity Required</label> <input type=\"number\" name=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var15 string
-			templ_7745c5c3_Var15, templ_7745c5c3_Err = templ.ResolveAttributeValue(fmt.Sprintf("bundle_%d_delete", j))
+			templ_7745c5c3_Var15, templ_7745c5c3_Err = templ.ResolveAttributeValue(fmt.Sprintf("bundle_%d_quantity", j))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 162, Col: 48}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 159, Col: 73}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var15)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 25, "\" value=\"on\" class=\"absolute top-2 right-2 text-gray-400 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer\"><svg class=\"h-4 w-4\" fill=\"none\" viewBox=\"0 0 24 24\" stroke=\"currentColor\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M6 18L18 6M6 6l12 12\"></path></svg></button><div class=\"space-y-3\"><div><label class=\"block text-xs font-medium text-gray-500\">Quantity Required</label> <input type=\"number\" name=\"")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 25, "\" value=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var16 string
-			templ_7745c5c3_Var16, templ_7745c5c3_Err = templ.ResolveAttributeValue(fmt.Sprintf("bundle_%d_quantity", j))
+			templ_7745c5c3_Var16, templ_7745c5c3_Err = templ.ResolveAttributeValue(strconv.Itoa(bundle.Quantity))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 170, Col: 73}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 159, Col: 113}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var16)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 26, "\" value=\"")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 26, "\" min=\"2\" class=\"mt-1 block w-full border-gray-300 rounded-md shadow-sm text-sm\"></div><div><label class=\"block text-xs font-medium text-gray-500\">Discount Percentage (%)</label> <input type=\"number\" name=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var17 string
-			templ_7745c5c3_Var17, templ_7745c5c3_Err = templ.ResolveAttributeValue(strconv.Itoa(bundle.Quantity))
+			templ_7745c5c3_Var17, templ_7745c5c3_Err = templ.ResolveAttributeValue(fmt.Sprintf("bundle_%d_discount", j))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 170, Col: 113}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 163, Col: 73}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var17)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 27, "\" min=\"2\" class=\"mt-1 block w-full border-gray-300 rounded-md shadow-sm text-sm\"></div><div><label class=\"block text-xs font-medium text-gray-500\">Discount Percentage (%)</label> <input type=\"number\" name=\"")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 27, "\" value=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var18 string
-			templ_7745c5c3_Var18, templ_7745c5c3_Err = templ.ResolveAttributeValue(fmt.Sprintf("bundle_%d_discount", j))
+			templ_7745c5c3_Var18, templ_7745c5c3_Err = templ.ResolveAttributeValue(strconv.Itoa(bundle.DiscountPercentage))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 174, Col: 73}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 163, Col: 123}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var18)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 28, "\" value=\"")
-			if templ_7745c5c3_Err != nil {
-				return templ_7745c5c3_Err
-			}
-			var templ_7745c5c3_Var19 string
-			templ_7745c5c3_Var19, templ_7745c5c3_Err = templ.ResolveAttributeValue(strconv.Itoa(bundle.DiscountPercentage))
-			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 174, Col: 123}
-			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var19)
-			if templ_7745c5c3_Err != nil {
-				return templ_7745c5c3_Err
-			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 29, "\" min=\"1\" max=\"100\" class=\"mt-1 block w-full border-gray-300 rounded-md shadow-sm text-sm\"></div></div></div>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 28, "\" min=\"1\" max=\"100\" class=\"mt-1 block w-full border-gray-300 rounded-md shadow-sm text-sm\"></div></div></div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 30, "</div></div></div></div>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 29, "</div></div></div></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -408,58 +395,58 @@ func paymentSettingsForm(cfg *config.Config) templ.Component {
 			}()
 		}
 		ctx = templ.InitializeContext(ctx)
-		templ_7745c5c3_Var20 := templ.GetChildren(ctx)
-		if templ_7745c5c3_Var20 == nil {
-			templ_7745c5c3_Var20 = templ.NopComponent
+		templ_7745c5c3_Var19 := templ.GetChildren(ctx)
+		if templ_7745c5c3_Var19 == nil {
+			templ_7745c5c3_Var19 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 31, "<div class=\"p-6 bg-white rounded-lg shadow space-y-8\"><div><h3 class=\"text-lg font-medium leading-6 text-gray-900\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 30, "<div class=\"p-6 bg-white rounded-lg shadow space-y-8\"><div><h3 class=\"text-lg font-medium leading-6 text-gray-900\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		var templ_7745c5c3_Var21 string
-		templ_7745c5c3_Var21, templ_7745c5c3_Err = templ.JoinStringErrs(services.GetI18n().T(ctx, "payment_settings"))
+		var templ_7745c5c3_Var20 string
+		templ_7745c5c3_Var20, templ_7745c5c3_Err = templ.JoinStringErrs(services.GetI18n().T(ctx, "payment_settings"))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 188, Col: 106}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 177, Col: 106}
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var21))
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var20))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 32, "</h3><p class=\"mt-1 text-sm text-gray-500\">Enable or disable payment methods for your customers.</p></div><div class=\"space-y-6\"><div class=\"flex items-start\"><div class=\"flex items-center h-5\"><input id=\"enable_cod\" name=\"enable_cod\" type=\"checkbox\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 31, "</h3><p class=\"mt-1 text-sm text-gray-500\">Enable or disable payment methods for your customers.</p></div><div class=\"space-y-6\"><div class=\"flex items-start\"><div class=\"flex items-center h-5\"><input id=\"enable_cod\" name=\"enable_cod\" type=\"checkbox\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		if cfg.Payment.EnableCOD {
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 33, " checked")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 32, " checked")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 34, " class=\"focus:ring-green-500 h-4 w-4 text-green-600 border-gray-300 rounded\"></div><div class=\"ml-3 text-sm\"><label for=\"enable_cod\" class=\"font-medium text-gray-700\">Cash on Delivery (Paiement à la livraison)</label><p class=\"text-gray-500\">Recommended as the primary method for the Tunisian market.</p></div></div><div class=\"pt-6 border-t border-gray-200\"><div class=\"flex items-start mb-4\"><div class=\"flex items-center h-5\"><input id=\"enable_flouci\" name=\"enable_flouci\" type=\"checkbox\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 33, " class=\"focus:ring-green-500 h-4 w-4 text-green-600 border-gray-300 rounded\"></div><div class=\"ml-3 text-sm\"><label for=\"enable_cod\" class=\"font-medium text-gray-700\">Cash on Delivery (Paiement à la livraison)</label><p class=\"text-gray-500\">Recommended as the primary method for the Tunisian market.</p></div></div><div class=\"pt-6 border-t border-gray-200\"><div class=\"flex items-start mb-4\"><div class=\"flex items-center h-5\"><input id=\"enable_flouci\" name=\"enable_flouci\" type=\"checkbox\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		if cfg.Payment.EnableFlouci {
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 35, " checked")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 34, " checked")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 36, " class=\"focus:ring-green-500 h-4 w-4 text-green-600 border-gray-300 rounded\"></div><div class=\"ml-3 text-sm\"><label for=\"enable_flouci\" class=\"font-medium text-gray-700\">Enable Flouci Payments</label><p class=\"text-gray-500\">Accept online payments via Flouci wallet.</p></div></div><div class=\"grid grid-cols-1 gap-y-4 sm:grid-cols-2 sm:gap-x-4\" x-show=\"document.getElementById('enable_flouci').checked\"><div class=\"sm:col-span-1\"><label class=\"block text-sm font-medium text-gray-700\">Flouci App Token</label> <input type=\"text\" name=\"flouci_app_token\" value=\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 35, " class=\"focus:ring-green-500 h-4 w-4 text-green-600 border-gray-300 rounded\"></div><div class=\"ml-3 text-sm\"><label for=\"enable_flouci\" class=\"font-medium text-gray-700\">Enable Flouci Payments</label><p class=\"text-gray-500\">Accept online payments via Flouci wallet.</p></div></div><div class=\"grid grid-cols-1 gap-y-4 sm:grid-cols-2 sm:gap-x-4\" x-show=\"document.getElementById('enable_flouci').checked\"><div class=\"sm:col-span-1\"><label class=\"block text-sm font-medium text-gray-700\">Flouci App Token</label> <input type=\"text\" name=\"flouci_app_token\" value=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		var templ_7745c5c3_Var22 string
-		templ_7745c5c3_Var22, templ_7745c5c3_Err = templ.ResolveAttributeValue(cfg.Payment.FlouciAppToken)
+		var templ_7745c5c3_Var21 string
+		templ_7745c5c3_Var21, templ_7745c5c3_Err = templ.ResolveAttributeValue(cfg.Payment.FlouciAppToken)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 217, Col: 83}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 206, Col: 83}
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var22)
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var21)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 37, "\" class=\"mt-1 block w-full border-gray-300 rounded-md shadow-sm sm:text-sm\"></div></div></div></div></div>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 36, "\" class=\"mt-1 block w-full border-gray-300 rounded-md shadow-sm sm:text-sm\"></div></div></div></div></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -483,100 +470,100 @@ func socialLinksSettingsForm(cfg *config.Config) templ.Component {
 			}()
 		}
 		ctx = templ.InitializeContext(ctx)
-		templ_7745c5c3_Var23 := templ.GetChildren(ctx)
-		if templ_7745c5c3_Var23 == nil {
-			templ_7745c5c3_Var23 = templ.NopComponent
+		templ_7745c5c3_Var22 := templ.GetChildren(ctx)
+		if templ_7745c5c3_Var22 == nil {
+			templ_7745c5c3_Var22 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 38, "<div class=\"p-6 bg-white rounded-lg shadow space-y-8\"><div><h3 class=\"text-lg font-medium leading-6 text-gray-900\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 37, "<div class=\"p-6 bg-white rounded-lg shadow space-y-8\"><div><h3 class=\"text-lg font-medium leading-6 text-gray-900\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		var templ_7745c5c3_Var24 string
-		templ_7745c5c3_Var24, templ_7745c5c3_Err = templ.JoinStringErrs(services.GetI18n().T(ctx, "social_links"))
+		var templ_7745c5c3_Var23 string
+		templ_7745c5c3_Var23, templ_7745c5c3_Err = templ.JoinStringErrs(services.GetI18n().T(ctx, "social_links"))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 228, Col: 102}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 217, Col: 102}
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var24))
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var23))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 39, "</h3><p class=\"mt-1 text-sm text-gray-500\">Update the URLs for your social media profiles displayed in the footer.</p></div><div class=\"grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 38, "</h3><p class=\"mt-1 text-sm text-gray-500\">Update the URLs for your social media profiles displayed in the footer.</p></div><div class=\"grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		for _, social := range cfg.Footer.SocialLinks {
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 40, "<div class=\"sm:col-span-4\"><label for=\"")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 39, "<div class=\"sm:col-span-4\"><label for=\"")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			var templ_7745c5c3_Var24 string
+			templ_7745c5c3_Var24, templ_7745c5c3_Err = templ.ResolveAttributeValue("social_" + strings.ToLower(social.Platform) + "_url")
+			if templ_7745c5c3_Err != nil {
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 224, Col: 71}
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var24)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 40, "\" class=\"block text-sm font-medium text-gray-700 capitalize\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var25 string
-			templ_7745c5c3_Var25, templ_7745c5c3_Err = templ.ResolveAttributeValue("social_" + strings.ToLower(social.Platform) + "_url")
+			templ_7745c5c3_Var25, templ_7745c5c3_Err = templ.JoinStringErrs(social.Platform)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 235, Col: 71}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 225, Col: 23}
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var25)
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var25))
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 41, "\" class=\"block text-sm font-medium text-gray-700 capitalize\">")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 41, " URL</label><div class=\"mt-1 flex rounded-md shadow-sm\"><span class=\"inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-300 bg-gray-50 text-gray-500 sm:text-sm\"><svg class=\"h-4 w-4\" fill=\"currentColor\" viewBox=\"0 0 20 20\"><path d=\"M11 3a1 1 0 10-2 0v1a1 1 0 102 0V3zM15.657 5.757a1 1 0 00-1.414-1.414l-.707.707a1 1 0 001.414 1.414l.707-.707zM18 10a1 1 0 01-1 1h-1a1 1 0 110-2h1a1 1 0 011 1zM5.05 6.464A1 1 0 106.464 5.05l-.707-.707a1 1 0 00-1.414 1.414l.707.707zM5 10a1 1 0 01-1 1H3a1 1 0 110-2h1a1 1 0 011 1zM8 16v-1a1 1 0 112 0v1a1 1 0 11-2 0zM13.536 14.95a1 1 0 010-1.414l.707-.707a1 1 0 111.414 1.414l-.707.707a1 1 0 01-1.414 0zM6.464 14.95a1 1 0 01-1.414 0l-.707-.707a1 1 0 011.414-1.414l.707.707a1 1 0 010 1.414z\"></path></svg></span> <input type=\"url\" name=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var26 string
-			templ_7745c5c3_Var26, templ_7745c5c3_Err = templ.JoinStringErrs(social.Platform)
+			templ_7745c5c3_Var26, templ_7745c5c3_Err = templ.ResolveAttributeValue("social_" + strings.ToLower(social.Platform) + "_url")
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 236, Col: 23}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 233, Col: 84}
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var26))
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var26)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 42, " URL</label><div class=\"mt-1 flex rounded-md shadow-sm\"><span class=\"inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-300 bg-gray-50 text-gray-500 sm:text-sm\"><svg class=\"h-4 w-4\" fill=\"currentColor\" viewBox=\"0 0 20 20\"><path d=\"M11 3a1 1 0 10-2 0v1a1 1 0 102 0V3zM15.657 5.757a1 1 0 00-1.414-1.414l-.707.707a1 1 0 001.414 1.414l.707-.707zM18 10a1 1 0 01-1 1h-1a1 1 0 110-2h1a1 1 0 011 1zM5.05 6.464A1 1 0 106.464 5.05l-.707-.707a1 1 0 00-1.414 1.414l.707.707zM5 10a1 1 0 01-1 1H3a1 1 0 110-2h1a1 1 0 011 1zM8 16v-1a1 1 0 112 0v1a1 1 0 11-2 0zM13.536 14.95a1 1 0 010-1.414l.707-.707a1 1 0 111.414 1.414l-.707.707a1 1 0 01-1.414 0zM6.464 14.95a1 1 0 01-1.414 0l-.707-.707a1 1 0 011.414-1.414l.707.707a1 1 0 010 1.414z\"></path></svg></span> <input type=\"url\" name=\"")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 42, "\" id=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var27 string
 			templ_7745c5c3_Var27, templ_7745c5c3_Err = templ.ResolveAttributeValue("social_" + strings.ToLower(social.Platform) + "_url")
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 244, Col: 84}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 233, Col: 145}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var27)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 43, "\" id=\"")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 43, "\" value=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var28 string
-			templ_7745c5c3_Var28, templ_7745c5c3_Err = templ.ResolveAttributeValue("social_" + strings.ToLower(social.Platform) + "_url")
+			templ_7745c5c3_Var28, templ_7745c5c3_Err = templ.ResolveAttributeValue(social.URL)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 244, Col: 145}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 233, Col: 166}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var28)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 44, "\" value=\"")
-			if templ_7745c5c3_Err != nil {
-				return templ_7745c5c3_Err
-			}
-			var templ_7745c5c3_Var29 string
-			templ_7745c5c3_Var29, templ_7745c5c3_Err = templ.ResolveAttributeValue(social.URL)
-			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 244, Col: 166}
-			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var29)
-			if templ_7745c5c3_Err != nil {
-				return templ_7745c5c3_Err
-			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 45, "\" class=\"flex-1 block w-full border-gray-300 rounded-none rounded-r-md focus:ring-green-500 focus:border-green-500 sm:text-sm\" placeholder=\"https://...\"></div></div>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 44, "\" class=\"flex-1 block w-full border-gray-300 rounded-none rounded-r-md focus:ring-green-500 focus:border-green-500 sm:text-sm\" placeholder=\"https://...\"></div></div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 46, "</div></div>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 45, "</div></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -600,152 +587,152 @@ func chatSettingsForm(cfg *config.Config) templ.Component {
 			}()
 		}
 		ctx = templ.InitializeContext(ctx)
-		templ_7745c5c3_Var30 := templ.GetChildren(ctx)
-		if templ_7745c5c3_Var30 == nil {
-			templ_7745c5c3_Var30 = templ.NopComponent
+		templ_7745c5c3_Var29 := templ.GetChildren(ctx)
+		if templ_7745c5c3_Var29 == nil {
+			templ_7745c5c3_Var29 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 47, "<div class=\"p-6 bg-white rounded-lg shadow space-y-8\"><div><h3 class=\"text-lg font-medium leading-6 text-gray-900\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 46, "<div class=\"p-6 bg-white rounded-lg shadow space-y-8\"><div><h3 class=\"text-lg font-medium leading-6 text-gray-900\">")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		var templ_7745c5c3_Var30 string
+		templ_7745c5c3_Var30, templ_7745c5c3_Err = templ.JoinStringErrs(services.GetI18n().T(ctx, "chat_config"))
+		if templ_7745c5c3_Err != nil {
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 244, Col: 101}
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var30))
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 47, "</h3><p class=\"mt-1 text-sm text-gray-500\">Customize the appearance and behavior of the customer live chat.</p></div><div class=\"grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6\"><div class=\"sm:col-span-3\"><label for=\"chat_primary_color\" class=\"block text-sm font-medium text-gray-700\">Chat Primary Color (Toggle & Header)</label><div class=\"mt-1 flex items-center\"><input type=\"color\" name=\"chat_primary_color\" id=\"chat_primary_color\" value=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var31 string
-		templ_7745c5c3_Var31, templ_7745c5c3_Err = templ.JoinStringErrs(services.GetI18n().T(ctx, "chat_config"))
+		templ_7745c5c3_Var31, templ_7745c5c3_Err = templ.ResolveAttributeValue(cfg.Chat.PrimaryColor)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 255, Col: 101}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 252, Col: 104}
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var31))
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var31)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 48, "</h3><p class=\"mt-1 text-sm text-gray-500\">Customize the appearance and behavior of the customer live chat.</p></div><div class=\"grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6\"><div class=\"sm:col-span-3\"><label for=\"chat_primary_color\" class=\"block text-sm font-medium text-gray-700\">Chat Primary Color (Toggle & Header)</label><div class=\"mt-1 flex items-center\"><input type=\"color\" name=\"chat_primary_color\" id=\"chat_primary_color\" value=\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 48, "\" class=\"h-10 w-10 p-1 border-gray-300 rounded-md\"> <input type=\"text\" value=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var32 string
 		templ_7745c5c3_Var32, templ_7745c5c3_Err = templ.ResolveAttributeValue(cfg.Chat.PrimaryColor)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 263, Col: 104}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 253, Col: 53}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var32)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 49, "\" class=\"h-10 w-10 p-1 border-gray-300 rounded-md\"> <input type=\"text\" value=\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 49, "\" class=\"ml-2 block w-full border-gray-300 rounded-md shadow-sm sm:text-sm\" onchange=\"document.getElementById('chat_primary_color').value = this.value\"></div></div><div class=\"sm:col-span-3\"><label for=\"chat_header_text_color\" class=\"block text-sm font-medium text-gray-700\">Header Text Color</label><div class=\"mt-1 flex items-center\"><input type=\"color\" name=\"chat_header_text_color\" id=\"chat_header_text_color\" value=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var33 string
-		templ_7745c5c3_Var33, templ_7745c5c3_Err = templ.ResolveAttributeValue(cfg.Chat.PrimaryColor)
+		templ_7745c5c3_Var33, templ_7745c5c3_Err = templ.ResolveAttributeValue(cfg.Chat.HeaderTextColor)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 264, Col: 53}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 259, Col: 115}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var33)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 50, "\" class=\"ml-2 block w-full border-gray-300 rounded-md shadow-sm sm:text-sm\" onchange=\"document.getElementById('chat_primary_color').value = this.value\"></div></div><div class=\"sm:col-span-3\"><label for=\"chat_header_text_color\" class=\"block text-sm font-medium text-gray-700\">Header Text Color</label><div class=\"mt-1 flex items-center\"><input type=\"color\" name=\"chat_header_text_color\" id=\"chat_header_text_color\" value=\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 50, "\" class=\"h-10 w-10 p-1 border-gray-300 rounded-md\"> <input type=\"text\" value=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var34 string
 		templ_7745c5c3_Var34, templ_7745c5c3_Err = templ.ResolveAttributeValue(cfg.Chat.HeaderTextColor)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 270, Col: 115}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 260, Col: 56}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var34)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 51, "\" class=\"h-10 w-10 p-1 border-gray-300 rounded-md\"> <input type=\"text\" value=\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 51, "\" class=\"ml-2 block w-full border-gray-300 rounded-md shadow-sm sm:text-sm\" onchange=\"document.getElementById('chat_header_text_color').value = this.value\"></div></div><div class=\"sm:col-span-6 border-t border-gray-100 pt-6\"><h4 class=\"text-sm font-medium text-gray-900 mb-4\">Message Bubble Colors</h4><div class=\"grid grid-cols-1 gap-6 sm:grid-cols-2\"><div class=\"space-y-4\"><p class=\"text-xs font-bold text-gray-500 uppercase\">Client Messages</p><div class=\"flex gap-4\"><div class=\"flex-1\"><label class=\"block text-xs text-gray-500\">Bubble</label> <input type=\"color\" name=\"chat_client_bubble_color\" value=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var35 string
-		templ_7745c5c3_Var35, templ_7745c5c3_Err = templ.ResolveAttributeValue(cfg.Chat.HeaderTextColor)
+		templ_7745c5c3_Var35, templ_7745c5c3_Err = templ.ResolveAttributeValue(cfg.Chat.ClientBubbleColor)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 271, Col: 56}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 272, Col: 94}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var35)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 52, "\" class=\"ml-2 block w-full border-gray-300 rounded-md shadow-sm sm:text-sm\" onchange=\"document.getElementById('chat_header_text_color').value = this.value\"></div></div><div class=\"sm:col-span-6 border-t border-gray-100 pt-6\"><h4 class=\"text-sm font-medium text-gray-900 mb-4\">Message Bubble Colors</h4><div class=\"grid grid-cols-1 gap-6 sm:grid-cols-2\"><div class=\"space-y-4\"><p class=\"text-xs font-bold text-gray-500 uppercase\">Client Messages</p><div class=\"flex gap-4\"><div class=\"flex-1\"><label class=\"block text-xs text-gray-500\">Bubble</label> <input type=\"color\" name=\"chat_client_bubble_color\" value=\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 52, "\" class=\"mt-1 block w-full h-10 p-1 border-gray-300 rounded-md\"></div><div class=\"flex-1\"><label class=\"block text-xs text-gray-500\">Text</label> <input type=\"color\" name=\"chat_client_text_color\" value=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var36 string
-		templ_7745c5c3_Var36, templ_7745c5c3_Err = templ.ResolveAttributeValue(cfg.Chat.ClientBubbleColor)
+		templ_7745c5c3_Var36, templ_7745c5c3_Err = templ.ResolveAttributeValue(cfg.Chat.ClientTextColor)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 283, Col: 94}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 276, Col: 90}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var36)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 53, "\" class=\"mt-1 block w-full h-10 p-1 border-gray-300 rounded-md\"></div><div class=\"flex-1\"><label class=\"block text-xs text-gray-500\">Text</label> <input type=\"color\" name=\"chat_client_text_color\" value=\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 53, "\" class=\"mt-1 block w-full h-10 p-1 border-gray-300 rounded-md\"></div></div></div><div class=\"space-y-4\"><p class=\"text-xs font-bold text-gray-500 uppercase\">Admin Messages</p><div class=\"flex gap-4\"><div class=\"flex-1\"><label class=\"block text-xs text-gray-500\">Bubble</label> <input type=\"color\" name=\"chat_admin_bubble_color\" value=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var37 string
-		templ_7745c5c3_Var37, templ_7745c5c3_Err = templ.ResolveAttributeValue(cfg.Chat.ClientTextColor)
+		templ_7745c5c3_Var37, templ_7745c5c3_Err = templ.ResolveAttributeValue(cfg.Chat.AdminBubbleColor)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 287, Col: 90}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 285, Col: 92}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var37)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 54, "\" class=\"mt-1 block w-full h-10 p-1 border-gray-300 rounded-md\"></div></div></div><div class=\"space-y-4\"><p class=\"text-xs font-bold text-gray-500 uppercase\">Admin Messages</p><div class=\"flex gap-4\"><div class=\"flex-1\"><label class=\"block text-xs text-gray-500\">Bubble</label> <input type=\"color\" name=\"chat_admin_bubble_color\" value=\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 54, "\" class=\"mt-1 block w-full h-10 p-1 border-gray-300 rounded-md\"></div><div class=\"flex-1\"><label class=\"block text-xs text-gray-500\">Text</label> <input type=\"color\" name=\"chat_admin_text_color\" value=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var38 string
-		templ_7745c5c3_Var38, templ_7745c5c3_Err = templ.ResolveAttributeValue(cfg.Chat.AdminBubbleColor)
+		templ_7745c5c3_Var38, templ_7745c5c3_Err = templ.ResolveAttributeValue(cfg.Chat.AdminTextColor)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 296, Col: 92}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 289, Col: 88}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var38)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 55, "\" class=\"mt-1 block w-full h-10 p-1 border-gray-300 rounded-md\"></div><div class=\"flex-1\"><label class=\"block text-xs text-gray-500\">Text</label> <input type=\"color\" name=\"chat_admin_text_color\" value=\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 55, "\" class=\"mt-1 block w-full h-10 p-1 border-gray-300 rounded-md\"></div></div></div></div></div><div class=\"sm:col-span-6 border-t border-gray-100 pt-6\"><div class=\"flex items-start\"><div class=\"flex items-center h-5\"><input id=\"chat_enable_popup\" name=\"chat_enable_popup\" type=\"checkbox\"")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		if cfg.Chat.EnablePopup {
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 56, " checked")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+		}
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 57, " class=\"focus:ring-green-500 h-4 w-4 text-green-600 border-gray-300 rounded\"></div><div class=\"ml-3 text-sm\"><label for=\"chat_enable_popup\" class=\"font-medium text-gray-700\">Enable Popup Notifications</label><p class=\"text-gray-500\">Show a visual popup to administrators when a new client message arrives.</p></div></div></div><div class=\"sm:col-span-3\"><label for=\"chat_popup_timeout\" class=\"block text-sm font-medium text-gray-700\">Popup Timeout (seconds)</label><div class=\"mt-1\"><input type=\"number\" name=\"chat_popup_timeout\" id=\"chat_popup_timeout\" value=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var39 string
-		templ_7745c5c3_Var39, templ_7745c5c3_Err = templ.ResolveAttributeValue(cfg.Chat.AdminTextColor)
+		templ_7745c5c3_Var39, templ_7745c5c3_Err = templ.ResolveAttributeValue(fmt.Sprint(cfg.Chat.PopupTimeout))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 300, Col: 88}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 311, Col: 117}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var39)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 56, "\" class=\"mt-1 block w-full h-10 p-1 border-gray-300 rounded-md\"></div></div></div></div></div><div class=\"sm:col-span-6 border-t border-gray-100 pt-6\"><div class=\"flex items-start\"><div class=\"flex items-center h-5\"><input id=\"chat_enable_popup\" name=\"chat_enable_popup\" type=\"checkbox\"")
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		if cfg.Chat.EnablePopup {
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 57, " checked")
-			if templ_7745c5c3_Err != nil {
-				return templ_7745c5c3_Err
-			}
-		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 58, " class=\"focus:ring-green-500 h-4 w-4 text-green-600 border-gray-300 rounded\"></div><div class=\"ml-3 text-sm\"><label for=\"chat_enable_popup\" class=\"font-medium text-gray-700\">Enable Popup Notifications</label><p class=\"text-gray-500\">Show a visual popup to administrators when a new client message arrives.</p></div></div></div><div class=\"sm:col-span-3\"><label for=\"chat_popup_timeout\" class=\"block text-sm font-medium text-gray-700\">Popup Timeout (seconds)</label><div class=\"mt-1\"><input type=\"number\" name=\"chat_popup_timeout\" id=\"chat_popup_timeout\" value=\"")
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		var templ_7745c5c3_Var40 string
-		templ_7745c5c3_Var40, templ_7745c5c3_Err = templ.ResolveAttributeValue(fmt.Sprint(cfg.Chat.PopupTimeout))
-		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 322, Col: 117}
-		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var40)
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 59, "\" min=\"1\" max=\"60\" class=\"block w-full border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500 sm:text-sm\"></div><p class=\"mt-2 text-xs text-gray-400 italic\">How long the notification stays visible on screen.</p></div></div></div>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 58, "\" min=\"1\" max=\"60\" class=\"block w-full border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500 sm:text-sm\"></div><p class=\"mt-2 text-xs text-gray-400 italic\">How long the notification stays visible on screen.</p></div></div></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -769,710 +756,710 @@ func sectionsSettingsForm(cfg *config.Config, products []models.Product, categor
 			}()
 		}
 		ctx = templ.InitializeContext(ctx)
-		templ_7745c5c3_Var41 := templ.GetChildren(ctx)
-		if templ_7745c5c3_Var41 == nil {
-			templ_7745c5c3_Var41 = templ.NopComponent
+		templ_7745c5c3_Var40 := templ.GetChildren(ctx)
+		if templ_7745c5c3_Var40 == nil {
+			templ_7745c5c3_Var40 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 60, "<div class=\"p-6 bg-white rounded-lg shadow mb-8\"><h3 class=\"text-lg font-medium leading-6 text-gray-900 mb-4\">Branding Rectangle (Navigation)</h3><div class=\"grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6\"><div class=\"sm:col-span-3\"><label for=\"site_name_bg_color\" class=\"block text-sm font-medium text-gray-700\">Logo Background Color</label><div class=\"mt-1 flex items-center\"><input type=\"color\" name=\"site_name_bg_color\" id=\"site_name_bg_color\" value=\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 59, "<div class=\"p-6 bg-white rounded-lg shadow mb-8\"><h3 class=\"text-lg font-medium leading-6 text-gray-900 mb-4\">Branding Rectangle (Navigation)</h3><div class=\"grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6\"><div class=\"sm:col-span-3\"><label for=\"site_name_bg_color\" class=\"block text-sm font-medium text-gray-700\">Logo Background Color</label><div class=\"mt-1 flex items-center\"><input type=\"color\" name=\"site_name_bg_color\" id=\"site_name_bg_color\" value=\"")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		var templ_7745c5c3_Var41 string
+		templ_7745c5c3_Var41, templ_7745c5c3_Err = templ.ResolveAttributeValue(cfg.Site.NameBgColor)
+		if templ_7745c5c3_Err != nil {
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 326, Col: 103}
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var41)
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 60, "\" class=\"h-10 w-10 p-1 border-gray-300 rounded-md\"></div></div><div class=\"sm:col-span-3\"><label for=\"site_name_text_color\" class=\"block text-sm font-medium text-gray-700\">Logo Text Color</label><div class=\"mt-1 flex items-center\"><input type=\"color\" name=\"site_name_text_color\" id=\"site_name_text_color\" value=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var42 string
-		templ_7745c5c3_Var42, templ_7745c5c3_Err = templ.ResolveAttributeValue(cfg.Site.NameBgColor)
+		templ_7745c5c3_Var42, templ_7745c5c3_Err = templ.ResolveAttributeValue(cfg.Site.NameTextColor)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 337, Col: 103}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 332, Col: 109}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var42)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 61, "\" class=\"h-10 w-10 p-1 border-gray-300 rounded-md\"></div></div><div class=\"sm:col-span-3\"><label for=\"site_name_text_color\" class=\"block text-sm font-medium text-gray-700\">Logo Text Color</label><div class=\"mt-1 flex items-center\"><input type=\"color\" name=\"site_name_text_color\" id=\"site_name_text_color\" value=\"")
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		var templ_7745c5c3_Var43 string
-		templ_7745c5c3_Var43, templ_7745c5c3_Err = templ.ResolveAttributeValue(cfg.Site.NameTextColor)
-		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 343, Col: 109}
-		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var43)
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 62, "\" class=\"h-10 w-10 p-1 border-gray-300 rounded-md\"></div></div></div></div><input type=\"hidden\" name=\"sections_order\" id=\"sections_order\" value=\"\"><div id=\"sections-list\" class=\"space-y-8\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 61, "\" class=\"h-10 w-10 p-1 border-gray-300 rounded-md\"></div></div></div></div><input type=\"hidden\" name=\"sections_order\" id=\"sections_order\" value=\"\"><div id=\"sections-list\" class=\"space-y-8\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		for i, section := range cfg.Sections {
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 63, "<div class=\"p-6 bg-white rounded-lg shadow section-item\" data-id=\"")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 62, "<div class=\"p-6 bg-white rounded-lg shadow section-item\" data-id=\"")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			var templ_7745c5c3_Var43 string
+			templ_7745c5c3_Var43, templ_7745c5c3_Err = templ.ResolveAttributeValue(strconv.Itoa(i))
+			if templ_7745c5c3_Err != nil {
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 341, Col: 84}
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var43)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 63, "\" x-data=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var44 string
-			templ_7745c5c3_Var44, templ_7745c5c3_Err = templ.ResolveAttributeValue(strconv.Itoa(i))
+			templ_7745c5c3_Var44, templ_7745c5c3_Err = templ.ResolveAttributeValue(fmt.Sprintf("{ sectionType: '%s' }", section.Type))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 352, Col: 84}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 341, Col: 146}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var44)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 64, "\" x-data=\"")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 64, "\"><div class=\"flex items-center justify-between border-b border-gray-100 pb-4 mb-6\"><div class=\"flex items-center\"><div class=\"drag-handle cursor-move mr-3 text-gray-400 hover:text-gray-600\"><svg class=\"h-6 w-6\" fill=\"none\" viewBox=\"0 0 24 24\" stroke=\"currentColor\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M4 8h16M4 16h16\"></path></svg></div><h3 class=\"text-lg font-medium leading-6 text-gray-900\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var45 string
-			templ_7745c5c3_Var45, templ_7745c5c3_Err = templ.ResolveAttributeValue(fmt.Sprintf("{ sectionType: '%s' }", section.Type))
+			templ_7745c5c3_Var45, templ_7745c5c3_Err = templ.JoinStringErrs(section.Title)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 352, Col: 146}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 349, Col: 76}
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var45)
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var45))
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 65, "\"><div class=\"flex items-center justify-between border-b border-gray-100 pb-4 mb-6\"><div class=\"flex items-center\"><div class=\"drag-handle cursor-move mr-3 text-gray-400 hover:text-gray-600\"><svg class=\"h-6 w-6\" fill=\"none\" viewBox=\"0 0 24 24\" stroke=\"currentColor\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M4 8h16M4 16h16\"></path></svg></div><h3 class=\"text-lg font-medium leading-6 text-gray-900\">")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 65, "</h3></div><div class=\"flex items-center\"><input id=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var46 string
-			templ_7745c5c3_Var46, templ_7745c5c3_Err = templ.JoinStringErrs(section.Title)
+			templ_7745c5c3_Var46, templ_7745c5c3_Err = templ.ResolveAttributeValue(fmt.Sprintf("section_%d_enabled", i))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 360, Col: 76}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 352, Col: 53}
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var46))
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var46)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 66, "</h3></div><div class=\"flex items-center\"><input id=\"")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 66, "\" name=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var47 string
 			templ_7745c5c3_Var47, templ_7745c5c3_Err = templ.ResolveAttributeValue(fmt.Sprintf("section_%d_enabled", i))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 363, Col: 53}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 352, Col: 99}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var47)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 67, "\" name=\"")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 67, "\" type=\"checkbox\"")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			if section.Enabled {
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 68, " checked")
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+			}
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 69, " class=\"w-4 h-4 text-green-600 border-gray-300 rounded focus:ring-green-500\"> <label for=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var48 string
 			templ_7745c5c3_Var48, templ_7745c5c3_Err = templ.ResolveAttributeValue(fmt.Sprintf("section_%d_enabled", i))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 363, Col: 99}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 353, Col: 54}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var48)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 68, "\" type=\"checkbox\"")
-			if templ_7745c5c3_Err != nil {
-				return templ_7745c5c3_Err
-			}
-			if section.Enabled {
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 69, " checked")
-				if templ_7745c5c3_Err != nil {
-					return templ_7745c5c3_Err
-				}
-			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 70, " class=\"w-4 h-4 text-green-600 border-gray-300 rounded focus:ring-green-500\"> <label for=\"")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 70, "\" class=\"ml-2 block text-sm text-gray-900\">Enabled</label> <button type=\"submit\" class=\"ml-4 text-xs font-semibold text-green-700 bg-green-50 hover:bg-green-100 px-3 py-1.5 rounded-md border border-green-200 transition-colors\">Quick Save</button> <button type=\"button\" hx-post=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var49 string
-			templ_7745c5c3_Var49, templ_7745c5c3_Err = templ.ResolveAttributeValue(fmt.Sprintf("section_%d_enabled", i))
+			templ_7745c5c3_Var49, templ_7745c5c3_Err = templ.ResolveAttributeValue(fmt.Sprintf("/admin/sections/%d/duplicate", i))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 364, Col: 54}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 357, Col: 62}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var49)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 71, "\" class=\"ml-2 block text-sm text-gray-900\">Enabled</label> <button type=\"submit\" class=\"ml-4 text-xs font-semibold text-green-700 bg-green-50 hover:bg-green-100 px-3 py-1.5 rounded-md border border-green-200 transition-colors\">Quick Save</button> <button type=\"button\" hx-post=\"")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 71, "\" hx-target=\"#config-form\" hx-swap=\"outerHTML\" class=\"ml-4 text-sm text-indigo-600 hover:text-indigo-800 cursor-pointer\">Duplicate</button> <button type=\"button\" hx-post=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var50 string
-			templ_7745c5c3_Var50, templ_7745c5c3_Err = templ.ResolveAttributeValue(fmt.Sprintf("/admin/sections/%d/duplicate", i))
+			templ_7745c5c3_Var50, templ_7745c5c3_Err = templ.ResolveAttributeValue(fmt.Sprintf("/admin/sections/%d/delete", i))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 368, Col: 62}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 364, Col: 59}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var50)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 72, "\" hx-target=\"#config-form\" hx-swap=\"outerHTML\" class=\"ml-4 text-sm text-indigo-600 hover:text-indigo-800 cursor-pointer\">Duplicate</button> <button type=\"button\" hx-post=\"")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 72, "\" hx-confirm=\"Are you sure you want to delete this section?\" hx-target=\"#config-form\" hx-swap=\"outerHTML\" class=\"ml-4 p-1 text-red-600 hover:text-red-800 hover:bg-red-50 rounded cursor-pointer transition-colors\" title=\"Delete Section\"><svg class=\"w-5 h-5\" fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16\"></path></svg></button></div></div><div class=\"mt-6 grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6\"><div class=\"sm:col-span-2\"><label for=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var51 string
-			templ_7745c5c3_Var51, templ_7745c5c3_Err = templ.ResolveAttributeValue(fmt.Sprintf("/admin/sections/%d/delete", i))
+			templ_7745c5c3_Var51, templ_7745c5c3_Err = templ.ResolveAttributeValue(fmt.Sprintf("section_%d_type", i))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 375, Col: 59}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 377, Col: 51}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var51)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 73, "\" hx-confirm=\"Are you sure you want to delete this section?\" hx-target=\"#config-form\" hx-swap=\"outerHTML\" class=\"ml-4 p-1 text-red-600 hover:text-red-800 hover:bg-red-50 rounded cursor-pointer transition-colors\" title=\"Delete Section\"><svg class=\"w-5 h-5\" fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16\"></path></svg></button></div></div><div class=\"mt-6 grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6\"><div class=\"sm:col-span-2\"><label for=\"")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 73, "\" class=\"block text-sm font-medium text-gray-700\">Type</label> <select name=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var52 string
 			templ_7745c5c3_Var52, templ_7745c5c3_Err = templ.ResolveAttributeValue(fmt.Sprintf("section_%d_type", i))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 388, Col: 51}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 379, Col: 46}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var52)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 74, "\" class=\"block text-sm font-medium text-gray-700\">Type</label> <select name=\"")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 74, "\" id=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var53 string
 			templ_7745c5c3_Var53, templ_7745c5c3_Err = templ.ResolveAttributeValue(fmt.Sprintf("section_%d_type", i))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 390, Col: 46}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 380, Col: 44}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var53)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 75, "\" id=\"")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 75, "\" x-model=\"sectionType\" class=\"mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500 sm:text-sm\"><option value=\"featured_products\"")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			if section.Type != "category_banner" {
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 76, " selected")
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+			}
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 77, ">Products Section</option> <option value=\"category_banner\"")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			if section.Type == "category_banner" {
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 78, " selected")
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+			}
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 79, ">Category Section</option></select></div><div class=\"sm:col-span-4\"><label for=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var54 string
-			templ_7745c5c3_Var54, templ_7745c5c3_Err = templ.ResolveAttributeValue(fmt.Sprintf("section_%d_type", i))
+			templ_7745c5c3_Var54, templ_7745c5c3_Err = templ.ResolveAttributeValue(fmt.Sprintf("section_%d_title", i))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 391, Col: 44}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 389, Col: 52}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var54)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 76, "\" x-model=\"sectionType\" class=\"mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500 sm:text-sm\"><option value=\"featured_products\"")
-			if templ_7745c5c3_Err != nil {
-				return templ_7745c5c3_Err
-			}
-			if section.Type != "category_banner" {
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 77, " selected")
-				if templ_7745c5c3_Err != nil {
-					return templ_7745c5c3_Err
-				}
-			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 78, ">Products Section</option> <option value=\"category_banner\"")
-			if templ_7745c5c3_Err != nil {
-				return templ_7745c5c3_Err
-			}
-			if section.Type == "category_banner" {
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 79, " selected")
-				if templ_7745c5c3_Err != nil {
-					return templ_7745c5c3_Err
-				}
-			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 80, ">Category Section</option></select></div><div class=\"sm:col-span-4\"><label for=\"")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 80, "\" class=\"block text-sm font-medium text-gray-700\">Section Title</label> <input type=\"text\" name=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var55 string
 			templ_7745c5c3_Var55, templ_7745c5c3_Err = templ.ResolveAttributeValue(fmt.Sprintf("section_%d_title", i))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 400, Col: 52}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 390, Col: 65}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var55)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 81, "\" class=\"block text-sm font-medium text-gray-700\">Section Title</label> <input type=\"text\" name=\"")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 81, "\" id=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var56 string
 			templ_7745c5c3_Var56, templ_7745c5c3_Err = templ.ResolveAttributeValue(fmt.Sprintf("section_%d_title", i))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 401, Col: 65}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 390, Col: 107}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var56)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 82, "\" id=\"")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 82, "\" value=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var57 string
-			templ_7745c5c3_Var57, templ_7745c5c3_Err = templ.ResolveAttributeValue(fmt.Sprintf("section_%d_title", i))
+			templ_7745c5c3_Var57, templ_7745c5c3_Err = templ.ResolveAttributeValue(section.Title)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 401, Col: 107}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 390, Col: 131}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var57)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 83, "\" value=\"")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 83, "\" class=\"mt-1 block w-full border-gray-300 rounded-md shadow-sm\"></div><div class=\"sm:col-span-3\"><label class=\"block text-sm font-medium text-gray-700\">Title Background Color</label><div class=\"mt-1 flex items-center\"><input type=\"color\" name=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var58 string
-			templ_7745c5c3_Var58, templ_7745c5c3_Err = templ.ResolveAttributeValue(section.Title)
+			templ_7745c5c3_Var58, templ_7745c5c3_Err = templ.ResolveAttributeValue(fmt.Sprintf("section_%d_title_bg_color", i))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 401, Col: 131}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 395, Col: 76}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var58)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 84, "\" class=\"mt-1 block w-full border-gray-300 rounded-md shadow-sm\"></div><div class=\"sm:col-span-3\"><label class=\"block text-sm font-medium text-gray-700\">Title Background Color</label><div class=\"mt-1 flex items-center\"><input type=\"color\" name=\"")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 84, "\" value=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var59 string
-			templ_7745c5c3_Var59, templ_7745c5c3_Err = templ.ResolveAttributeValue(fmt.Sprintf("section_%d_title_bg_color", i))
+			templ_7745c5c3_Var59, templ_7745c5c3_Err = templ.ResolveAttributeValue(section.TitleBgColor)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 406, Col: 76}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 395, Col: 107}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var59)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 85, "\" value=\"")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 85, "\" class=\"h-10 w-10 p-1 border-gray-300 rounded-md\"></div></div><div class=\"sm:col-span-3\"><label class=\"block text-sm font-medium text-gray-700\">Title Text Color</label><div class=\"mt-1 flex items-center\"><input type=\"color\" name=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var60 string
-			templ_7745c5c3_Var60, templ_7745c5c3_Err = templ.ResolveAttributeValue(section.TitleBgColor)
+			templ_7745c5c3_Var60, templ_7745c5c3_Err = templ.ResolveAttributeValue(fmt.Sprintf("section_%d_title_text_color", i))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 406, Col: 107}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 401, Col: 78}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var60)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 86, "\" class=\"h-10 w-10 p-1 border-gray-300 rounded-md\"></div></div><div class=\"sm:col-span-3\"><label class=\"block text-sm font-medium text-gray-700\">Title Text Color</label><div class=\"mt-1 flex items-center\"><input type=\"color\" name=\"")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 86, "\" value=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var61 string
-			templ_7745c5c3_Var61, templ_7745c5c3_Err = templ.ResolveAttributeValue(fmt.Sprintf("section_%d_title_text_color", i))
+			templ_7745c5c3_Var61, templ_7745c5c3_Err = templ.ResolveAttributeValue(section.TitleTextColor)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 412, Col: 78}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 401, Col: 111}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var61)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 87, "\" value=\"")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 87, "\" class=\"h-10 w-10 p-1 border-gray-300 rounded-md\"></div></div><div class=\"sm:col-span-6\" x-show=\"sectionType === 'category_banner'\" x-cloak><div class=\"flex items-center justify-between mb-4\"><label class=\"block text-sm font-medium text-gray-700\">Category Groups</label> <button type=\"submit\" name=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var62 string
-			templ_7745c5c3_Var62, templ_7745c5c3_Err = templ.ResolveAttributeValue(section.TitleTextColor)
+			templ_7745c5c3_Var62, templ_7745c5c3_Err = templ.ResolveAttributeValue(fmt.Sprintf("section_%d_add_item", i))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 412, Col: 111}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 408, Col: 50}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var62)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 88, "\" class=\"h-10 w-10 p-1 border-gray-300 rounded-md\"></div></div><div class=\"sm:col-span-6\" x-show=\"sectionType === 'category_banner'\" x-cloak><div class=\"flex items-center justify-between mb-4\"><label class=\"block text-sm font-medium text-gray-700\">Category Groups</label> <button type=\"submit\" name=\"")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 88, "\" value=\"true\" hx-post=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var63 string
-			templ_7745c5c3_Var63, templ_7745c5c3_Err = templ.ResolveAttributeValue(fmt.Sprintf("section_%d_add_item", i))
+			templ_7745c5c3_Var63, templ_7745c5c3_Err = templ.ResolveAttributeValue(string(templ.URL("/admin/" + activeSection)))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 419, Col: 50}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 410, Col: 60}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var63)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 89, "\" value=\"true\" hx-post=\"")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 89, "\" hx-target=\"#config-form\" hx-swap=\"outerHTML\" class=\"text-xs bg-indigo-50 text-indigo-600 px-2 py-1 rounded border border-indigo-100 hover:bg-indigo-100\">+ Add Group</button></div><input type=\"hidden\" name=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var64 string
-			templ_7745c5c3_Var64, templ_7745c5c3_Err = templ.ResolveAttributeValue(string(templ.URL("/admin/" + activeSection)))
+			templ_7745c5c3_Var64, templ_7745c5c3_Err = templ.ResolveAttributeValue(fmt.Sprintf("section_%d_item_count", i))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 421, Col: 60}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 415, Col: 72}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var64)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 90, "\" hx-target=\"#config-form\" hx-swap=\"outerHTML\" class=\"text-xs bg-indigo-50 text-indigo-600 px-2 py-1 rounded border border-indigo-100 hover:bg-indigo-100\">+ Add Group</button></div><input type=\"hidden\" name=\"")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 90, "\" value=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var65 string
-			templ_7745c5c3_Var65, templ_7745c5c3_Err = templ.ResolveAttributeValue(fmt.Sprintf("section_%d_item_count", i))
+			templ_7745c5c3_Var65, templ_7745c5c3_Err = templ.ResolveAttributeValue(strconv.Itoa(len(section.CategoryItems)))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 426, Col: 72}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 415, Col: 123}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var65)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 91, "\" value=\"")
-			if templ_7745c5c3_Err != nil {
-				return templ_7745c5c3_Err
-			}
-			var templ_7745c5c3_Var66 string
-			templ_7745c5c3_Var66, templ_7745c5c3_Err = templ.ResolveAttributeValue(strconv.Itoa(len(section.CategoryItems)))
-			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 426, Col: 123}
-			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var66)
-			if templ_7745c5c3_Err != nil {
-				return templ_7745c5c3_Err
-			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 92, "\"><div class=\"grid grid-cols-1 sm:grid-cols-2 gap-4\">")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 91, "\"><div class=\"grid grid-cols-1 sm:grid-cols-2 gap-4\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			for j, item := range section.CategoryItems {
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 93, "<div class=\"border rounded-md p-4 bg-gray-50 relative group/item\"><button type=\"submit\" name=\"")
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 92, "<div class=\"border rounded-md p-4 bg-gray-50 relative group/item\"><button type=\"submit\" name=\"")
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+				var templ_7745c5c3_Var66 string
+				templ_7745c5c3_Var66, templ_7745c5c3_Err = templ.ResolveAttributeValue(fmt.Sprintf("section_%d_item_%d_delete", i, j))
+				if templ_7745c5c3_Err != nil {
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 420, Col: 61}
+				}
+				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var66)
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 93, "\" value=\"on\" hx-post=\"")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
 				var templ_7745c5c3_Var67 string
-				templ_7745c5c3_Var67, templ_7745c5c3_Err = templ.ResolveAttributeValue(fmt.Sprintf("section_%d_item_%d_delete", i, j))
+				templ_7745c5c3_Var67, templ_7745c5c3_Err = templ.ResolveAttributeValue(string(templ.URL("/admin/" + activeSection)))
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 431, Col: 61}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 422, Col: 62}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var67)
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 94, "\" value=\"on\" hx-post=\"")
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 94, "\" hx-target=\"#config-form\" hx-swap=\"outerHTML\" class=\"absolute top-2 right-2 text-gray-400 hover:text-red-500 opacity-0 group-hover/item:opacity-100 transition-opacity cursor-pointer\"><svg class=\"h-4 w-4\" fill=\"none\" viewBox=\"0 0 24 24\" stroke=\"currentColor\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M6 18L18 6M6 6l12 12\"></path></svg></button><div class=\"space-y-3\"><div><label class=\"block text-xs font-medium text-gray-500\">Name</label> <input type=\"text\" name=\"")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
 				var templ_7745c5c3_Var68 string
-				templ_7745c5c3_Var68, templ_7745c5c3_Err = templ.ResolveAttributeValue(string(templ.URL("/admin/" + activeSection)))
+				templ_7745c5c3_Var68, templ_7745c5c3_Err = templ.ResolveAttributeValue(fmt.Sprintf("section_%d_item_%d_title", i, j))
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 433, Col: 62}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 431, Col: 81}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var68)
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 95, "\" hx-target=\"#config-form\" hx-swap=\"outerHTML\" class=\"absolute top-2 right-2 text-gray-400 hover:text-red-500 opacity-0 group-hover/item:opacity-100 transition-opacity cursor-pointer\"><svg class=\"h-4 w-4\" fill=\"none\" viewBox=\"0 0 24 24\" stroke=\"currentColor\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M6 18L18 6M6 6l12 12\"></path></svg></button><div class=\"space-y-3\"><div><label class=\"block text-xs font-medium text-gray-500\">Name</label> <input type=\"text\" name=\"")
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 95, "\" value=\"")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
 				var templ_7745c5c3_Var69 string
-				templ_7745c5c3_Var69, templ_7745c5c3_Err = templ.ResolveAttributeValue(fmt.Sprintf("section_%d_item_%d_title", i, j))
+				templ_7745c5c3_Var69, templ_7745c5c3_Err = templ.ResolveAttributeValue(item.Title)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 442, Col: 81}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 431, Col: 102}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var69)
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 96, "\" value=\"")
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 96, "\" class=\"mt-1 block w-full border-gray-300 rounded-md shadow-sm text-sm\"></div><div><label class=\"block text-xs font-medium text-gray-500\">Category</label> <select name=\"")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
 				var templ_7745c5c3_Var70 string
-				templ_7745c5c3_Var70, templ_7745c5c3_Err = templ.ResolveAttributeValue(item.Title)
+				templ_7745c5c3_Var70, templ_7745c5c3_Err = templ.ResolveAttributeValue(fmt.Sprintf("section_%d_item_%d_category_id", i, j))
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 442, Col: 102}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 435, Col: 76}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var70)
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 97, "\" class=\"mt-1 block w-full border-gray-300 rounded-md shadow-sm text-sm\"></div><div><label class=\"block text-xs font-medium text-gray-500\">Category</label> <select name=\"")
-				if templ_7745c5c3_Err != nil {
-					return templ_7745c5c3_Err
-				}
-				var templ_7745c5c3_Var71 string
-				templ_7745c5c3_Var71, templ_7745c5c3_Err = templ.ResolveAttributeValue(fmt.Sprintf("section_%d_item_%d_category_id", i, j))
-				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 446, Col: 76}
-				}
-				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var71)
-				if templ_7745c5c3_Err != nil {
-					return templ_7745c5c3_Err
-				}
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 98, "\" class=\"mt-1 block w-full border-gray-300 rounded-md shadow-sm text-sm\"><option value=\"\">-- Select --</option> ")
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 97, "\" class=\"mt-1 block w-full border-gray-300 rounded-md shadow-sm text-sm\"><option value=\"\">-- Select --</option> ")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
 				for _, cat := range categories {
-					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 99, "<option value=\"")
+					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 98, "<option value=\"")
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
-					var templ_7745c5c3_Var72 string
-					templ_7745c5c3_Var72, templ_7745c5c3_Err = templ.ResolveAttributeValue(fmt.Sprint(cat.ID))
+					var templ_7745c5c3_Var71 string
+					templ_7745c5c3_Var71, templ_7745c5c3_Err = templ.ResolveAttributeValue(fmt.Sprint(cat.ID))
 					if templ_7745c5c3_Err != nil {
-						return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 449, Col: 46}
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 438, Col: 46}
 					}
-					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var72)
+					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var71)
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
-					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 100, "\"")
+					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 99, "\"")
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
 					if item.CategoryID == fmt.Sprint(cat.ID) {
-						templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 101, " selected")
+						templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 100, " selected")
 						if templ_7745c5c3_Err != nil {
 							return templ_7745c5c3_Err
 						}
 					}
-					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 102, ">")
+					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 101, ">")
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
-					var templ_7745c5c3_Var73 string
-					templ_7745c5c3_Var73, templ_7745c5c3_Err = templ.JoinStringErrs(cat.Name)
+					var templ_7745c5c3_Var72 string
+					templ_7745c5c3_Var72, templ_7745c5c3_Err = templ.JoinStringErrs(cat.Name)
 					if templ_7745c5c3_Err != nil {
-						return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 449, Col: 111}
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 438, Col: 111}
 					}
-					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var73))
+					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var72))
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
-					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 103, "</option>")
+					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 102, "</option>")
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
 				}
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 104, "</select></div><div><label class=\"block text-xs font-medium text-gray-500\">Image</label><div class=\"mt-1 flex items-center gap-3\"><input type=\"hidden\" name=\"")
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 103, "</select></div><div><label class=\"block text-xs font-medium text-gray-500\">Image</label><div class=\"mt-1 flex items-center gap-3\"><input type=\"hidden\" name=\"")
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+				var templ_7745c5c3_Var73 string
+				templ_7745c5c3_Var73, templ_7745c5c3_Err = templ.ResolveAttributeValue(fmt.Sprintf("section_%d_item_%d_image_path", i, j))
+				if templ_7745c5c3_Err != nil {
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 445, Col: 89}
+				}
+				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var73)
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 104, "\" value=\"")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
 				var templ_7745c5c3_Var74 string
-				templ_7745c5c3_Var74, templ_7745c5c3_Err = templ.ResolveAttributeValue(fmt.Sprintf("section_%d_item_%d_image_path", i, j))
+				templ_7745c5c3_Var74, templ_7745c5c3_Err = templ.ResolveAttributeValue(item.Image)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 456, Col: 89}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 445, Col: 110}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var74)
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 105, "\" value=\"")
-				if templ_7745c5c3_Err != nil {
-					return templ_7745c5c3_Err
-				}
-				var templ_7745c5c3_Var75 string
-				templ_7745c5c3_Var75, templ_7745c5c3_Err = templ.ResolveAttributeValue(item.Image)
-				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 456, Col: 110}
-				}
-				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var75)
-				if templ_7745c5c3_Err != nil {
-					return templ_7745c5c3_Err
-				}
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 106, "\"> ")
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 105, "\"> ")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
 				if item.Image != "" {
-					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 107, "<img src=\"")
+					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 106, "<img src=\"")
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
-					var templ_7745c5c3_Var76 string
-					templ_7745c5c3_Var76, templ_7745c5c3_Err = templ.ResolveAttributeValue(item.Image)
+					var templ_7745c5c3_Var75 string
+					templ_7745c5c3_Var75, templ_7745c5c3_Err = templ.ResolveAttributeValue(item.Image)
 					if templ_7745c5c3_Err != nil {
-						return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 458, Col: 33}
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 447, Col: 33}
 					}
-					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var76)
+					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var75)
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
-					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 108, "\" class=\"h-10 w-10 object-cover rounded shadow-sm\"> ")
+					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 107, "\" class=\"h-10 w-10 object-cover rounded shadow-sm\"> ")
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
 				}
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 109, "<input type=\"file\" name=\"")
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 108, "<input type=\"file\" name=\"")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
-				var templ_7745c5c3_Var77 string
-				templ_7745c5c3_Var77, templ_7745c5c3_Err = templ.ResolveAttributeValue(fmt.Sprintf("section_%d_item_%d_image", i, j))
+				var templ_7745c5c3_Var76 string
+				templ_7745c5c3_Var76, templ_7745c5c3_Err = templ.ResolveAttributeValue(fmt.Sprintf("section_%d_item_%d_image", i, j))
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 460, Col: 82}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 449, Col: 82}
 				}
-				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var77)
+				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var76)
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 110, "\" class=\"block w-full text-xs text-gray-500 file:mr-2 file:py-1 file:px-2 file:rounded file:border-0 file:text-xs file:font-semibold file:bg-white file:text-indigo-700 hover:file:bg-indigo-50\"></div></div></div></div>")
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 109, "\" class=\"block w-full text-xs text-gray-500 file:mr-2 file:py-1 file:px-2 file:rounded file:border-0 file:text-xs file:font-semibold file:bg-white file:text-indigo-700 hover:file:bg-indigo-50\"></div></div></div></div>")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 111, "</div></div><div class=\"sm:col-span-2\"><label for=\"")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 110, "</div></div><div class=\"sm:col-span-2\"><label for=\"")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			var templ_7745c5c3_Var77 string
+			templ_7745c5c3_Var77, templ_7745c5c3_Err = templ.ResolveAttributeValue(fmt.Sprintf("section_%d_limit", i))
+			if templ_7745c5c3_Err != nil {
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 458, Col: 52}
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var77)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 111, "\" class=\"block text-sm font-medium text-gray-700\">Limit</label> <input type=\"number\" name=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var78 string
 			templ_7745c5c3_Var78, templ_7745c5c3_Err = templ.ResolveAttributeValue(fmt.Sprintf("section_%d_limit", i))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 469, Col: 52}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 459, Col: 67}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var78)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 112, "\" class=\"block text-sm font-medium text-gray-700\">Limit</label> <input type=\"number\" name=\"")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 112, "\" id=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var79 string
 			templ_7745c5c3_Var79, templ_7745c5c3_Err = templ.ResolveAttributeValue(fmt.Sprintf("section_%d_limit", i))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 470, Col: 67}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 459, Col: 109}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var79)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 113, "\" id=\"")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 113, "\" value=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var80 string
-			templ_7745c5c3_Var80, templ_7745c5c3_Err = templ.ResolveAttributeValue(fmt.Sprintf("section_%d_limit", i))
+			templ_7745c5c3_Var80, templ_7745c5c3_Err = templ.ResolveAttributeValue(strconv.Itoa(section.Limit))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 470, Col: 109}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 459, Col: 147}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var80)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 114, "\" value=\"")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 114, "\" class=\"mt-1 block w-full border-gray-300 rounded-md shadow-sm sm:text-sm\"></div><div class=\"sm:col-span-6\" x-show=\"sectionType !== 'category_banner'\" x-cloak><label for=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var81 string
-			templ_7745c5c3_Var81, templ_7745c5c3_Err = templ.ResolveAttributeValue(strconv.Itoa(section.Limit))
+			templ_7745c5c3_Var81, templ_7745c5c3_Err = templ.ResolveAttributeValue(fmt.Sprintf("section_%d_product_ids", i))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 470, Col: 147}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 462, Col: 58}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var81)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 115, "\" class=\"mt-1 block w-full border-gray-300 rounded-md shadow-sm sm:text-sm\"></div><div class=\"sm:col-span-6\" x-show=\"sectionType !== 'category_banner'\" x-cloak><label for=\"")
-			if templ_7745c5c3_Err != nil {
-				return templ_7745c5c3_Err
-			}
-			var templ_7745c5c3_Var82 string
-			templ_7745c5c3_Var82, templ_7745c5c3_Err = templ.ResolveAttributeValue(fmt.Sprintf("section_%d_product_ids", i))
-			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 473, Col: 58}
-			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var82)
-			if templ_7745c5c3_Err != nil {
-				return templ_7745c5c3_Err
-			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 116, "\" class=\"block text-sm font-medium text-gray-700\">Select Products</label><div class=\"mt-1 block w-full border border-gray-300 rounded-md shadow-sm h-64 overflow-y-auto p-4 space-y-2 bg-white\">")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 115, "\" class=\"block text-sm font-medium text-gray-700\">Select Products</label><div class=\"mt-1 block w-full border border-gray-300 rounded-md shadow-sm h-64 overflow-y-auto p-4 space-y-2 bg-white\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			for _, p := range products {
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 117, "<div class=\"flex items-center\"><input type=\"checkbox\" id=\"")
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 116, "<div class=\"flex items-center\"><input type=\"checkbox\" id=\"")
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+				var templ_7745c5c3_Var82 string
+				templ_7745c5c3_Var82, templ_7745c5c3_Err = templ.ResolveAttributeValue(fmt.Sprintf("section_%d_product_%d", i, p.ID))
+				if templ_7745c5c3_Err != nil {
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 466, Col: 81}
+				}
+				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var82)
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 117, "\" name=\"")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
 				var templ_7745c5c3_Var83 string
-				templ_7745c5c3_Var83, templ_7745c5c3_Err = templ.ResolveAttributeValue(fmt.Sprintf("section_%d_product_%d", i, p.ID))
+				templ_7745c5c3_Var83, templ_7745c5c3_Err = templ.ResolveAttributeValue(fmt.Sprintf("section_%d_product_ids", i))
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 477, Col: 81}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 466, Col: 131}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var83)
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 118, "\" name=\"")
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 118, "\" value=\"")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
 				var templ_7745c5c3_Var84 string
-				templ_7745c5c3_Var84, templ_7745c5c3_Err = templ.ResolveAttributeValue(fmt.Sprintf("section_%d_product_ids", i))
+				templ_7745c5c3_Var84, templ_7745c5c3_Err = templ.ResolveAttributeValue(strconv.Itoa(int(p.ID)))
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 477, Col: 131}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 466, Col: 165}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var84)
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 119, "\" value=\"")
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 119, "\"")
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+				if isSelected(strconv.Itoa(int(p.ID)), section.ProductIDs) {
+					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 120, " checked")
+					if templ_7745c5c3_Err != nil {
+						return templ_7745c5c3_Err
+					}
+				}
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 121, " class=\"h-4 w-4 text-green-600 focus:ring-green-500 border-gray-300 rounded\"> <label for=\"")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
 				var templ_7745c5c3_Var85 string
-				templ_7745c5c3_Var85, templ_7745c5c3_Err = templ.ResolveAttributeValue(strconv.Itoa(int(p.ID)))
+				templ_7745c5c3_Var85, templ_7745c5c3_Err = templ.ResolveAttributeValue(fmt.Sprintf("section_%d_product_%d", i, p.ID))
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 477, Col: 165}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 467, Col: 66}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var85)
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 120, "\"")
-				if templ_7745c5c3_Err != nil {
-					return templ_7745c5c3_Err
-				}
-				if isSelected(strconv.Itoa(int(p.ID)), section.ProductIDs) {
-					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 121, " checked")
-					if templ_7745c5c3_Err != nil {
-						return templ_7745c5c3_Err
-					}
-				}
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 122, " class=\"h-4 w-4 text-green-600 focus:ring-green-500 border-gray-300 rounded\"> <label for=\"")
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 122, "\" class=\"ml-2 block text-sm text-gray-900\">")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
 				var templ_7745c5c3_Var86 string
-				templ_7745c5c3_Var86, templ_7745c5c3_Err = templ.ResolveAttributeValue(fmt.Sprintf("section_%d_product_%d", i, p.ID))
+				templ_7745c5c3_Var86, templ_7745c5c3_Err = templ.JoinStringErrs(p.Name)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 478, Col: 66}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 467, Col: 118}
 				}
-				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var86)
-				if templ_7745c5c3_Err != nil {
-					return templ_7745c5c3_Err
-				}
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 123, "\" class=\"ml-2 block text-sm text-gray-900\">")
+				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var86))
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
-				var templ_7745c5c3_Var87 string
-				templ_7745c5c3_Var87, templ_7745c5c3_Err = templ.JoinStringErrs(p.Name)
-				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 478, Col: 118}
-				}
-				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var87))
-				if templ_7745c5c3_Err != nil {
-					return templ_7745c5c3_Err
-				}
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 124, "</label></div>")
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 123, "</label></div>")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 125, "</div><p class=\"mt-2 text-sm text-gray-500\">Check the products you want to display in this section.</p></div></div></div>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 124, "</div><p class=\"mt-2 text-sm text-gray-500\">Check the products you want to display in this section.</p></div></div></div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 126, "</div><script>\n\t\tdocument.addEventListener('DOMContentLoaded', function() {\n\t\t\tvar el = document.getElementById('sections-list');\n\t\t\tif (el) {\n\t\t\t\tvar sortable = Sortable.create(el, {\n\t\t\t\t\thandle: '.drag-handle',\n\t\t\t\t\tanimation: 150,\n\t\t\t\t\tonEnd: function() {\n\t\t\t\t\t\tdocument.getElementById('sections_order').value = sortable.toArray().join(',');\n\t\t\t\t\t}\n\t\t\t\t});\n\t\t\t}\n\t\t});\n\t</script><div class=\"mt-4 flex justify-center\"><button type=\"button\" hx-post=\"/admin/sections/add\" hx-target=\"#config-form\" hx-swap=\"outerHTML\" class=\"inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 cursor-pointer\">Add Section</button></div>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 125, "</div><script>\n\t\tdocument.addEventListener('DOMContentLoaded', function() {\n\t\t\tvar el = document.getElementById('sections-list');\n\t\t\tif (el) {\n\t\t\t\tvar sortable = Sortable.create(el, {\n\t\t\t\t\thandle: '.drag-handle',\n\t\t\t\t\tanimation: 150,\n\t\t\t\t\tonEnd: function() {\n\t\t\t\t\t\tdocument.getElementById('sections_order').value = sortable.toArray().join(',');\n\t\t\t\t\t}\n\t\t\t\t});\n\t\t\t}\n\t\t});\n\t</script><div class=\"mt-4 flex justify-center\"><button type=\"button\" hx-post=\"/admin/sections/add\" hx-target=\"#config-form\" hx-swap=\"outerHTML\" class=\"inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 cursor-pointer\">Add Section</button></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -1505,214 +1492,214 @@ func themeSettingsForm(cfg *config.Config) templ.Component {
 			}()
 		}
 		ctx = templ.InitializeContext(ctx)
-		templ_7745c5c3_Var88 := templ.GetChildren(ctx)
-		if templ_7745c5c3_Var88 == nil {
-			templ_7745c5c3_Var88 = templ.NopComponent
+		templ_7745c5c3_Var87 := templ.GetChildren(ctx)
+		if templ_7745c5c3_Var87 == nil {
+			templ_7745c5c3_Var87 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 127, "<div class=\"p-6 bg-white rounded-lg shadow\"><div class=\"flex items-center justify-between border-b border-gray-100 pb-4 mb-6\"><h3 class=\"text-lg font-medium leading-6 text-gray-900\">Theme Settings</h3><button type=\"submit\" class=\"text-xs font-semibold text-green-700 bg-green-50 hover:bg-green-100 px-3 py-1.5 rounded-md border border-green-200 transition-colors\">Quick Save Theme</button></div><div class=\"mt-6 grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6\"><div class=\"sm:col-span-3\"><label for=\"theme_primary_color\" class=\"block text-sm font-medium text-gray-700\">Primary Color</label><div class=\"mt-1 flex items-center\"><input type=\"color\" name=\"theme_primary_color\" id=\"theme_primary_color\" value=\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 126, "<div class=\"p-6 bg-white rounded-lg shadow\"><div class=\"flex items-center justify-between border-b border-gray-100 pb-4 mb-6\"><h3 class=\"text-lg font-medium leading-6 text-gray-900\">Theme Settings</h3><button type=\"submit\" class=\"text-xs font-semibold text-green-700 bg-green-50 hover:bg-green-100 px-3 py-1.5 rounded-md border border-green-200 transition-colors\">Quick Save Theme</button></div><div class=\"mt-6 grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6\"><div class=\"sm:col-span-3\"><label for=\"theme_primary_color\" class=\"block text-sm font-medium text-gray-700\">Primary Color</label><div class=\"mt-1 flex items-center\"><input type=\"color\" name=\"theme_primary_color\" id=\"theme_primary_color\" value=\"")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		var templ_7745c5c3_Var88 string
+		templ_7745c5c3_Var88, templ_7745c5c3_Err = templ.ResolveAttributeValue(cfg.Theme.PrimaryColor)
+		if templ_7745c5c3_Err != nil {
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 523, Col: 107}
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var88)
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 127, "\" class=\"h-10 w-10 p-1 border-gray-300 rounded-md\"> <input type=\"text\" value=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var89 string
 		templ_7745c5c3_Var89, templ_7745c5c3_Err = templ.ResolveAttributeValue(cfg.Theme.PrimaryColor)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 534, Col: 107}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 524, Col: 54}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var89)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 128, "\" class=\"h-10 w-10 p-1 border-gray-300 rounded-md\"> <input type=\"text\" value=\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 128, "\" class=\"ml-2 block w-full border-gray-300 rounded-md shadow-sm\" onchange=\"document.getElementById('theme_primary_color').value = this.value\"></div></div><div class=\"sm:col-span-3\"><label for=\"theme_secondary_color\" class=\"block text-sm font-medium text-gray-700\">Secondary Color</label><div class=\"mt-1 flex items-center\"><input type=\"color\" name=\"theme_secondary_color\" id=\"theme_secondary_color\" value=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var90 string
-		templ_7745c5c3_Var90, templ_7745c5c3_Err = templ.ResolveAttributeValue(cfg.Theme.PrimaryColor)
+		templ_7745c5c3_Var90, templ_7745c5c3_Err = templ.ResolveAttributeValue(cfg.Theme.SecondaryColor)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 535, Col: 54}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 530, Col: 113}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var90)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 129, "\" class=\"ml-2 block w-full border-gray-300 rounded-md shadow-sm\" onchange=\"document.getElementById('theme_primary_color').value = this.value\"></div></div><div class=\"sm:col-span-3\"><label for=\"theme_secondary_color\" class=\"block text-sm font-medium text-gray-700\">Secondary Color</label><div class=\"mt-1 flex items-center\"><input type=\"color\" name=\"theme_secondary_color\" id=\"theme_secondary_color\" value=\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 129, "\" class=\"h-10 w-10 p-1 border-gray-300 rounded-md\"> <input type=\"text\" value=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var91 string
 		templ_7745c5c3_Var91, templ_7745c5c3_Err = templ.ResolveAttributeValue(cfg.Theme.SecondaryColor)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 541, Col: 113}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 531, Col: 56}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var91)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 130, "\" class=\"h-10 w-10 p-1 border-gray-300 rounded-md\"> <input type=\"text\" value=\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 130, "\" class=\"ml-2 block w-full border-gray-300 rounded-md shadow-sm\" onchange=\"document.getElementById('theme_secondary_color').value = this.value\"></div></div><div class=\"sm:col-span-3\"><label for=\"theme_header_bg_color\" class=\"block text-sm font-medium text-gray-700\">Header Background Color</label><div class=\"mt-1 flex items-center\"><input type=\"color\" name=\"theme_header_bg_color\" id=\"theme_header_bg_color\" value=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var92 string
-		templ_7745c5c3_Var92, templ_7745c5c3_Err = templ.ResolveAttributeValue(cfg.Theme.SecondaryColor)
+		templ_7745c5c3_Var92, templ_7745c5c3_Err = templ.ResolveAttributeValue(cfg.Theme.HeaderBgColor)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 542, Col: 56}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 537, Col: 112}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var92)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 131, "\" class=\"ml-2 block w-full border-gray-300 rounded-md shadow-sm\" onchange=\"document.getElementById('theme_secondary_color').value = this.value\"></div></div><div class=\"sm:col-span-3\"><label for=\"theme_header_bg_color\" class=\"block text-sm font-medium text-gray-700\">Header Background Color</label><div class=\"mt-1 flex items-center\"><input type=\"color\" name=\"theme_header_bg_color\" id=\"theme_header_bg_color\" value=\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 131, "\" class=\"h-10 w-10 p-1 border-gray-300 rounded-md\"></div></div><div class=\"sm:col-span-3\"><label for=\"theme_header_bg_opacity\" class=\"block text-sm font-medium text-gray-700\">Header Background Opacity (")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var93 string
-		templ_7745c5c3_Var93, templ_7745c5c3_Err = templ.ResolveAttributeValue(cfg.Theme.HeaderBgColor)
+		templ_7745c5c3_Var93, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprint(cfg.Theme.HeaderBgOpacity))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 548, Col: 112}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 541, Col: 155}
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var93)
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var93))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 132, "\" class=\"h-10 w-10 p-1 border-gray-300 rounded-md\"></div></div><div class=\"sm:col-span-3\"><label for=\"theme_header_bg_opacity\" class=\"block text-sm font-medium text-gray-700\">Header Background Opacity (")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 132, "%)</label><div class=\"mt-1 flex items-center gap-2\"><input type=\"range\" name=\"theme_header_bg_opacity\" id=\"theme_header_bg_opacity\" min=\"0\" max=\"100\" value=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var94 string
-		templ_7745c5c3_Var94, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprint(cfg.Theme.HeaderBgOpacity))
+		templ_7745c5c3_Var94, templ_7745c5c3_Err = templ.ResolveAttributeValue(fmt.Sprint(cfg.Theme.HeaderBgOpacity))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 552, Col: 155}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 543, Col: 148}
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var94))
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var94)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 133, "%)</label><div class=\"mt-1 flex items-center gap-2\"><input type=\"range\" name=\"theme_header_bg_opacity\" id=\"theme_header_bg_opacity\" min=\"0\" max=\"100\" value=\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 133, "\" class=\"w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-green-600\"> <span class=\"text-sm text-gray-500 w-8\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var95 string
-		templ_7745c5c3_Var95, templ_7745c5c3_Err = templ.ResolveAttributeValue(fmt.Sprint(cfg.Theme.HeaderBgOpacity))
+		templ_7745c5c3_Var95, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprint(cfg.Theme.HeaderBgOpacity))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 554, Col: 148}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 544, Col: 84}
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var95)
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var95))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 134, "\" class=\"w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-green-600\"> <span class=\"text-sm text-gray-500 w-8\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 134, "%</span></div></div><div class=\"sm:col-span-3\"><label for=\"theme_page_bg_color\" class=\"block text-sm font-medium text-gray-700\">Page Background Color</label><div class=\"mt-1 flex items-center\"><input type=\"color\" name=\"theme_page_bg_color\" id=\"theme_page_bg_color\" value=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var96 string
-		templ_7745c5c3_Var96, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprint(cfg.Theme.HeaderBgOpacity))
+		templ_7745c5c3_Var96, templ_7745c5c3_Err = templ.ResolveAttributeValue(cfg.Theme.PageBgColor)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 555, Col: 84}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 550, Col: 106}
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var96))
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var96)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 135, "%</span></div></div><div class=\"sm:col-span-3\"><label for=\"theme_page_bg_color\" class=\"block text-sm font-medium text-gray-700\">Page Background Color</label><div class=\"mt-1 flex items-center\"><input type=\"color\" name=\"theme_page_bg_color\" id=\"theme_page_bg_color\" value=\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 135, "\" class=\"h-10 w-10 p-1 border-gray-300 rounded-md\"></div></div><div class=\"sm:col-span-3\"><label for=\"theme_footer_bg_color\" class=\"block text-sm font-medium text-gray-700\">Footer Background Color</label><div class=\"mt-1 flex items-center\"><input type=\"color\" name=\"theme_footer_bg_color\" id=\"theme_footer_bg_color\" value=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var97 string
-		templ_7745c5c3_Var97, templ_7745c5c3_Err = templ.ResolveAttributeValue(cfg.Theme.PageBgColor)
+		templ_7745c5c3_Var97, templ_7745c5c3_Err = templ.ResolveAttributeValue(cfg.Theme.FooterBgColor)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 561, Col: 106}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 556, Col: 112}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var97)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 136, "\" class=\"h-10 w-10 p-1 border-gray-300 rounded-md\"></div></div><div class=\"sm:col-span-3\"><label for=\"theme_footer_bg_color\" class=\"block text-sm font-medium text-gray-700\">Footer Background Color</label><div class=\"mt-1 flex items-center\"><input type=\"color\" name=\"theme_footer_bg_color\" id=\"theme_footer_bg_color\" value=\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 136, "\" class=\"h-10 w-10 p-1 border-gray-300 rounded-md\"></div></div><div class=\"sm:col-span-6 border-t border-gray-200 pt-6\"><h4 class=\"text-sm font-medium text-gray-900 mb-4\">Content Container Background</h4><div class=\"flex items-center mb-4\"><input id=\"theme_content_bg_color_enabled\" name=\"theme_content_bg_color_enabled\" type=\"checkbox\"")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		if cfg.Theme.ContentBgColorEnabled {
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 137, " checked")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+		}
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 138, " class=\"w-4 h-4 text-green-600 border-gray-300 rounded focus:ring-green-500\"> <label for=\"theme_content_bg_color_enabled\" class=\"ml-2 block text-sm text-gray-900\">Enable Container Background</label></div><div class=\"sm:col-span-3 mb-6\"><label for=\"theme_content_bg_color\" class=\"block text-xs font-medium text-gray-500\">Solid Color</label><div class=\"mt-1 flex items-center\"><input type=\"color\" name=\"theme_content_bg_color\" id=\"theme_content_bg_color\" value=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var98 string
-		templ_7745c5c3_Var98, templ_7745c5c3_Err = templ.ResolveAttributeValue(cfg.Theme.FooterBgColor)
+		templ_7745c5c3_Var98, templ_7745c5c3_Err = templ.ResolveAttributeValue(cfg.Theme.ContentBgColor)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 567, Col: 112}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 568, Col: 116}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var98)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 137, "\" class=\"h-10 w-10 p-1 border-gray-300 rounded-md\"></div></div><div class=\"sm:col-span-6 border-t border-gray-200 pt-6\"><h4 class=\"text-sm font-medium text-gray-900 mb-4\">Content Container Background</h4><div class=\"flex items-center mb-4\"><input id=\"theme_content_bg_color_enabled\" name=\"theme_content_bg_color_enabled\" type=\"checkbox\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 139, "\" class=\"h-8 w-8 p-1 border-gray-300 rounded-md\"></div></div><h5 class=\"text-xs font-semibold text-gray-700 mb-3 border-t border-gray-100 pt-4\">Container Gradient (Overrides Solid Color)</h5><div class=\"flex items-center mb-4\"><input id=\"theme_content_bg_gradient_enabled\" name=\"theme_content_bg_gradient_enabled\" type=\"checkbox\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		if cfg.Theme.ContentBgColorEnabled {
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 138, " checked")
+		if cfg.Theme.ContentBgGradientEnabled {
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 140, " checked")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 139, " class=\"w-4 h-4 text-green-600 border-gray-300 rounded focus:ring-green-500\"> <label for=\"theme_content_bg_color_enabled\" class=\"ml-2 block text-sm text-gray-900\">Enable Container Background</label></div><div class=\"sm:col-span-3 mb-6\"><label for=\"theme_content_bg_color\" class=\"block text-xs font-medium text-gray-500\">Solid Color</label><div class=\"mt-1 flex items-center\"><input type=\"color\" name=\"theme_content_bg_color\" id=\"theme_content_bg_color\" value=\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 141, " class=\"w-4 h-4 text-green-600 border-gray-300 rounded focus:ring-green-500\"> <label for=\"theme_content_bg_gradient_enabled\" class=\"ml-2 block text-sm text-gray-900\">Enable Gradient</label></div><div class=\"grid grid-cols-1 gap-4 sm:grid-cols-3\"><div><label for=\"theme_content_bg_gradient_start\" class=\"block text-xs font-medium text-gray-500\">Start Color</label> <input type=\"color\" name=\"theme_content_bg_gradient_start\" id=\"theme_content_bg_gradient_start\" value=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var99 string
-		templ_7745c5c3_Var99, templ_7745c5c3_Err = templ.ResolveAttributeValue(cfg.Theme.ContentBgColor)
+		templ_7745c5c3_Var99, templ_7745c5c3_Err = templ.ResolveAttributeValue(cfg.Theme.ContentBgGradientStart)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 579, Col: 116}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 579, Col: 142}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var99)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 140, "\" class=\"h-8 w-8 p-1 border-gray-300 rounded-md\"></div></div><h5 class=\"text-xs font-semibold text-gray-700 mb-3 border-t border-gray-100 pt-4\">Container Gradient (Overrides Solid Color)</h5><div class=\"flex items-center mb-4\"><input id=\"theme_content_bg_gradient_enabled\" name=\"theme_content_bg_gradient_enabled\" type=\"checkbox\"")
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		if cfg.Theme.ContentBgGradientEnabled {
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 141, " checked")
-			if templ_7745c5c3_Err != nil {
-				return templ_7745c5c3_Err
-			}
-		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 142, " class=\"w-4 h-4 text-green-600 border-gray-300 rounded focus:ring-green-500\"> <label for=\"theme_content_bg_gradient_enabled\" class=\"ml-2 block text-sm text-gray-900\">Enable Gradient</label></div><div class=\"grid grid-cols-1 gap-4 sm:grid-cols-3\"><div><label for=\"theme_content_bg_gradient_start\" class=\"block text-xs font-medium text-gray-500\">Start Color</label> <input type=\"color\" name=\"theme_content_bg_gradient_start\" id=\"theme_content_bg_gradient_start\" value=\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 142, "\" class=\"mt-1 h-8 w-8 p-1 border-gray-300 rounded-md\"></div><div><label for=\"theme_content_bg_gradient_end\" class=\"block text-xs font-medium text-gray-500\">End Color</label> <input type=\"color\" name=\"theme_content_bg_gradient_end\" id=\"theme_content_bg_gradient_end\" value=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var100 string
-		templ_7745c5c3_Var100, templ_7745c5c3_Err = templ.ResolveAttributeValue(cfg.Theme.ContentBgGradientStart)
+		templ_7745c5c3_Var100, templ_7745c5c3_Err = templ.ResolveAttributeValue(cfg.Theme.ContentBgGradientEnd)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 590, Col: 142}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 583, Col: 136}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var100)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 143, "\" class=\"mt-1 h-8 w-8 p-1 border-gray-300 rounded-md\"></div><div><label for=\"theme_content_bg_gradient_end\" class=\"block text-xs font-medium text-gray-500\">End Color</label> <input type=\"color\" name=\"theme_content_bg_gradient_end\" id=\"theme_content_bg_gradient_end\" value=\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 143, "\" class=\"mt-1 h-8 w-8 p-1 border-gray-300 rounded-md\"></div><div><label for=\"theme_content_bg_gradient_angle\" class=\"block text-xs font-medium text-gray-500\">Angle</label> <input type=\"number\" name=\"theme_content_bg_gradient_angle\" id=\"theme_content_bg_gradient_angle\" value=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var101 string
-		templ_7745c5c3_Var101, templ_7745c5c3_Err = templ.ResolveAttributeValue(cfg.Theme.ContentBgGradientEnd)
+		templ_7745c5c3_Var101, templ_7745c5c3_Err = templ.ResolveAttributeValue(fmt.Sprint(cfg.Theme.ContentBgGradientAngle))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 594, Col: 136}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 587, Col: 155}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var101)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 144, "\" class=\"mt-1 h-8 w-8 p-1 border-gray-300 rounded-md\"></div><div><label for=\"theme_content_bg_gradient_angle\" class=\"block text-xs font-medium text-gray-500\">Angle</label> <input type=\"number\" name=\"theme_content_bg_gradient_angle\" id=\"theme_content_bg_gradient_angle\" value=\"")
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		var templ_7745c5c3_Var102 string
-		templ_7745c5c3_Var102, templ_7745c5c3_Err = templ.ResolveAttributeValue(fmt.Sprint(cfg.Theme.ContentBgGradientAngle))
-		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 598, Col: 155}
-		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var102)
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 145, "\" min=\"0\" max=\"360\" class=\"mt-1 block w-full border-gray-300 rounded-md shadow-sm sm:text-xs\"></div></div></div></div></div>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 144, "\" min=\"0\" max=\"360\" class=\"mt-1 block w-full border-gray-300 rounded-md shadow-sm sm:text-xs\"></div></div></div></div></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -1736,217 +1723,217 @@ func storefrontSidebarSettingsForm(cfg *config.Config) templ.Component {
 			}()
 		}
 		ctx = templ.InitializeContext(ctx)
-		templ_7745c5c3_Var103 := templ.GetChildren(ctx)
-		if templ_7745c5c3_Var103 == nil {
-			templ_7745c5c3_Var103 = templ.NopComponent
+		templ_7745c5c3_Var102 := templ.GetChildren(ctx)
+		if templ_7745c5c3_Var102 == nil {
+			templ_7745c5c3_Var102 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 146, "<div class=\"p-6 bg-white rounded-lg shadow\" x-data=\"{ newItems: 0 }\"><h3 class=\"text-lg font-medium leading-6 text-gray-900\">Storefront Sidebar Menu</h3><div class=\"mt-6 space-y-4\"><p class=\"text-sm text-gray-500\">Existing Items</p>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 145, "<div class=\"p-6 bg-white rounded-lg shadow\" x-data=\"{ newItems: 0 }\"><h3 class=\"text-lg font-medium leading-6 text-gray-900\">Storefront Sidebar Menu</h3><div class=\"mt-6 space-y-4\"><p class=\"text-sm text-gray-500\">Existing Items</p>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		for i, item := range cfg.StorefrontSidebar {
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 147, "<div class=\"p-4 border border-gray-200 rounded-md\"><div class=\"grid grid-cols-1 gap-y-4 gap-x-4 sm:grid-cols-9\"><div class=\"sm:col-span-3\"><label for=\"")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 146, "<div class=\"p-4 border border-gray-200 rounded-md\"><div class=\"grid grid-cols-1 gap-y-4 gap-x-4 sm:grid-cols-9\"><div class=\"sm:col-span-3\"><label for=\"")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			var templ_7745c5c3_Var103 string
+			templ_7745c5c3_Var103, templ_7745c5c3_Err = templ.ResolveAttributeValue("item_title_" + strconv.Itoa(i))
+			if templ_7745c5c3_Err != nil {
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 604, Col: 51}
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var103)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 147, "\" class=\"block text-sm font-medium text-gray-700\">Title</label> <input type=\"text\" name=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var104 string
-			templ_7745c5c3_Var104, templ_7745c5c3_Err = templ.ResolveAttributeValue("item_title_" + strconv.Itoa(i))
+			templ_7745c5c3_Var104, templ_7745c5c3_Err = templ.ResolveAttributeValue("storefront_sidebar_" + strconv.Itoa(i) + "_title")
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 615, Col: 51}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 605, Col: 83}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var104)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 148, "\" class=\"block text-sm font-medium text-gray-700\">Title</label> <input type=\"text\" name=\"")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 148, "\" id=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var105 string
-			templ_7745c5c3_Var105, templ_7745c5c3_Err = templ.ResolveAttributeValue("storefront_sidebar_" + strconv.Itoa(i) + "_title")
+			templ_7745c5c3_Var105, templ_7745c5c3_Err = templ.ResolveAttributeValue("item_title_" + strconv.Itoa(i))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 616, Col: 83}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 605, Col: 122}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var105)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 149, "\" id=\"")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 149, "\" value=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var106 string
-			templ_7745c5c3_Var106, templ_7745c5c3_Err = templ.ResolveAttributeValue("item_title_" + strconv.Itoa(i))
+			templ_7745c5c3_Var106, templ_7745c5c3_Err = templ.ResolveAttributeValue(item.Title)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 616, Col: 122}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 605, Col: 143}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var106)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 150, "\" value=\"")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 150, "\" class=\"mt-1 block w-full border-gray-300 rounded-md shadow-sm\"></div><div class=\"sm:col-span-3\"><label for=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var107 string
-			templ_7745c5c3_Var107, templ_7745c5c3_Err = templ.ResolveAttributeValue(item.Title)
+			templ_7745c5c3_Var107, templ_7745c5c3_Err = templ.ResolveAttributeValue("item_link_" + strconv.Itoa(i))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 616, Col: 143}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 608, Col: 50}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var107)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 151, "\" class=\"mt-1 block w-full border-gray-300 rounded-md shadow-sm\"></div><div class=\"sm:col-span-3\"><label for=\"")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 151, "\" class=\"block text-sm font-medium text-gray-700\">Link</label> <input type=\"text\" name=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var108 string
-			templ_7745c5c3_Var108, templ_7745c5c3_Err = templ.ResolveAttributeValue("item_link_" + strconv.Itoa(i))
+			templ_7745c5c3_Var108, templ_7745c5c3_Err = templ.ResolveAttributeValue("storefront_sidebar_" + strconv.Itoa(i) + "_link")
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 619, Col: 50}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 609, Col: 82}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var108)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 152, "\" class=\"block text-sm font-medium text-gray-700\">Link</label> <input type=\"text\" name=\"")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 152, "\" id=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var109 string
-			templ_7745c5c3_Var109, templ_7745c5c3_Err = templ.ResolveAttributeValue("storefront_sidebar_" + strconv.Itoa(i) + "_link")
+			templ_7745c5c3_Var109, templ_7745c5c3_Err = templ.ResolveAttributeValue("item_link_" + strconv.Itoa(i))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 620, Col: 82}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 609, Col: 120}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var109)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 153, "\" id=\"")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 153, "\" value=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var110 string
-			templ_7745c5c3_Var110, templ_7745c5c3_Err = templ.ResolveAttributeValue("item_link_" + strconv.Itoa(i))
+			templ_7745c5c3_Var110, templ_7745c5c3_Err = templ.ResolveAttributeValue(item.Link)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 620, Col: 120}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 609, Col: 140}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var110)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 154, "\" value=\"")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 154, "\" class=\"mt-1 block w-full border-gray-300 rounded-md shadow-sm\"></div><div class=\"sm:col-span-2\"><label for=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var111 string
-			templ_7745c5c3_Var111, templ_7745c5c3_Err = templ.ResolveAttributeValue(item.Link)
+			templ_7745c5c3_Var111, templ_7745c5c3_Err = templ.ResolveAttributeValue("item_icon_" + strconv.Itoa(i))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 620, Col: 140}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 612, Col: 50}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var111)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 155, "\" class=\"mt-1 block w-full border-gray-300 rounded-md shadow-sm\"></div><div class=\"sm:col-span-2\"><label for=\"")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 155, "\" class=\"block text-sm font-medium text-gray-700\">Icon</label> <input type=\"text\" name=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var112 string
-			templ_7745c5c3_Var112, templ_7745c5c3_Err = templ.ResolveAttributeValue("item_icon_" + strconv.Itoa(i))
+			templ_7745c5c3_Var112, templ_7745c5c3_Err = templ.ResolveAttributeValue("storefront_sidebar_" + strconv.Itoa(i) + "_icon")
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 623, Col: 50}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 613, Col: 82}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var112)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 156, "\" class=\"block text-sm font-medium text-gray-700\">Icon</label> <input type=\"text\" name=\"")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 156, "\" id=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var113 string
-			templ_7745c5c3_Var113, templ_7745c5c3_Err = templ.ResolveAttributeValue("storefront_sidebar_" + strconv.Itoa(i) + "_icon")
+			templ_7745c5c3_Var113, templ_7745c5c3_Err = templ.ResolveAttributeValue("item_icon_" + strconv.Itoa(i))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 624, Col: 82}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 613, Col: 120}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var113)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 157, "\" id=\"")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 157, "\" value=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var114 string
-			templ_7745c5c3_Var114, templ_7745c5c3_Err = templ.ResolveAttributeValue("item_icon_" + strconv.Itoa(i))
+			templ_7745c5c3_Var114, templ_7745c5c3_Err = templ.ResolveAttributeValue(item.Icon)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 624, Col: 120}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 613, Col: 140}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var114)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 158, "\" value=\"")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 158, "\" class=\"mt-1 block w-full border-gray-300 rounded-md shadow-sm\"></div><div class=\"sm:col-span-1 flex items-end justify-center\"><input type=\"checkbox\" name=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var115 string
-			templ_7745c5c3_Var115, templ_7745c5c3_Err = templ.ResolveAttributeValue(item.Icon)
+			templ_7745c5c3_Var115, templ_7745c5c3_Err = templ.ResolveAttributeValue("storefront_sidebar_" + strconv.Itoa(i) + "_delete")
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 624, Col: 140}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 616, Col: 88}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var115)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 159, "\" class=\"mt-1 block w-full border-gray-300 rounded-md shadow-sm\"></div><div class=\"sm:col-span-1 flex items-end justify-center\"><input type=\"checkbox\" name=\"")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 159, "\" id=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var116 string
-			templ_7745c5c3_Var116, templ_7745c5c3_Err = templ.ResolveAttributeValue("storefront_sidebar_" + strconv.Itoa(i) + "_delete")
+			templ_7745c5c3_Var116, templ_7745c5c3_Err = templ.ResolveAttributeValue("item_delete_" + strconv.Itoa(i))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 627, Col: 88}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 616, Col: 128}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var116)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 160, "\" id=\"")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 160, "\" class=\"h-4 w-4 text-red-600 border-gray-300 rounded focus:ring-red-500\"> <label for=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var117 string
 			templ_7745c5c3_Var117, templ_7745c5c3_Err = templ.ResolveAttributeValue("item_delete_" + strconv.Itoa(i))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 627, Col: 128}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 617, Col: 52}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var117)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 161, "\" class=\"h-4 w-4 text-red-600 border-gray-300 rounded focus:ring-red-500\"> <label for=\"")
-			if templ_7745c5c3_Err != nil {
-				return templ_7745c5c3_Err
-			}
-			var templ_7745c5c3_Var118 string
-			templ_7745c5c3_Var118, templ_7745c5c3_Err = templ.ResolveAttributeValue("item_delete_" + strconv.Itoa(i))
-			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 628, Col: 52}
-			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var118)
-			if templ_7745c5c3_Err != nil {
-				return templ_7745c5c3_Err
-			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 162, "\" class=\"ml-2 text-sm text-red-600\">Delete</label></div></div></div>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 161, "\" class=\"ml-2 text-sm text-red-600\">Delete</label></div></div></div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 163, "</div><div class=\"mt-6 space-y-4\" id=\"new-sidebar-items\"><p class=\"text-sm text-gray-500\">New Items</p><template x-if=\"newItems > 0\"><template x-for=\"i in newItems\" :key=\"i\"><div class=\"p-4 border border-dashed border-gray-300 rounded-md\"><div class=\"grid grid-cols-1 gap-y-4 gap-x-4 sm:grid-cols-8\"><div class=\"sm:col-span-3\"><label class=\"block text-sm font-medium text-gray-700\">Title</label> <input type=\"text\" name=\"new_sidebar_item_title\" class=\"mt-1 block w-full border-gray-300 rounded-md shadow-sm\"></div><div class=\"sm:col-span-3\"><label class=\"block text-sm font-medium text-gray-700\">Link</label> <input type=\"text\" name=\"new_sidebar_item_link\" class=\"mt-1 block w-full border-gray-300 rounded-md shadow-sm\"></div><div class=\"sm:col-span-2\"><label class=\"block text-sm font-medium text-gray-700\">Icon</label> <input type=\"text\" name=\"new_sidebar_item_icon\" class=\"mt-1 block w-full border-gray-300 rounded-md shadow-sm\"></div></div></div></template></template></div><div class=\"mt-4\"><button type=\"button\" @click=\"newItems++\" class=\"px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50\">Add Menu Item</button></div></div>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 162, "</div><div class=\"mt-6 space-y-4\" id=\"new-sidebar-items\"><p class=\"text-sm text-gray-500\">New Items</p><template x-if=\"newItems > 0\"><template x-for=\"i in newItems\" :key=\"i\"><div class=\"p-4 border border-dashed border-gray-300 rounded-md\"><div class=\"grid grid-cols-1 gap-y-4 gap-x-4 sm:grid-cols-8\"><div class=\"sm:col-span-3\"><label class=\"block text-sm font-medium text-gray-700\">Title</label> <input type=\"text\" name=\"new_sidebar_item_title\" class=\"mt-1 block w-full border-gray-300 rounded-md shadow-sm\"></div><div class=\"sm:col-span-3\"><label class=\"block text-sm font-medium text-gray-700\">Link</label> <input type=\"text\" name=\"new_sidebar_item_link\" class=\"mt-1 block w-full border-gray-300 rounded-md shadow-sm\"></div><div class=\"sm:col-span-2\"><label class=\"block text-sm font-medium text-gray-700\">Icon</label> <input type=\"text\" name=\"new_sidebar_item_icon\" class=\"mt-1 block w-full border-gray-300 rounded-md shadow-sm\"></div></div></div></template></template></div><div class=\"mt-4\"><button type=\"button\" @click=\"newItems++\" class=\"px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50\">Add Menu Item</button></div></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
