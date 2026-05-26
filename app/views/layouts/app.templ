@@ -300,9 +300,9 @@ templ AdminPage(user models.AuthUser, cfg *config.Config, categories []models.Ca
 				</div>
 				<div class="flex-1 flex flex-col overflow-hidden">
 					<div class="flex-grow overflow-y-auto custom-scrollbar">
-						<main class="pb-4">
-							<div class="mt-8">
-								<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+						<main class="pb-4 h-full">
+							<div class="mt-8 h-full flex flex-col">
+								<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex-1 flex flex-col">
 									@content
 								</div>
 							</div>
