@@ -6,6 +6,7 @@ import (
 	"shopTemplate/app/config"
 	"shopTemplate/app/views/components"
 	"shopTemplate/app/views/layouts"
+	"shopTemplate/app/services"
 )
 
 templ CategoryShow(category models.Category, products []models.Product, breadcrumbs []models.Category, cfg *config.Config) {
@@ -38,7 +39,10 @@ templ CategoryShow(category models.Category, products []models.Product, breadcru
 
 		if len(products) == 0 {
 			<div class="text-center py-24">
-				<p class="text-lg text-muted-foreground">No products found in this category.</p>
+				<svg class="mx-auto h-16 w-16 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
+				</svg>
+				<h3 class="mt-4 text-lg font-medium text-gray-900">{ services.GetI18n().T(ctx, "no_products_found") }</h3>
 			</div>
 		} else {
 			<div class="grid grid-cols-1 gap-y-10 gap-x-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6">

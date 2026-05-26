@@ -12,9 +12,12 @@ templ Index(cart *models.Cart) {
 	<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
 		<h1 class="text-3xl font-bold mb-8">{ services.GetI18n().T(ctx, "shopping_cart") }</h1>
 		if len(cart.Items) == 0 {
-			<div class="text-center py-12 border-2 border-dashed border-gray-300 rounded-lg">
-				<p class="text-xl text-gray-500">{ services.GetI18n().T(ctx, "cart_empty") }</p>
-				<a href="/" class="mt-4 inline-block text-primary hover:underline">{ services.GetI18n().T(ctx, "continue_shopping") }</a>
+			<div class="text-center py-16">
+				<svg class="mx-auto h-24 w-24 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 100 4 2 2 0 000-4z"/>
+				</svg>
+				<h3 class="mt-6 text-xl font-semibold text-gray-900">{ services.GetI18n().T(ctx, "cart_empty") }</h3>
+				<a href="/" class="mt-6 inline-flex items-center px-6 py-3 rounded-lg bg-primary text-white text-sm font-medium hover:bg-primary/90 transition-colors">{ services.GetI18n().T(ctx, "continue_shopping") }</a>
 			</div>
 		} else {
 			<div class="bg-white shadow overflow-hidden sm:rounded-lg">

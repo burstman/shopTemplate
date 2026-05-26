@@ -55,27 +55,27 @@ func Index(cart *models.Cart) templ.Component {
 			return templ_7745c5c3_Err
 		}
 		if len(cart.Items) == 0 {
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "<div class=\"text-center py-12 border-2 border-dashed border-gray-300 rounded-lg\"><p class=\"text-xl text-gray-500\">")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "<div class=\"text-center py-16\"><svg class=\"mx-auto h-24 w-24 text-gray-300\" fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1\" d=\"M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 100 4 2 2 0 000-4z\"></path></svg><h3 class=\"mt-6 text-xl font-semibold text-gray-900\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var3 string
 			templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinStringErrs(services.GetI18n().T(ctx, "cart_empty"))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/cart/index.templ`, Line: 16, Col: 78}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/cart/index.templ`, Line: 19, Col: 98}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var3))
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 4, "</p><a href=\"/\" class=\"mt-4 inline-block text-primary hover:underline\">")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 4, "</h3><a href=\"/\" class=\"mt-6 inline-flex items-center px-6 py-3 rounded-lg bg-primary text-white text-sm font-medium hover:bg-primary/90 transition-colors\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var4 string
 			templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinStringErrs(services.GetI18n().T(ctx, "continue_shopping"))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/cart/index.templ`, Line: 17, Col: 119}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/cart/index.templ`, Line: 20, Col: 203}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var4))
 			if templ_7745c5c3_Err != nil {
@@ -103,7 +103,7 @@ func Index(cart *models.Cart) templ.Component {
 					var templ_7745c5c3_Var5 string
 					templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.ResolveAttributeValue(item.Product.Image)
 					if templ_7745c5c3_Err != nil {
-						return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/cart/index.templ`, Line: 26, Col: 73}
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/cart/index.templ`, Line: 29, Col: 73}
 					}
 					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var5)
 					if templ_7745c5c3_Err != nil {
@@ -116,7 +116,7 @@ func Index(cart *models.Cart) templ.Component {
 					var templ_7745c5c3_Var6 string
 					templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.ResolveAttributeValue(item.Product.Name)
 					if templ_7745c5c3_Err != nil {
-						return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/cart/index.templ`, Line: 26, Col: 99}
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/cart/index.templ`, Line: 29, Col: 99}
 					}
 					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var6)
 					if templ_7745c5c3_Err != nil {
@@ -134,7 +134,7 @@ func Index(cart *models.Cart) templ.Component {
 					var templ_7745c5c3_Var7 string
 					templ_7745c5c3_Var7, templ_7745c5c3_Err = templ.JoinStringErrs(services.GetI18n().T(ctx, "no_image"))
 					if templ_7745c5c3_Err != nil {
-						return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/cart/index.templ`, Line: 28, Col: 130}
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/cart/index.templ`, Line: 31, Col: 130}
 					}
 					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var7))
 					if templ_7745c5c3_Err != nil {
@@ -152,7 +152,7 @@ func Index(cart *models.Cart) templ.Component {
 				var templ_7745c5c3_Var8 templ.SafeURL
 				templ_7745c5c3_Var8, templ_7745c5c3_Err = templ.JoinURLErrs(templ.SafeURL(fmt.Sprintf("/products/%d", item.Product.ID)))
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/cart/index.templ`, Line: 33, Col: 82}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/cart/index.templ`, Line: 36, Col: 82}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var8))
 				if templ_7745c5c3_Err != nil {
@@ -165,7 +165,7 @@ func Index(cart *models.Cart) templ.Component {
 				var templ_7745c5c3_Var9 string
 				templ_7745c5c3_Var9, templ_7745c5c3_Err = templ.JoinStringErrs(item.Product.Name)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/cart/index.templ`, Line: 33, Col: 104}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/cart/index.templ`, Line: 36, Col: 104}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var9))
 				if templ_7745c5c3_Err != nil {
@@ -178,7 +178,7 @@ func Index(cart *models.Cart) templ.Component {
 				var templ_7745c5c3_Var10 string
 				templ_7745c5c3_Var10, templ_7745c5c3_Err = templ.JoinStringErrs(helpers.CalculateItemPrice(item, config.FromContext(ctx).Site.Bundles).String())
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/cart/index.templ`, Line: 34, Col: 106}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/cart/index.templ`, Line: 37, Col: 106}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var10))
 				if templ_7745c5c3_Err != nil {
@@ -191,7 +191,7 @@ func Index(cart *models.Cart) templ.Component {
 				var templ_7745c5c3_Var11 string
 				templ_7745c5c3_Var11, templ_7745c5c3_Err = templ.JoinStringErrs(services.GetI18n().T(ctx, "qty"))
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/cart/index.templ`, Line: 37, Col: 68}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/cart/index.templ`, Line: 40, Col: 68}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var11))
 				if templ_7745c5c3_Err != nil {
@@ -204,7 +204,7 @@ func Index(cart *models.Cart) templ.Component {
 				var templ_7745c5c3_Var12 string
 				templ_7745c5c3_Var12, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprint(item.Quantity))
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/cart/index.templ`, Line: 37, Col: 98}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/cart/index.templ`, Line: 40, Col: 98}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var12))
 				if templ_7745c5c3_Err != nil {
@@ -217,7 +217,7 @@ func Index(cart *models.Cart) templ.Component {
 				var templ_7745c5c3_Var13 string
 				templ_7745c5c3_Var13, templ_7745c5c3_Err = templ.JoinStringErrs(item.Product.Price.String())
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/cart/index.templ`, Line: 37, Col: 132}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/cart/index.templ`, Line: 40, Col: 132}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var13))
 				if templ_7745c5c3_Err != nil {
@@ -235,7 +235,7 @@ func Index(cart *models.Cart) templ.Component {
 			var templ_7745c5c3_Var14 string
 			templ_7745c5c3_Var14, templ_7745c5c3_Err = templ.JoinStringErrs(services.GetI18n().T(ctx, "subtotal"))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/cart/index.templ`, Line: 45, Col: 48}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/cart/index.templ`, Line: 48, Col: 48}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var14))
 			if templ_7745c5c3_Err != nil {
@@ -248,7 +248,7 @@ func Index(cart *models.Cart) templ.Component {
 			var templ_7745c5c3_Var15 string
 			templ_7745c5c3_Var15, templ_7745c5c3_Err = templ.JoinStringErrs(calculateTotal(cart, config.FromContext(ctx).Site.Bundles).String())
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/cart/index.templ`, Line: 46, Col: 78}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/cart/index.templ`, Line: 49, Col: 78}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var15))
 			if templ_7745c5c3_Err != nil {
@@ -261,7 +261,7 @@ func Index(cart *models.Cart) templ.Component {
 			var templ_7745c5c3_Var16 string
 			templ_7745c5c3_Var16, templ_7745c5c3_Err = templ.JoinStringErrs(services.GetI18n().T(ctx, "shipping_taxes_calc"))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/cart/index.templ`, Line: 48, Col: 95}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/cart/index.templ`, Line: 51, Col: 95}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var16))
 			if templ_7745c5c3_Err != nil {
@@ -274,7 +274,7 @@ func Index(cart *models.Cart) templ.Component {
 			var templ_7745c5c3_Var17 string
 			templ_7745c5c3_Var17, templ_7745c5c3_Err = templ.JoinStringErrs(services.GetI18n().T(ctx, "checkout"))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/cart/index.templ`, Line: 50, Col: 227}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/cart/index.templ`, Line: 53, Col: 227}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var17))
 			if templ_7745c5c3_Err != nil {
@@ -287,7 +287,7 @@ func Index(cart *models.Cart) templ.Component {
 			var templ_7745c5c3_Var18 string
 			templ_7745c5c3_Var18, templ_7745c5c3_Err = templ.JoinStringErrs(services.GetI18n().T(ctx, "continue_shopping"))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/cart/index.templ`, Line: 54, Col: 122}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/cart/index.templ`, Line: 57, Col: 122}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var18))
 			if templ_7745c5c3_Err != nil {

@@ -3,6 +3,9 @@ package layouts
 import (
 	"context"
 	"fmt"
+	"math"
+	"strconv"
+	"strings"
 	"shopTemplate/app/config"
 	"shopTemplate/app/models"
 	"shopTemplate/app/views/components"
@@ -44,6 +47,9 @@ templ App(user models.AuthUser, cfg *config.Config, categories []models.Category
 				<!-- End Facebook Pixel Code -->
 			}
 			<link rel="stylesheet" href="/public/assets/styles.css"/>
+			<style>
+				:root { --primary: { fmt.Sprintf("%.0f %.0f%% %.0f%%", hexToHSL(cfg.Theme.PrimaryColor)) }; }
+			</style>
 			<script src="https://unpkg.com/htmx.org@1.9.10"></script>
 			<script src="https://unpkg.com/htmx.org@1.9.10/dist/ext/ws.js"></script>
 			<script src="/public/assets/index.js"></script>
@@ -104,6 +110,46 @@ func getPageStyle(cfg *config.Config) string {
 	return fmt.Sprintf("background-color: %s;", cfg.Theme.PageBgColor)
 }
 
+func hexToHSL(hex string) (float64, float64, float64) {
+	hex = strings.TrimPrefix(hex, "#")
+	if len(hex) < 6 {
+		return 0, 0, 0
+	}
+	r, _ := strconv.ParseInt(hex[0:2], 16, 64)
+	g, _ := strconv.ParseInt(hex[2:4], 16, 64)
+	b, _ := strconv.ParseInt(hex[4:6], 16, 64)
+	rf := float64(r) / 255.0
+	gf := float64(g) / 255.0
+	bf := float64(b) / 255.0
+	max := math.Max(rf, math.Max(gf, bf))
+	min := math.Min(rf, math.Min(gf, bf))
+	l := (max + min) / 2.0
+	if max == min {
+		return 0, 0, math.Round(l * 100)
+	}
+	d := max - min
+	var s float64
+	if l > 0.5 {
+		s = d / (2.0 - max - min)
+	} else {
+		s = d / (max + min)
+	}
+	var h float64
+	switch max {
+	case rf:
+		h = (gf - bf) / d
+		if gf < bf {
+			h += 6
+		}
+	case gf:
+		h = (bf - rf)/d + 2
+	case bf:
+		h = (rf - gf)/d + 4
+	}
+	h = h * 60
+	return math.Round(h), math.Round(s * 100), math.Round(l * 100)
+}
+
 func getDir(ctx context.Context) string {
 	if lang, ok := ctx.Value("lang").(string); ok && lang == "ar" {
 		return "rtl"
@@ -131,6 +177,9 @@ templ AdminPage(user models.AuthUser, cfg *config.Config, categories []models.Ca
 			<meta name="csrf-token" content={ csrfToken } />
 			<title>Admin Dashboard</title>
 			<link rel="stylesheet" href="/public/assets/styles.css"/>
+			<style>
+				:root { --primary: { fmt.Sprintf("%.0f %.0f%% %.0f%%", hexToHSL(cfg.Theme.PrimaryColor)) }; }
+			</style>
 			<script src="https://unpkg.com/htmx.org@1.9.10"></script>
 			<script src="https://unpkg.com/htmx.org@1.9.10/dist/ext/ws.js"></script>
 			<script src="/public/assets/index.js"></script>

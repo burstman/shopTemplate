@@ -16,53 +16,75 @@ templ Index(cart *models.Cart, values map[string]string, errors validate.Errors,
 		class="w-full px-4 sm:px-6 lg:px-8 py-12"
 		style={ layouts.GetContentStyle(cfg) }
 	>
-		<h1 class="text-3xl font-bold mb-8">{ services.GetI18n().T(ctx, "checkout") }</h1>
-		<div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
-			<div>
-				<h2 class="text-xl font-semibold mb-4">{ services.GetI18n().T(ctx, "order_summary") }</h2>
-				if len(cart.Items) == 0 {
-					<p class="text-gray-500">{ services.GetI18n().T(ctx, "cart_empty") }</p>
-				} else {
-					<div class="bg-white shadow overflow-hidden sm:rounded-lg mb-6">
-						<ul role="list" class="divide-y divide-gray-200">
-							for _, item := range cart.Items {
-								<li class="px-4 py-4 flex items-center">
-									<div class="flex-shrink-0 h-16 w-16 rounded-md overflow-hidden bg-gray-100">
-										if item.Product.Image != "" {
-											<img class="h-full w-full object-cover" src={ item.Product.Image } alt={ item.Product.Name }/>
-										} else {
-											<div class="h-full w-full flex items-center justify-center text-gray-400 text-xs">{ services.GetI18n().T(ctx, "no_image") }</div>
-										}
-									</div>
-									<div class="ml-4 flex-1">
-										<div class="flex justify-between text-sm font-medium text-gray-900">
-											<h3>{ item.Product.Name }</h3>
-											<p>{ helpers.CalculateItemPrice(item, cfg.Site.Bundles).String() }</p>
+		<!-- Progress Stepper -->
+		<div class="max-w-2xl mx-auto mb-12">
+			<div class="flex items-center justify-center">
+				<div class="flex items-center">
+					<div class="flex items-center justify-center w-10 h-10 rounded-full bg-primary text-white text-sm font-bold">1</div>
+					<span class="ml-2 text-sm font-medium text-gray-900">{ services.GetI18n().T(ctx, "shopping_cart") }</span>
+				</div>
+				<div class="w-16 h-0.5 mx-3 bg-primary"></div>
+				<div class="flex items-center">
+					<div class="flex items-center justify-center w-10 h-10 rounded-full bg-primary text-white text-sm font-bold">2</div>
+					<span class="ml-2 text-sm font-medium text-primary">{ services.GetI18n().T(ctx, "checkout") }</span>
+				</div>
+				<div class="w-16 h-0.5 mx-3 bg-gray-200"></div>
+				<div class="flex items-center">
+					<div class="flex items-center justify-center w-10 h-10 rounded-full bg-gray-200 text-gray-400 text-sm font-bold">3</div>
+					<span class="ml-2 text-sm text-gray-400">{ services.GetI18n().T(ctx, "confirmation") }</span>
+				</div>
+			</div>
+		</div>
+
+		<div class="grid grid-cols-1 lg:grid-cols-5 gap-8 max-w-6xl mx-auto">
+			<div class="lg:col-span-3">
+				@CheckoutForm(values, errors)
+			</div>
+			<div class="lg:col-span-2">
+				<div class="lg:sticky lg:top-28">
+					<div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+						<div class="px-6 py-4 border-b border-gray-100">
+							<h2 class="text-lg font-semibold text-gray-900">{ services.GetI18n().T(ctx, "order_summary") }</h2>
+						</div>
+						if len(cart.Items) == 0 {
+							<div class="px-6 py-8 text-center">
+								<p class="text-gray-500">{ services.GetI18n().T(ctx, "cart_empty") }</p>
+							</div>
+						} else {
+							<ul role="list" class="divide-y divide-gray-100">
+								for _, item := range cart.Items {
+									<li class="px-6 py-4 flex items-center gap-4">
+										<div class="flex-shrink-0 h-16 w-16 rounded-lg overflow-hidden bg-gray-100">
+											if item.Product.Image != "" {
+												<img class="h-full w-full object-cover" src={ item.Product.Image } alt={ item.Product.Name }/>
+											} else {
+												<div class="h-full w-full flex items-center justify-center text-gray-400 text-xs">{ services.GetI18n().T(ctx, "no_image") }</div>
+											}
 										</div>
-										<div class="flex justify-between items-center mt-1">
-											<p class="text-sm text-gray-500">{ services.GetI18n().T(ctx, "qty") } { fmt.Sprint(item.Quantity) }</p>
+										<div class="flex-1 min-w-0">
+											<h3 class="text-sm font-medium text-gray-900 truncate">{ item.Product.Name }</h3>
+											<p class="text-sm text-gray-500 mt-0.5">{ services.GetI18n().T(ctx, "qty") } { fmt.Sprint(item.Quantity) }</p>
 											<button 
 												hx-delete={ fmt.Sprintf("/cart/remove/%d", item.Product.ID) }
-												class="text-red-600 hover:text-red-800 text-xs font-medium cursor-pointer"
+												class="text-xs text-red-500 hover:text-red-700 cursor-pointer mt-1"
 											>
 												{ services.GetI18n().T(ctx, "remove") }
 											</button>
 										</div>
-									</div>
-								</li>
-							}
-						</ul>
-						<div class="border-t border-gray-200 px-4 py-4 bg-gray-50">
-							<div class="flex justify-between text-base font-medium text-gray-900">
-								<p>{ services.GetI18n().T(ctx, "total") }</p>
-								<p>{ helpers.CalculateCartTotal(cart, cfg.Site.Bundles).String() } { cfg.Site.Currency }</p>
+										<p class="text-sm font-medium text-gray-900">{ helpers.CalculateItemPrice(item, cfg.Site.Bundles).String() }</p>
+									</li>
+								}
+							</ul>
+							<div class="px-6 py-4 bg-gray-50 border-t border-gray-100">
+								<div class="flex justify-between text-base font-semibold text-gray-900">
+									<p>{ services.GetI18n().T(ctx, "total") }</p>
+									<p>{ helpers.CalculateCartTotal(cart, cfg.Site.Bundles).String() } { cfg.Site.Currency }</p>
+								</div>
+								<p class="mt-1 text-xs text-gray-500">{ services.GetI18n().T(ctx, "shipping_taxes_calc") }</p>
 							</div>
-						</div>
+						}
 					</div>
-				}
-			</div>
-			<div>
-				@CheckoutForm(values, errors)
+				</div>
 			</div>
 		</div>
 	</div>
@@ -132,7 +154,7 @@ templ CheckoutForm(values map[string]string, errors validate.Errors) {
 					{ services.GetI18n().T(ctx, "payment_simulated") }
 				</div>
 			</div>
-			<button type="submit" class="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-700 hover:bg-green-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+			<button type="submit" class="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-primary hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-colors">
 				{ services.GetI18n().T(ctx, "place_order") }
 			</button>
 		</form>

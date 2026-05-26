@@ -11,10 +11,13 @@ import templruntime "github.com/a-h/templ/runtime"
 import (
 	"context"
 	"fmt"
+	"math"
 	"shopTemplate/app/config"
 	"shopTemplate/app/models"
 	"shopTemplate/app/services"
 	"shopTemplate/app/views/components"
+	"strconv"
+	"strings"
 )
 
 func initFacebookPixel(id string) templ.ComponentScript {
@@ -57,7 +60,7 @@ func App(user models.AuthUser, cfg *config.Config, categories []models.Category,
 		var templ_7745c5c3_Var2 string
 		templ_7745c5c3_Var2, templ_7745c5c3_Err = templ.ResolveAttributeValue(fmt.Sprint(ctx.Value("lang")))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/layouts/app.templ`, Line: 20, Col: 43}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/layouts/app.templ`, Line: 23, Col: 43}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var2)
 		if templ_7745c5c3_Err != nil {
@@ -70,7 +73,7 @@ func App(user models.AuthUser, cfg *config.Config, categories []models.Category,
 		var templ_7745c5c3_Var3 string
 		templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.ResolveAttributeValue(getDir(ctx))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/layouts/app.templ`, Line: 20, Col: 78}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/layouts/app.templ`, Line: 23, Col: 78}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var3)
 		if templ_7745c5c3_Err != nil {
@@ -83,7 +86,7 @@ func App(user models.AuthUser, cfg *config.Config, categories []models.Category,
 		var templ_7745c5c3_Var4 string
 		templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.ResolveAttributeValue(csrfToken)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/layouts/app.templ`, Line: 24, Col: 46}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/layouts/app.templ`, Line: 27, Col: 46}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var4)
 		if templ_7745c5c3_Err != nil {
@@ -96,7 +99,7 @@ func App(user models.AuthUser, cfg *config.Config, categories []models.Category,
 		var templ_7745c5c3_Var5 string
 		templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinStringErrs(cfg.Site.Name)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/layouts/app.templ`, Line: 25, Col: 25}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/layouts/app.templ`, Line: 28, Col: 25}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var5))
 		if templ_7745c5c3_Err != nil {
@@ -114,7 +117,7 @@ func App(user models.AuthUser, cfg *config.Config, categories []models.Category,
 			var templ_7745c5c3_Var6 string
 			templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.ResolveAttributeValue(cfg.FacebookPixel.DomainVerification)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/layouts/app.templ`, Line: 27, Col: 92}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/layouts/app.templ`, Line: 30, Col: 92}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var6)
 			if templ_7745c5c3_Err != nil {
@@ -141,7 +144,7 @@ func App(user models.AuthUser, cfg *config.Config, categories []models.Category,
 			var templ_7745c5c3_Var7 string
 			templ_7745c5c3_Var7, templ_7745c5c3_Err = templ.ResolveAttributeValue(fmt.Sprintf("https://www.facebook.com/tr?id=%s&ev=PageView&noscript=1", cfg.FacebookPixel.PixelID))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/layouts/app.templ`, Line: 43, Col: 108}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/layouts/app.templ`, Line: 46, Col: 108}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var7)
 			if templ_7745c5c3_Err != nil {
@@ -152,14 +155,14 @@ func App(user models.AuthUser, cfg *config.Config, categories []models.Category,
 				return templ_7745c5c3_Err
 			}
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 11, "<link rel=\"stylesheet\" href=\"/public/assets/styles.css\"><script src=\"https://unpkg.com/htmx.org@1.9.10\"></script><script src=\"https://unpkg.com/htmx.org@1.9.10/dist/ext/ws.js\"></script><script src=\"/public/assets/index.js\"></script><style>\n\t\t\t\t[x-cloak] {\n\t\t\t\t\tdisplay: none !important;\n\t\t\t\t}\n\t\t\t</style><script defer src=\"https://cdn.jsdelivr.net/npm/alpinejs@3.13.3/dist/cdn.min.js\"></script><script>\n\t\t\t\tdocument.addEventListener('alpine:init', () => {\n\t\t\t\t\tAlpine.store('chat', {\n\t\t\t\t\t\twsError: false,\n\t\t\t\t\t\tsocket: null\n\t\t\t\t\t})\n\t\t\t\t})\n\t\t\t\tdocument.addEventListener('htmx:oobBeforeSwap', (evt) => {\n\t\t\t\t\tconst oob = evt.detail.elt.getAttribute('hx-swap-oob');\n\t\t\t\t\tif (oob && (oob === 'delete' || oob.startsWith('delete:'))) {\n\t\t\t\t\t\tconst selector = oob.includes(':') ? oob.split(':')[1] : null;\n\t\t\t\t\t\tconst target = selector ? document.querySelector(selector) : (evt.detail.target || document.getElementById(evt.detail.elt.id));\n\t\t\t\t\t\tif (target) target.remove();\n\t\t\t\t\t\tevt.preventDefault();\n\t\t\t\t\t}\n\t\t\t\t});\n\t\t\t\tdocument.addEventListener('htmx:configRequest', (evt) => {\n\t\t\t\t\tconst csrfToken = document.querySelector('meta[name=\"csrf-token\"]')?.getAttribute('content');\n\t\t\t\t\tif (csrfToken) {\n\t\t\t\t\t\tevt.detail.headers['X-CSRF-Token'] = csrfToken;\n\t\t\t\t\t}\n\t\t\t\t});\n\t\t\t</script></head><body class=\"h-full flex flex-col font-sans antialiased text-gray-900 pt-16 sm:pt-28\" style=\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 11, "<link rel=\"stylesheet\" href=\"/public/assets/styles.css\"><style>\n\t\t\t\t:root { --primary: { fmt.Sprintf(\"%.0f %.0f%% %.0f%%\", hexToHSL(cfg.Theme.PrimaryColor)) }; }\n\t\t\t</style><script src=\"https://unpkg.com/htmx.org@1.9.10\"></script><script src=\"https://unpkg.com/htmx.org@1.9.10/dist/ext/ws.js\"></script><script src=\"/public/assets/index.js\"></script><style>\n\t\t\t\t[x-cloak] {\n\t\t\t\t\tdisplay: none !important;\n\t\t\t\t}\n\t\t\t</style><script defer src=\"https://cdn.jsdelivr.net/npm/alpinejs@3.13.3/dist/cdn.min.js\"></script><script>\n\t\t\t\tdocument.addEventListener('alpine:init', () => {\n\t\t\t\t\tAlpine.store('chat', {\n\t\t\t\t\t\twsError: false,\n\t\t\t\t\t\tsocket: null\n\t\t\t\t\t})\n\t\t\t\t})\n\t\t\t\tdocument.addEventListener('htmx:oobBeforeSwap', (evt) => {\n\t\t\t\t\tconst oob = evt.detail.elt.getAttribute('hx-swap-oob');\n\t\t\t\t\tif (oob && (oob === 'delete' || oob.startsWith('delete:'))) {\n\t\t\t\t\t\tconst selector = oob.includes(':') ? oob.split(':')[1] : null;\n\t\t\t\t\t\tconst target = selector ? document.querySelector(selector) : (evt.detail.target || document.getElementById(evt.detail.elt.id));\n\t\t\t\t\t\tif (target) target.remove();\n\t\t\t\t\t\tevt.preventDefault();\n\t\t\t\t\t}\n\t\t\t\t});\n\t\t\t\tdocument.addEventListener('htmx:configRequest', (evt) => {\n\t\t\t\t\tconst csrfToken = document.querySelector('meta[name=\"csrf-token\"]')?.getAttribute('content');\n\t\t\t\t\tif (csrfToken) {\n\t\t\t\t\t\tevt.detail.headers['X-CSRF-Token'] = csrfToken;\n\t\t\t\t\t}\n\t\t\t\t});\n\t\t\t</script></head><body class=\"h-full flex flex-col font-sans antialiased text-gray-900 pt-16 sm:pt-28\" style=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var8 string
 		templ_7745c5c3_Var8, templ_7745c5c3_Err = templruntime.SanitizeStyleAttributeValues(getPageStyle(cfg))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/layouts/app.templ`, Line: 82, Col: 28}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/layouts/app.templ`, Line: 88, Col: 28}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var8))
 		if templ_7745c5c3_Err != nil {
@@ -205,6 +208,46 @@ func App(user models.AuthUser, cfg *config.Config, categories []models.Category,
 
 func getPageStyle(cfg *config.Config) string {
 	return fmt.Sprintf("background-color: %s;", cfg.Theme.PageBgColor)
+}
+
+func hexToHSL(hex string) (float64, float64, float64) {
+	hex = strings.TrimPrefix(hex, "#")
+	if len(hex) < 6 {
+		return 0, 0, 0
+	}
+	r, _ := strconv.ParseInt(hex[0:2], 16, 64)
+	g, _ := strconv.ParseInt(hex[2:4], 16, 64)
+	b, _ := strconv.ParseInt(hex[4:6], 16, 64)
+	rf := float64(r) / 255.0
+	gf := float64(g) / 255.0
+	bf := float64(b) / 255.0
+	max := math.Max(rf, math.Max(gf, bf))
+	min := math.Min(rf, math.Min(gf, bf))
+	l := (max + min) / 2.0
+	if max == min {
+		return 0, 0, math.Round(l * 100)
+	}
+	d := max - min
+	var s float64
+	if l > 0.5 {
+		s = d / (2.0 - max - min)
+	} else {
+		s = d / (max + min)
+	}
+	var h float64
+	switch max {
+	case rf:
+		h = (gf - bf) / d
+		if gf < bf {
+			h += 6
+		}
+	case gf:
+		h = (bf-rf)/d + 2
+	case bf:
+		h = (rf-gf)/d + 4
+	}
+	h = h * 60
+	return math.Round(h), math.Round(s * 100), math.Round(l * 100)
 }
 
 func getDir(ctx context.Context) string {
@@ -253,7 +296,7 @@ func AdminPage(user models.AuthUser, cfg *config.Config, categories []models.Cat
 		var templ_7745c5c3_Var10 string
 		templ_7745c5c3_Var10, templ_7745c5c3_Err = templ.ResolveAttributeValue(fmt.Sprint(ctx.Value("lang")))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/layouts/app.templ`, Line: 127, Col: 43}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/layouts/app.templ`, Line: 173, Col: 43}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var10)
 		if templ_7745c5c3_Err != nil {
@@ -266,7 +309,7 @@ func AdminPage(user models.AuthUser, cfg *config.Config, categories []models.Cat
 		var templ_7745c5c3_Var11 string
 		templ_7745c5c3_Var11, templ_7745c5c3_Err = templ.ResolveAttributeValue(getDir(ctx))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/layouts/app.templ`, Line: 127, Col: 90}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/layouts/app.templ`, Line: 173, Col: 90}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var11)
 		if templ_7745c5c3_Err != nil {
@@ -279,20 +322,20 @@ func AdminPage(user models.AuthUser, cfg *config.Config, categories []models.Cat
 		var templ_7745c5c3_Var12 string
 		templ_7745c5c3_Var12, templ_7745c5c3_Err = templ.ResolveAttributeValue(csrfToken)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/layouts/app.templ`, Line: 131, Col: 46}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/layouts/app.templ`, Line: 177, Col: 46}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var12)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 19, "\"><title>Admin Dashboard</title><link rel=\"stylesheet\" href=\"/public/assets/styles.css\"><script src=\"https://unpkg.com/htmx.org@1.9.10\"></script><script src=\"https://unpkg.com/htmx.org@1.9.10/dist/ext/ws.js\"></script><script src=\"/public/assets/index.js\"></script><script src=\"https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js\"></script><script defer src=\"https://cdn.jsdelivr.net/npm/alpinejs@3.13.3/dist/cdn.min.js\"></script><style>\n\t\t\t\t[x-cloak] {\n\t\t\t\t\tdisplay: none !important;\n\t\t\t\t}\n\t\t\t</style><script>\n\t\t\t\tdocument.addEventListener('alpine:init', () => {\n\t\t\t\t\tAlpine.store('chat', {\n\t\t\t\t\t\twsError: false,\n\t\t\t\t\t\tsocket: null\n\t\t\t\t\t})\n\t\t\t\t})\n\t\t\t\tdocument.addEventListener('htmx:oobBeforeSwap', (evt) => {\n\t\t\t\t\tconst oob = evt.detail.elt.getAttribute('hx-swap-oob');\n\t\t\t\t\tif (oob && (oob === 'delete' || oob.startsWith('delete:'))) {\n\t\t\t\t\t\tconst selector = oob.includes(':') ? oob.split(':')[1] : null;\n\t\t\t\t\t\tconst target = selector ? document.querySelector(selector) : (evt.detail.target || document.getElementById(evt.detail.elt.id));\n\t\t\t\t\t\tif (target) target.remove();\n\t\t\t\t\t\tevt.preventDefault();\n\t\t\t\t\t}\n\t\t\t\t});\n\t\t\t\tdocument.addEventListener('htmx:configRequest', (evt) => {\n\t\t\t\t\tconst csrfToken = document.querySelector('meta[name=\"csrf-token\"]')?.getAttribute('content');\n\t\t\t\t\tif (csrfToken) {\n\t\t\t\t\t\tevt.detail.headers['X-CSRF-Token'] = csrfToken;\n\t\t\t\t\t}\n\t\t\t\t});\n\t\t\t</script></head><body class=\"h-screen overflow-hidden flex flex-col font-sans antialiased text-gray-900 pt-16 sm:pt-28\" style=\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 19, "\"><title>Admin Dashboard</title><link rel=\"stylesheet\" href=\"/public/assets/styles.css\"><style>\n\t\t\t\t:root { --primary: { fmt.Sprintf(\"%.0f %.0f%% %.0f%%\", hexToHSL(cfg.Theme.PrimaryColor)) }; }\n\t\t\t</style><script src=\"https://unpkg.com/htmx.org@1.9.10\"></script><script src=\"https://unpkg.com/htmx.org@1.9.10/dist/ext/ws.js\"></script><script src=\"/public/assets/index.js\"></script><script src=\"https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js\"></script><script defer src=\"https://cdn.jsdelivr.net/npm/alpinejs@3.13.3/dist/cdn.min.js\"></script><style>\n\t\t\t\t[x-cloak] {\n\t\t\t\t\tdisplay: none !important;\n\t\t\t\t}\n\t\t\t</style><script>\n\t\t\t\tdocument.addEventListener('alpine:init', () => {\n\t\t\t\t\tAlpine.store('chat', {\n\t\t\t\t\t\twsError: false,\n\t\t\t\t\t\tsocket: null\n\t\t\t\t\t})\n\t\t\t\t})\n\t\t\t\tdocument.addEventListener('htmx:oobBeforeSwap', (evt) => {\n\t\t\t\t\tconst oob = evt.detail.elt.getAttribute('hx-swap-oob');\n\t\t\t\t\tif (oob && (oob === 'delete' || oob.startsWith('delete:'))) {\n\t\t\t\t\t\tconst selector = oob.includes(':') ? oob.split(':')[1] : null;\n\t\t\t\t\t\tconst target = selector ? document.querySelector(selector) : (evt.detail.target || document.getElementById(evt.detail.elt.id));\n\t\t\t\t\t\tif (target) target.remove();\n\t\t\t\t\t\tevt.preventDefault();\n\t\t\t\t\t}\n\t\t\t\t});\n\t\t\t\tdocument.addEventListener('htmx:configRequest', (evt) => {\n\t\t\t\t\tconst csrfToken = document.querySelector('meta[name=\"csrf-token\"]')?.getAttribute('content');\n\t\t\t\t\tif (csrfToken) {\n\t\t\t\t\t\tevt.detail.headers['X-CSRF-Token'] = csrfToken;\n\t\t\t\t\t}\n\t\t\t\t});\n\t\t\t</script></head><body class=\"h-screen overflow-hidden flex flex-col font-sans antialiased text-gray-900 pt-16 sm:pt-28\" style=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var13 string
 		templ_7745c5c3_Var13, templ_7745c5c3_Err = templruntime.SanitizeStyleAttributeValues(getPageStyle(cfg))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/layouts/app.templ`, Line: 170, Col: 28}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/layouts/app.templ`, Line: 219, Col: 28}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var13))
 		if templ_7745c5c3_Err != nil {
@@ -323,7 +366,7 @@ func AdminPage(user models.AuthUser, cfg *config.Config, categories []models.Cat
 			var templ_7745c5c3_Var15 templ.SafeURL
 			templ_7745c5c3_Var15, templ_7745c5c3_Err = templ.JoinURLErrs(templ.SafeURL(item.Link))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/layouts/app.templ`, Line: 215, Col: 42}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/layouts/app.templ`, Line: 264, Col: 42}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var15))
 			if templ_7745c5c3_Err != nil {
@@ -349,7 +392,7 @@ func AdminPage(user models.AuthUser, cfg *config.Config, categories []models.Cat
 			var templ_7745c5c3_Var17 string
 			templ_7745c5c3_Var17, templ_7745c5c3_Err = templ.JoinStringErrs(services.GetI18n().T(ctx, item.Title))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/layouts/app.templ`, Line: 216, Col: 48}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/layouts/app.templ`, Line: 265, Col: 48}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var17))
 			if templ_7745c5c3_Err != nil {
@@ -383,7 +426,7 @@ func AdminPage(user models.AuthUser, cfg *config.Config, categories []models.Cat
 						}
 					}`)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/layouts/app.templ`, Line: 235, Col: 7}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/layouts/app.templ`, Line: 284, Col: 7}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var18)
 		if templ_7745c5c3_Err != nil {
@@ -402,7 +445,7 @@ func AdminPage(user models.AuthUser, cfg *config.Config, categories []models.Cat
 						window.addEventListener('popstate', () => updateActiveId());
 					`)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/layouts/app.templ`, Line: 242, Col: 6}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/layouts/app.templ`, Line: 291, Col: 6}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var19)
 		if templ_7745c5c3_Err != nil {
