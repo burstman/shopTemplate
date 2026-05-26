@@ -10,55 +10,57 @@ import (
 )
 
 templ Index(cfg *config.Config, products []models.Product, categories []models.Category, activeSection string, csrfToken string) {
-	<form 
-		id="config-form"
-		method="POST" 
-		action={ templ.URL("/admin/" + activeSection) } 
-		enctype="multipart/form-data" 
-		class="space-y-8 max-w-4xl mx-auto"
-		hx-post={ string(templ.URL("/admin/" + activeSection)) }
-		hx-trigger="change delay:500ms, keyup delay:1000ms changed"
-		hx-swap="none"
-		hx-indicator="#save-indicator"
-	>
-		<input type="hidden" name="csrf_token" value={ csrfToken } />
-		switch activeSection {
-			case "site":
-				@siteSettingsForm(cfg)
-			case "payment":
-				@paymentSettingsForm(cfg)
-			case "hero":
-				@HeroSettings(*cfg, products)
-			case "sections":
-				@sectionsSettingsForm(cfg, products, categories, activeSection)
-			case "theme":
-				@themeSettingsForm(cfg)
-			case "storefront-sidebar":
-				@storefrontSidebarSettingsForm(cfg)
-			case "social_links":
-				@socialLinksSettingsForm(cfg)
-			case "chat_settings":
-				@chatSettingsForm(cfg)
-		}
-		<div class="sticky bottom-6 z-40 mt-10">
-			<div class="flex justify-between items-center bg-white/80 backdrop-blur-md p-4 rounded-xl shadow-2xl border border-gray-200">
-				<div id="save-indicator" class="htmx-indicator flex items-center text-sm text-green-600 font-medium">
-					<svg class="animate-spin h-4 w-4 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-						<circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-						<path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-					</svg>
-					{ services.GetI18n().T(ctx, "saving") }
-				</div>
-				<div class="flex-grow"></div>
-				<button type="submit" class="inline-flex items-center px-8 py-3 text-base font-bold text-white bg-primary border border-transparent rounded-lg shadow-sm hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-all transform active:scale-95">
-					<svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"></path>
-					</svg>
-					{ services.GetI18n().T(ctx, "save_changes") }
-				</button>
+	<div class="max-w-4xl mx-auto pb-24">
+		<form 
+			id="config-form"
+			method="POST" 
+			action={ templ.URL("/admin/" + activeSection) } 
+			enctype="multipart/form-data" 
+			class="space-y-8"
+			hx-post={ string(templ.URL("/admin/" + activeSection)) }
+			hx-trigger="change delay:500ms, keyup delay:1000ms changed"
+			hx-swap="none"
+			hx-indicator="#save-indicator"
+		>
+			<input type="hidden" name="csrf_token" value={ csrfToken } />
+			switch activeSection {
+				case "site":
+					@siteSettingsForm(cfg)
+				case "payment":
+					@paymentSettingsForm(cfg)
+				case "hero":
+					@HeroSettings(*cfg, products)
+				case "sections":
+					@sectionsSettingsForm(cfg, products, categories, activeSection)
+				case "theme":
+					@themeSettingsForm(cfg)
+				case "storefront-sidebar":
+					@storefrontSidebarSettingsForm(cfg)
+				case "social_links":
+					@socialLinksSettingsForm(cfg)
+				case "chat_settings":
+					@chatSettingsForm(cfg)
+			}
+		</form>
+	</div>
+	<div class="fixed bottom-0 left-0 lg:left-64 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-gray-200 shadow-lg">
+		<div class="max-w-4xl mx-auto px-6 py-4 flex justify-between items-center">
+			<div id="save-indicator" class="htmx-indicator flex items-center text-sm text-green-600 font-medium">
+				<svg class="animate-spin h-4 w-4 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+					<circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+					<path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+				</svg>
+				{ services.GetI18n().T(ctx, "saving") }
 			</div>
+			<div class="flex-grow"></div>
+			<button type="submit" form="config-form" class="inline-flex items-center px-8 py-3 text-base font-bold text-white bg-primary border border-transparent rounded-lg shadow-sm hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-all transform active:scale-95">
+				<svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"></path>
+				</svg>
+				{ services.GetI18n().T(ctx, "save_changes") }
+			</button>
 		</div>
-	</form>
+	</div>
 }
 
 templ siteSettingsForm(cfg *config.Config) {

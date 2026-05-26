@@ -2,7 +2,7 @@ const { fontFamily } = require("tailwindcss/defaultTheme");
 
 module.exports = {
  	content: [ "./**/*.html", "./**/*.templ", "./**/*.go", ],
-	safelist: [], // Removed toast-related safelist entries
+	safelist: ["left-64"],
 	theme: {
 		container: {
 			center: true,
