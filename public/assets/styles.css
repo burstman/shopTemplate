@@ -752,6 +752,10 @@ label {
   position: relative;
 }
 
+.sticky {
+  position: sticky;
+}
+
 .inset-0 {
   inset: 0px;
 }
@@ -840,10 +844,6 @@ label {
 
 .left-4 {
   left: 1rem;
-}
-
-.left-64 {
-  left: 16rem;
 }
 
 .right-0 {
@@ -1223,6 +1223,10 @@ label {
 
 .min-h-\[50vh\] {
   min-height: 50vh;
+}
+
+.min-h-full {
+  min-height: 100%;
 }
 
 .w-0 {
@@ -2387,10 +2391,6 @@ label {
 .py-8 {
   padding-top: 2rem;
   padding-bottom: 2rem;
-}
-
-.pb-24 {
-  padding-bottom: 6rem;
 }
 
 .pb-3 {
@@ -3964,10 +3964,6 @@ label {
 
   .lg\:inset-0 {
     inset: 0px;
-  }
-
-  .lg\:left-64 {
-    left: 16rem;
   }
 
   .lg\:top-28 {

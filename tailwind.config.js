@@ -2,7 +2,7 @@ const { fontFamily } = require("tailwindcss/defaultTheme");
 
 module.exports = {
  	content: [ "./**/*.html", "./**/*.templ", "./**/*.go", ],
-	safelist: ["left-64"],
+	safelist: [],
 	theme: {
 		container: {
 			center: true,
