@@ -60,7 +60,7 @@ templ ProductCard(product models.Product, cfg *config.Config) {
 						<button
 							hx-post={ fmt.Sprintf("/cart/add/%d?redirect=/checkout", product.ID) }
 							onclick={ templ.JSFuncCall("trackInitiateCheckout", product.ID, product.Name, getTrackingPrice(product), cfg.Site.Currency) }
-							class="w-full bg-gray-900 text-white px-3 py-1.5 rounded-full text-xs font-medium shadow-sm hover:bg-gray-800 transition-all transform hover:scale-105"
+							class="w-full bg-gray-900 text-white px-3 py-1.5 rounded-full text-xs font-medium shadow-sm border border-gray-700 hover:bg-gray-800 hover:border-gray-600 transition-all transform hover:scale-105"
 						>
 							{ services.GetI18n().T(ctx, "order_now") }
 						</button>

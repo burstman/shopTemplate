@@ -248,7 +248,7 @@ func ProductCard(product models.Product, cfg *config.Config) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 21, "\" class=\"w-full bg-gray-900 text-white px-3 py-1.5 rounded-full text-xs font-medium shadow-sm hover:bg-gray-800 transition-all transform hover:scale-105\">")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 21, "\" class=\"w-full bg-gray-900 text-white px-3 py-1.5 rounded-full text-xs font-medium shadow-sm border border-gray-700 hover:bg-gray-800 hover:border-gray-600 transition-all transform hover:scale-105\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
