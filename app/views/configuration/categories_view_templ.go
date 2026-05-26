@@ -34,7 +34,7 @@ func CategoriesIndex(categories []models.Category, allCategories []models.Catego
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<script>\n\t\tdocument.addEventListener('alpine:init', () => {\n\t\t\tAlpine.data('sortableList', () => ({\n\t\t\t\tinit() {\n\t\t\t\t\tnew Sortable(this.$el, {\n\t\t\t\t\t\tanimation: 150,\n\t\t\t\t\t\thandle: '.handle',\n\t\t\t\t\t\tonEnd: (evt) => {\n\t\t\t\t\t\t\tlet ids = Array.from(evt.from.children).map(el => el.dataset.id);\n\t\t\t\t\t\t\thtmx.ajax('POST', '/admin/categories/reorder', {\n\t\t\t\t\t\t\t\tvalues: { 'category_ids': ids },\n\t\t\t\t\t\t\t\tswap: 'none'\n\t\t\t\t\t\t\t});\n\t\t\t\t\t\t}\n\t\t\t\t\t});\n\t\t\t\t}\n\t\t\t}))\n\t\t})\n\t</script><h1 class=\"text-2xl font-bold mb-6\">Manage Categories</h1><div class=\"grid grid-cols-1 md:grid-cols-3 gap-8\"><div class=\"md:col-span-2\"><h2 class=\"text-xl font-semibold mb-4\">Existing Categories</h2><div class=\"space-y-4\" x-data=\"sortableList\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<script>\n\t\tdocument.addEventListener('alpine:init', () => {\n\t\t\tAlpine.data('sortableList', () => ({\n\t\t\t\tinit() {\n\t\t\t\t\tnew Sortable(this.$el, {\n\t\t\t\t\t\tanimation: 150,\n\t\t\t\t\t\thandle: '.handle',\n\t\t\t\t\t\tonEnd: (evt) => {\n\t\t\t\t\t\t\tlet ids = Array.from(evt.from.children).map(el => el.dataset.id);\n\t\t\t\t\t\t\thtmx.ajax('POST', '/admin/categories/reorder', {\n\t\t\t\t\t\t\t\tvalues: { 'category_ids': ids },\n\t\t\t\t\t\t\t\tswap: 'none'\n\t\t\t\t\t\t\t});\n\t\t\t\t\t\t}\n\t\t\t\t\t});\n\t\t\t\t}\n\t\t\t}))\n\t\t})\n\t</script><div class=\"admin-page-head\"><div><h1>Manage Categories</h1><p>Drag to reorder. Click to expand sub-categories.</p></div></div><div class=\"grid grid-cols-1 lg:grid-cols-3 gap-6\"><div class=\"lg:col-span-2\"><h2 class=\"text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3\">Existing Categories</h2><div class=\"admin-sections\" x-data=\"sortableList\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -44,7 +44,7 @@ func CategoriesIndex(categories []models.Category, allCategories []models.Catego
 				return templ_7745c5c3_Err
 			}
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "</div></div><div><h2 class=\"text-xl font-semibold mb-4\">Add Top-Level Category</h2><form hx-post=\"/admin/categories\" hx-target=\"body\" class=\"bg-white p-6 rounded-lg shadow space-y-4\"><div><label for=\"name\" class=\"block text-sm font-medium text-gray-700\">Category Name</label> <input type=\"text\" name=\"name\" id=\"name\" class=\"mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm\" required></div><button type=\"submit\" class=\"w-full bg-primary text-white rounded-md hover:bg-primary/90\">Add Category</button></form></div></div>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "</div></div><div><h2 class=\"text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3\">Add Top-Level Category</h2><div class=\"admin-section-card\"><div class=\"p-4\"><form hx-post=\"/admin/categories\" hx-target=\"body\" class=\"space-y-4\"><div><label for=\"name\" class=\"field-label\">Category Name</label> <input type=\"text\" name=\"name\" id=\"name\" class=\"input\" required></div><button type=\"submit\" class=\"btn btn-primary w-full justify-center\">Add Category</button></form></div></div></div></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -73,74 +73,74 @@ func CategoryItem(category models.Category) templ.Component {
 			templ_7745c5c3_Var2 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "<div class=\"bg-white p-4 rounded-lg shadow\" data-id=\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "<div class=\"admin-section-card\" data-id=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var3 string
 		templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.ResolveAttributeValue(fmt.Sprint(category.ID))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/categories_view.templ`, Line: 55, Col: 78}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/categories_view.templ`, Line: 64, Col: 66}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var3)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 4, "\" x-data=\"{ open: true }\"><div class=\"flex items-center justify-between\"><div class=\"flex items-center space-x-2\"><svg xmlns=\"http://www.w3.org/2000/svg\" class=\"h-5 w-5 text-gray-400 cursor-grab handle\" fill=\"none\" viewBox=\"0 0 24 24\" stroke=\"currentColor\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M4 6h16M4 12h16M4 18h16\"></path></svg> ")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 4, "\" x-data=\"{ open: true }\"><div class=\"admin-section-head cursor-default px-4 py-3\"><div class=\"flex items-center gap-2 flex-1 min-w-0\"><svg class=\"h-5 w-5 text-gray-400 cursor-grab handle flex-shrink-0\" fill=\"none\" viewBox=\"0 0 24 24\" stroke=\"currentColor\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M4 6h16M4 12h16M4 18h16\"></path></svg> ")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		if len(category.SubCategories) > 0 {
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 5, "<button type=\"button\" @click=\"open = !open\" class=\"text-gray-500 hover:text-gray-700 focus:outline-none\"><svg x-show=\"!open\" xmlns=\"http://www.w3.org/2000/svg\" class=\"h-4 w-4\" fill=\"none\" viewBox=\"0 0 24 24\" stroke=\"currentColor\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M12 4v16m8-8H4\"></path></svg> <svg x-show=\"open\" xmlns=\"http://www.w3.org/2000/svg\" class=\"h-4 w-4\" fill=\"none\" viewBox=\"0 0 24 24\" stroke=\"currentColor\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M20 12H4\"></path></svg></button> ")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 5, "<button type=\"button\" @click=\"open = !open\" class=\"text-gray-400 hover:text-gray-600 flex-shrink-0\"><svg x-show=\"!open\" class=\"h-4 w-4\" fill=\"none\" viewBox=\"0 0 24 24\" stroke=\"currentColor\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M12 4v16m8-8H4\"></path></svg> <svg x-show=\"open\" class=\"h-4 w-4\" fill=\"none\" viewBox=\"0 0 24 24\" stroke=\"currentColor\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M20 12H4\"></path></svg></button> ")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 6, "<span class=\"font-semibold\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 6, "<span class=\"font-medium text-sm\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var4 string
 		templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinStringErrs(category.Name)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/categories_view.templ`, Line: 69, Col: 47}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/categories_view.templ`, Line: 78, Col: 53}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var4))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 7, "</span></div><div class=\"flex items-center space-x-2\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 7, "</span></div><div class=\"flex items-center gap-2\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		if !category.IsLocked {
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 8, "<form hx-post=\"/admin/categories\" hx-target=\"body\" class=\"flex items-center space-x-2\"><input type=\"hidden\" name=\"parent_id\" value=\"")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 8, "<form hx-post=\"/admin/categories\" hx-target=\"body\" class=\"flex items-center gap-2\"><input type=\"hidden\" name=\"parent_id\" value=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var5 string
 			templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.ResolveAttributeValue(fmt.Sprint(category.ID))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/categories_view.templ`, Line: 74, Col: 75}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/categories_view.templ`, Line: 83, Col: 75}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var5)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 9, "\"> <input type=\"text\" name=\"name\" placeholder=\"New sub-category...\" required class=\"block w-48 border-gray-300 rounded-md shadow-sm sm:text-sm focus:ring-primary focus:border-primary\"> <button type=\"submit\" class=\"px-3 py-1 text-sm text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500\">Add</button></form><button hx-delete=\"")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 9, "\"> <input type=\"text\" name=\"name\" placeholder=\"New sub-category...\" required class=\"input h-8 text-xs w-36\"> <button type=\"submit\" class=\"btn btn-primary text-xs h-8 px-3\">+</button></form><button hx-delete=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var6 string
 			templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.ResolveAttributeValue(fmt.Sprintf("/admin/categories/%d", category.ID))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/categories_view.templ`, Line: 79, Col: 66}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/categories_view.templ`, Line: 88, Col: 66}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var6)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 10, "\" hx-confirm=\"Are you sure you want to delete this category and all its sub-categories?\" hx-target=\"body\" class=\"text-red-500 hover:text-red-700\">Delete</button>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 10, "\" hx-confirm=\"Are you sure you want to delete this category and all its sub-categories?\" hx-target=\"body\" class=\"icon-btn danger flex-shrink-0\" title=\"Delete\"><svg class=\"h-4 w-4\" fill=\"none\" viewBox=\"0 0 24 24\" stroke=\"currentColor\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16\"></path></svg></button>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -150,7 +150,7 @@ func CategoryItem(category models.Category) templ.Component {
 			return templ_7745c5c3_Err
 		}
 		if len(category.SubCategories) > 0 {
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 12, "<div class=\"ml-6 mt-2 space-y-2 border-l-2 pl-4\" x-data=\"sortableList\" x-show=\"open\" x-transition>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 12, "<div class=\"ml-8 pb-3 space-y-2 border-l-2 border-gray-100 pl-4\" x-data=\"sortableList\" x-show=\"open\" x-transition>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
