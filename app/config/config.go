@@ -521,6 +521,14 @@ func backfill(c *Config) {
 	if len(c.Footer.Hours) == 0 {
 		c.Footer.Hours = defaultConfig().Footer.Hours
 	}
+	// Remove the old "Shop" default column, keep only Informations + any user custom columns
+	var cleaned []LinkColumn
+	for _, col := range c.Footer.LinkColumns {
+		if col.Title != "Shop" {
+			cleaned = append(cleaned, col)
+		}
+	}
+	c.Footer.LinkColumns = cleaned
 	// Ensure the Informations link column exists
 	hasInfo := false
 	for _, col := range c.Footer.LinkColumns {
