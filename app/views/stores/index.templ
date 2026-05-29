@@ -5,6 +5,7 @@ import (
 	"shopTemplate/app/config"
 	"shopTemplate/app/views/layouts"
 	"shopTemplate/app/models"
+	"strconv"
 )
 
 templ Index(user models.AuthUser, cfg *config.Config, categories []models.Category, cartCount int) {
@@ -91,5 +92,14 @@ templ Index(user models.AuthUser, cfg *config.Config, categories []models.Catego
 }
 
 func osmEmbedURL(lat, lon string) string {
-	return fmt.Sprintf("https://www.openstreetmap.org/export/embed.html?bbox=%s,%s,%s,%s&layer=mapnik&marker=%s,%s", lon, lat, lon, lat, lat, lon)
+	latF, err1 := strconv.ParseFloat(lat, 64)
+	lonF, err2 := strconv.ParseFloat(lon, 64)
+	if err1 != nil || err2 != nil {
+		return ""
+	}
+	offset := 0.01
+	return fmt.Sprintf(
+		"https://www.openstreetmap.org/export/embed.html?bbox=%.5f,%.5f,%.5f,%.5f&layer=mapnik&marker=%.5f,%.5f",
+		lonF-offset, latF-offset, lonF+offset, latF+offset, latF, lonF,
+	)
 }

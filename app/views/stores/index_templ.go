@@ -13,6 +13,7 @@ import (
 	"shopTemplate/app/config"
 	"shopTemplate/app/models"
 	"shopTemplate/app/views/layouts"
+	"strconv"
 )
 
 func Index(user models.AuthUser, cfg *config.Config, categories []models.Category, cartCount int) templ.Component {
@@ -60,7 +61,7 @@ func Index(user models.AuthUser, cfg *config.Config, categories []models.Categor
 				var templ_7745c5c3_Var3 string
 				templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinStringErrs(cfg.Footer.Address)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/stores/index.templ`, Line: 29, Col: 55}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/stores/index.templ`, Line: 30, Col: 55}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var3))
 				if templ_7745c5c3_Err != nil {
@@ -79,7 +80,7 @@ func Index(user models.AuthUser, cfg *config.Config, categories []models.Categor
 				var templ_7745c5c3_Var4 templ.SafeURL
 				templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinURLErrs(templ.SafeURL("tel:" + cfg.Footer.Phone))
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/stores/index.templ`, Line: 40, Col: 60}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/stores/index.templ`, Line: 41, Col: 60}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var4))
 				if templ_7745c5c3_Err != nil {
@@ -92,7 +93,7 @@ func Index(user models.AuthUser, cfg *config.Config, categories []models.Categor
 				var templ_7745c5c3_Var5 string
 				templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinStringErrs(cfg.Footer.Phone)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/stores/index.templ`, Line: 40, Col: 124}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/stores/index.templ`, Line: 41, Col: 124}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var5))
 				if templ_7745c5c3_Err != nil {
@@ -111,7 +112,7 @@ func Index(user models.AuthUser, cfg *config.Config, categories []models.Categor
 				var templ_7745c5c3_Var6 templ.SafeURL
 				templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.JoinURLErrs(templ.SafeURL("mailto:" + cfg.Footer.Email))
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/stores/index.templ`, Line: 51, Col: 63}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/stores/index.templ`, Line: 52, Col: 63}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var6))
 				if templ_7745c5c3_Err != nil {
@@ -124,7 +125,7 @@ func Index(user models.AuthUser, cfg *config.Config, categories []models.Categor
 				var templ_7745c5c3_Var7 string
 				templ_7745c5c3_Var7, templ_7745c5c3_Err = templ.JoinStringErrs(cfg.Footer.Email)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/stores/index.templ`, Line: 51, Col: 127}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/stores/index.templ`, Line: 52, Col: 127}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var7))
 				if templ_7745c5c3_Err != nil {
@@ -147,7 +148,7 @@ func Index(user models.AuthUser, cfg *config.Config, categories []models.Categor
 				var templ_7745c5c3_Var8 string
 				templ_7745c5c3_Var8, templ_7745c5c3_Err = templ.JoinStringErrs(h.Day)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/stores/index.templ`, Line: 63, Col: 56}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/stores/index.templ`, Line: 64, Col: 56}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var8))
 				if templ_7745c5c3_Err != nil {
@@ -170,7 +171,7 @@ func Index(user models.AuthUser, cfg *config.Config, categories []models.Categor
 					var templ_7745c5c3_Var9 string
 					templ_7745c5c3_Var9, templ_7745c5c3_Err = templ.JoinStringErrs(h.OpenTime)
 					if templ_7745c5c3_Err != nil {
-						return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/stores/index.templ`, Line: 67, Col: 50}
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/stores/index.templ`, Line: 68, Col: 50}
 					}
 					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var9))
 					if templ_7745c5c3_Err != nil {
@@ -183,7 +184,7 @@ func Index(user models.AuthUser, cfg *config.Config, categories []models.Categor
 					var templ_7745c5c3_Var10 string
 					templ_7745c5c3_Var10, templ_7745c5c3_Err = templ.JoinStringErrs(h.CloseTime)
 					if templ_7745c5c3_Err != nil {
-						return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/stores/index.templ`, Line: 67, Col: 68}
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/stores/index.templ`, Line: 68, Col: 68}
 					}
 					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var10))
 					if templ_7745c5c3_Err != nil {
@@ -211,7 +212,7 @@ func Index(user models.AuthUser, cfg *config.Config, categories []models.Categor
 				var templ_7745c5c3_Var11 string
 				templ_7745c5c3_Var11, templ_7745c5c3_Err = templ.ResolveAttributeValue(templ.SafeURL(osmEmbedURL(cfg.Footer.Latitude, cfg.Footer.Longitude)))
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/stores/index.templ`, Line: 78, Col: 82}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/stores/index.templ`, Line: 79, Col: 82}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var11)
 				if templ_7745c5c3_Err != nil {
@@ -237,7 +238,16 @@ func Index(user models.AuthUser, cfg *config.Config, categories []models.Categor
 }
 
 func osmEmbedURL(lat, lon string) string {
-	return fmt.Sprintf("https://www.openstreetmap.org/export/embed.html?bbox=%s,%s,%s,%s&layer=mapnik&marker=%s,%s", lon, lat, lon, lat, lat, lon)
+	latF, err1 := strconv.ParseFloat(lat, 64)
+	lonF, err2 := strconv.ParseFloat(lon, 64)
+	if err1 != nil || err2 != nil {
+		return ""
+	}
+	offset := 0.01
+	return fmt.Sprintf(
+		"https://www.openstreetmap.org/export/embed.html?bbox=%.5f,%.5f,%.5f,%.5f&layer=mapnik&marker=%.5f,%.5f",
+		lonF-offset, latF-offset, lonF+offset, latF+offset, latF, lonF,
+	)
 }
 
 var _ = templruntime.GeneratedTemplate
