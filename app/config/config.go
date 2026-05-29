@@ -517,6 +517,23 @@ func backfill(c *Config) {
 	if c.Site.AffiliateID == "" {
 		c.Site.AffiliateID = "AFF-001"
 	}
+	// Ensure Hours have defaults
+	if len(c.Footer.Hours) == 0 {
+		c.Footer.Hours = defaultConfig().Footer.Hours
+	}
+	// Ensure the Informations link column exists
+	hasInfo := false
+	for _, col := range c.Footer.LinkColumns {
+		if col.Title == "Informations" {
+			hasInfo = true
+			break
+		}
+	}
+	if !hasInfo {
+		def := defaultConfig()
+		infoCol := def.Footer.LinkColumns[0]
+		c.Footer.LinkColumns = append([]LinkColumn{infoCol}, c.Footer.LinkColumns...)
+	}
 }
 
 // save writes the config to the legacy "app_config" key.
