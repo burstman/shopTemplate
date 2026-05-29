@@ -309,33 +309,33 @@ func siteSettingsForm(cfg *config.Config) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 23, "\" class=\"block w-full border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500 sm:text-sm\" placeholder=\"contact@example.com\"></div></div><div class=\"sm:col-span-3\"><label for=\"footer_latitude\" class=\"block text-sm font-medium text-gray-700\">Latitude</label><div class=\"mt-1\"><input type=\"text\" name=\"footer_latitude\" id=\"footer_latitude\" value=\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 23, "\" class=\"block w-full border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500 sm:text-sm\" placeholder=\"contact@example.com\"></div></div><div class=\"sm:col-span-6\"><label for=\"footer_maps_link\" class=\"block text-sm font-medium text-gray-700\">Google Maps Link</label><div class=\"mt-1\"><input type=\"text\" name=\"footer_maps_link\" id=\"footer_maps_link\" value=\"\" class=\"block w-full border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500 sm:text-sm\" placeholder=\"https://www.google.com/maps/place/.../@36.830,10.185,17z\"></div><p class=\"mt-2 text-xs text-gray-500\">Go to Google Maps, search your address, and copy the URL from the address bar. Coordinates are extracted automatically.</p></div><input type=\"hidden\" name=\"footer_latitude\" value=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var15 string
 		templ_7745c5c3_Var15, templ_7745c5c3_Err = templ.ResolveAttributeValue(cfg.Footer.Latitude)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 153, Col: 96}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 157, Col: 75}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var15)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 24, "\" class=\"block w-full border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500 sm:text-sm\" placeholder=\"36.830\"></div></div><div class=\"sm:col-span-3\"><label for=\"footer_longitude\" class=\"block text-sm font-medium text-gray-700\">Longitude</label><div class=\"mt-1\"><input type=\"text\" name=\"footer_longitude\" id=\"footer_longitude\" value=\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 24, "\"> <input type=\"hidden\" name=\"footer_longitude\" value=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var16 string
 		templ_7745c5c3_Var16, templ_7745c5c3_Err = templ.ResolveAttributeValue(cfg.Footer.Longitude)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 159, Col: 99}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 158, Col: 77}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var16)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 25, "\" class=\"block w-full border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500 sm:text-sm\" placeholder=\"10.185\"></div><p class=\"mt-2 text-xs text-gray-500 italic\">Rendered via OpenStreetMap — no API key needed.</p></div></div></div><div class=\"sm:col-span-6 border-t border-gray-200 pt-6 mt-6\"><h4 class=\"text-sm font-medium text-gray-900 mb-4\">Store Hours (Magasins page)</h4><input type=\"hidden\" name=\"hours_count\" value=\"7\"><div class=\"space-y-2\"><div class=\"grid grid-cols-12 gap-4 text-xs font-medium text-gray-500 uppercase tracking-wider px-2 mb-2\"><div class=\"col-span-2\">Day</div><div class=\"col-span-2\">Closed</div><div class=\"col-span-4\">Open</div><div class=\"col-span-4\">Close</div></div>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 25, "\"></div></div><div class=\"sm:col-span-6 border-t border-gray-200 pt-6 mt-6\"><h4 class=\"text-sm font-medium text-gray-900 mb-4\">Store Hours (Magasins page)</h4><input type=\"hidden\" name=\"hours_count\" value=\"7\"><div class=\"space-y-2\"><div class=\"grid grid-cols-12 gap-4 text-xs font-medium text-gray-500 uppercase tracking-wider px-2 mb-2\"><div class=\"col-span-2\">Day</div><div class=\"col-span-2\">Closed</div><div class=\"col-span-4\">Open</div><div class=\"col-span-4\">Close</div></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -347,7 +347,7 @@ func siteSettingsForm(cfg *config.Config) templ.Component {
 			var templ_7745c5c3_Var17 string
 			templ_7745c5c3_Var17, templ_7745c5c3_Err = templ.JoinStringErrs(h.Day)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 179, Col: 15}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 175, Col: 15}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var17))
 			if templ_7745c5c3_Err != nil {
@@ -360,7 +360,7 @@ func siteSettingsForm(cfg *config.Config) templ.Component {
 			var templ_7745c5c3_Var18 string
 			templ_7745c5c3_Var18, templ_7745c5c3_Err = templ.ResolveAttributeValue(fmt.Sprintf("hour_%d_day", j))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 180, Col: 65}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 176, Col: 65}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var18)
 			if templ_7745c5c3_Err != nil {
@@ -373,7 +373,7 @@ func siteSettingsForm(cfg *config.Config) templ.Component {
 			var templ_7745c5c3_Var19 string
 			templ_7745c5c3_Var19, templ_7745c5c3_Err = templ.ResolveAttributeValue(h.Day)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 180, Col: 81}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 176, Col: 81}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var19)
 			if templ_7745c5c3_Err != nil {
@@ -386,7 +386,7 @@ func siteSettingsForm(cfg *config.Config) templ.Component {
 			var templ_7745c5c3_Var20 string
 			templ_7745c5c3_Var20, templ_7745c5c3_Err = templ.ResolveAttributeValue(fmt.Sprintf("hour_%d_closed", j))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 183, Col: 70}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 179, Col: 70}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var20)
 			if templ_7745c5c3_Err != nil {
@@ -409,7 +409,7 @@ func siteSettingsForm(cfg *config.Config) templ.Component {
 			var templ_7745c5c3_Var21 string
 			templ_7745c5c3_Var21, templ_7745c5c3_Err = templ.ResolveAttributeValue(fmt.Sprintf("hour_%d_open", j))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 186, Col: 64}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 182, Col: 64}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var21)
 			if templ_7745c5c3_Err != nil {
@@ -422,7 +422,7 @@ func siteSettingsForm(cfg *config.Config) templ.Component {
 			var templ_7745c5c3_Var22 string
 			templ_7745c5c3_Var22, templ_7745c5c3_Err = templ.ResolveAttributeValue(h.OpenTime)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 186, Col: 85}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 182, Col: 85}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var22)
 			if templ_7745c5c3_Err != nil {
@@ -435,7 +435,7 @@ func siteSettingsForm(cfg *config.Config) templ.Component {
 			var templ_7745c5c3_Var23 string
 			templ_7745c5c3_Var23, templ_7745c5c3_Err = templ.ResolveAttributeValue(fmt.Sprintf("hour_%d_close", j))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 189, Col: 65}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 185, Col: 65}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var23)
 			if templ_7745c5c3_Err != nil {
@@ -448,7 +448,7 @@ func siteSettingsForm(cfg *config.Config) templ.Component {
 			var templ_7745c5c3_Var24 string
 			templ_7745c5c3_Var24, templ_7745c5c3_Err = templ.ResolveAttributeValue(h.CloseTime)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 189, Col: 87}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 185, Col: 87}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var24)
 			if templ_7745c5c3_Err != nil {
@@ -466,7 +466,7 @@ func siteSettingsForm(cfg *config.Config) templ.Component {
 		var templ_7745c5c3_Var25 string
 		templ_7745c5c3_Var25, templ_7745c5c3_Err = templ.ResolveAttributeValue(cfg.Footer.Copyright)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 198, Col: 98}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 194, Col: 98}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var25)
 		if templ_7745c5c3_Err != nil {
@@ -479,7 +479,7 @@ func siteSettingsForm(cfg *config.Config) templ.Component {
 		var templ_7745c5c3_Var26 string
 		templ_7745c5c3_Var26, templ_7745c5c3_Err = templ.ResolveAttributeValue(strconv.Itoa(len(cfg.Site.Bundles)))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 212, Col: 89}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 208, Col: 89}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var26)
 		if templ_7745c5c3_Err != nil {
@@ -497,7 +497,7 @@ func siteSettingsForm(cfg *config.Config) templ.Component {
 			var templ_7745c5c3_Var27 string
 			templ_7745c5c3_Var27, templ_7745c5c3_Err = templ.ResolveAttributeValue(fmt.Sprintf("bundle_%d_delete", j))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 217, Col: 48}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 213, Col: 48}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var27)
 			if templ_7745c5c3_Err != nil {
@@ -510,7 +510,7 @@ func siteSettingsForm(cfg *config.Config) templ.Component {
 			var templ_7745c5c3_Var28 string
 			templ_7745c5c3_Var28, templ_7745c5c3_Err = templ.ResolveAttributeValue(fmt.Sprintf("bundle_%d_quantity", j))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 225, Col: 73}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 221, Col: 73}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var28)
 			if templ_7745c5c3_Err != nil {
@@ -523,7 +523,7 @@ func siteSettingsForm(cfg *config.Config) templ.Component {
 			var templ_7745c5c3_Var29 string
 			templ_7745c5c3_Var29, templ_7745c5c3_Err = templ.ResolveAttributeValue(strconv.Itoa(bundle.Quantity))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 225, Col: 113}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 221, Col: 113}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var29)
 			if templ_7745c5c3_Err != nil {
@@ -536,7 +536,7 @@ func siteSettingsForm(cfg *config.Config) templ.Component {
 			var templ_7745c5c3_Var30 string
 			templ_7745c5c3_Var30, templ_7745c5c3_Err = templ.ResolveAttributeValue(fmt.Sprintf("bundle_%d_discount", j))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 229, Col: 73}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 225, Col: 73}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var30)
 			if templ_7745c5c3_Err != nil {
@@ -549,7 +549,7 @@ func siteSettingsForm(cfg *config.Config) templ.Component {
 			var templ_7745c5c3_Var31 string
 			templ_7745c5c3_Var31, templ_7745c5c3_Err = templ.ResolveAttributeValue(strconv.Itoa(bundle.DiscountPercentage))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 229, Col: 123}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 225, Col: 123}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var31)
 			if templ_7745c5c3_Err != nil {
@@ -596,7 +596,7 @@ func paymentSettingsForm(cfg *config.Config) templ.Component {
 		var templ_7745c5c3_Var33 string
 		templ_7745c5c3_Var33, templ_7745c5c3_Err = templ.JoinStringErrs(services.GetI18n().T(ctx, "payment_settings"))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 243, Col: 106}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 239, Col: 106}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var33))
 		if templ_7745c5c3_Err != nil {
@@ -629,7 +629,7 @@ func paymentSettingsForm(cfg *config.Config) templ.Component {
 		var templ_7745c5c3_Var34 string
 		templ_7745c5c3_Var34, templ_7745c5c3_Err = templ.ResolveAttributeValue(cfg.Payment.FlouciAppToken)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 272, Col: 83}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 268, Col: 83}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var34)
 		if templ_7745c5c3_Err != nil {
@@ -671,7 +671,7 @@ func socialLinksSettingsForm(cfg *config.Config) templ.Component {
 		var templ_7745c5c3_Var36 string
 		templ_7745c5c3_Var36, templ_7745c5c3_Err = templ.JoinStringErrs(services.GetI18n().T(ctx, "social_links"))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 283, Col: 102}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 279, Col: 102}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var36))
 		if templ_7745c5c3_Err != nil {
@@ -689,7 +689,7 @@ func socialLinksSettingsForm(cfg *config.Config) templ.Component {
 			var templ_7745c5c3_Var37 string
 			templ_7745c5c3_Var37, templ_7745c5c3_Err = templ.ResolveAttributeValue("social_" + strings.ToLower(social.Platform) + "_url")
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 290, Col: 71}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 286, Col: 71}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var37)
 			if templ_7745c5c3_Err != nil {
@@ -702,7 +702,7 @@ func socialLinksSettingsForm(cfg *config.Config) templ.Component {
 			var templ_7745c5c3_Var38 string
 			templ_7745c5c3_Var38, templ_7745c5c3_Err = templ.JoinStringErrs(social.Platform)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 291, Col: 23}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 287, Col: 23}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var38))
 			if templ_7745c5c3_Err != nil {
@@ -715,7 +715,7 @@ func socialLinksSettingsForm(cfg *config.Config) templ.Component {
 			var templ_7745c5c3_Var39 string
 			templ_7745c5c3_Var39, templ_7745c5c3_Err = templ.ResolveAttributeValue("social_" + strings.ToLower(social.Platform) + "_url")
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 299, Col: 84}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 295, Col: 84}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var39)
 			if templ_7745c5c3_Err != nil {
@@ -728,7 +728,7 @@ func socialLinksSettingsForm(cfg *config.Config) templ.Component {
 			var templ_7745c5c3_Var40 string
 			templ_7745c5c3_Var40, templ_7745c5c3_Err = templ.ResolveAttributeValue("social_" + strings.ToLower(social.Platform) + "_url")
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 299, Col: 145}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 295, Col: 145}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var40)
 			if templ_7745c5c3_Err != nil {
@@ -741,7 +741,7 @@ func socialLinksSettingsForm(cfg *config.Config) templ.Component {
 			var templ_7745c5c3_Var41 string
 			templ_7745c5c3_Var41, templ_7745c5c3_Err = templ.ResolveAttributeValue(social.URL)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 299, Col: 166}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 295, Col: 166}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var41)
 			if templ_7745c5c3_Err != nil {
@@ -788,7 +788,7 @@ func chatSettingsForm(cfg *config.Config) templ.Component {
 		var templ_7745c5c3_Var43 string
 		templ_7745c5c3_Var43, templ_7745c5c3_Err = templ.JoinStringErrs(services.GetI18n().T(ctx, "chat_config"))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 310, Col: 101}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 306, Col: 101}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var43))
 		if templ_7745c5c3_Err != nil {
@@ -801,7 +801,7 @@ func chatSettingsForm(cfg *config.Config) templ.Component {
 		var templ_7745c5c3_Var44 string
 		templ_7745c5c3_Var44, templ_7745c5c3_Err = templ.ResolveAttributeValue(cfg.Chat.PrimaryColor)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 318, Col: 104}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 314, Col: 104}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var44)
 		if templ_7745c5c3_Err != nil {
@@ -814,7 +814,7 @@ func chatSettingsForm(cfg *config.Config) templ.Component {
 		var templ_7745c5c3_Var45 string
 		templ_7745c5c3_Var45, templ_7745c5c3_Err = templ.ResolveAttributeValue(cfg.Chat.PrimaryColor)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 319, Col: 53}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 315, Col: 53}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var45)
 		if templ_7745c5c3_Err != nil {
@@ -827,7 +827,7 @@ func chatSettingsForm(cfg *config.Config) templ.Component {
 		var templ_7745c5c3_Var46 string
 		templ_7745c5c3_Var46, templ_7745c5c3_Err = templ.ResolveAttributeValue(cfg.Chat.HeaderTextColor)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 325, Col: 115}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 321, Col: 115}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var46)
 		if templ_7745c5c3_Err != nil {
@@ -840,7 +840,7 @@ func chatSettingsForm(cfg *config.Config) templ.Component {
 		var templ_7745c5c3_Var47 string
 		templ_7745c5c3_Var47, templ_7745c5c3_Err = templ.ResolveAttributeValue(cfg.Chat.HeaderTextColor)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 326, Col: 56}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 322, Col: 56}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var47)
 		if templ_7745c5c3_Err != nil {
@@ -853,7 +853,7 @@ func chatSettingsForm(cfg *config.Config) templ.Component {
 		var templ_7745c5c3_Var48 string
 		templ_7745c5c3_Var48, templ_7745c5c3_Err = templ.ResolveAttributeValue(cfg.Chat.ClientBubbleColor)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 338, Col: 94}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 334, Col: 94}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var48)
 		if templ_7745c5c3_Err != nil {
@@ -866,7 +866,7 @@ func chatSettingsForm(cfg *config.Config) templ.Component {
 		var templ_7745c5c3_Var49 string
 		templ_7745c5c3_Var49, templ_7745c5c3_Err = templ.ResolveAttributeValue(cfg.Chat.ClientTextColor)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 342, Col: 90}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 338, Col: 90}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var49)
 		if templ_7745c5c3_Err != nil {
@@ -879,7 +879,7 @@ func chatSettingsForm(cfg *config.Config) templ.Component {
 		var templ_7745c5c3_Var50 string
 		templ_7745c5c3_Var50, templ_7745c5c3_Err = templ.ResolveAttributeValue(cfg.Chat.AdminBubbleColor)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 351, Col: 92}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 347, Col: 92}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var50)
 		if templ_7745c5c3_Err != nil {
@@ -892,7 +892,7 @@ func chatSettingsForm(cfg *config.Config) templ.Component {
 		var templ_7745c5c3_Var51 string
 		templ_7745c5c3_Var51, templ_7745c5c3_Err = templ.ResolveAttributeValue(cfg.Chat.AdminTextColor)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 355, Col: 88}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 351, Col: 88}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var51)
 		if templ_7745c5c3_Err != nil {
@@ -915,7 +915,7 @@ func chatSettingsForm(cfg *config.Config) templ.Component {
 		var templ_7745c5c3_Var52 string
 		templ_7745c5c3_Var52, templ_7745c5c3_Err = templ.ResolveAttributeValue(fmt.Sprint(cfg.Chat.PopupTimeout))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 377, Col: 117}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 373, Col: 117}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var52)
 		if templ_7745c5c3_Err != nil {
@@ -957,7 +957,7 @@ func sectionsSettingsForm(cfg *config.Config, products []models.Product, categor
 		var templ_7745c5c3_Var54 string
 		templ_7745c5c3_Var54, templ_7745c5c3_Err = templ.ResolveAttributeValue(cfg.Site.NameBgColor)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 392, Col: 103}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 388, Col: 103}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var54)
 		if templ_7745c5c3_Err != nil {
@@ -970,7 +970,7 @@ func sectionsSettingsForm(cfg *config.Config, products []models.Product, categor
 		var templ_7745c5c3_Var55 string
 		templ_7745c5c3_Var55, templ_7745c5c3_Err = templ.ResolveAttributeValue(cfg.Site.NameTextColor)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 398, Col: 109}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 394, Col: 109}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var55)
 		if templ_7745c5c3_Err != nil {
@@ -988,7 +988,7 @@ func sectionsSettingsForm(cfg *config.Config, products []models.Product, categor
 			var templ_7745c5c3_Var56 string
 			templ_7745c5c3_Var56, templ_7745c5c3_Err = templ.ResolveAttributeValue(strconv.Itoa(i))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 407, Col: 84}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 403, Col: 84}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var56)
 			if templ_7745c5c3_Err != nil {
@@ -1001,7 +1001,7 @@ func sectionsSettingsForm(cfg *config.Config, products []models.Product, categor
 			var templ_7745c5c3_Var57 string
 			templ_7745c5c3_Var57, templ_7745c5c3_Err = templ.ResolveAttributeValue(fmt.Sprintf("{ sectionType: '%s' }", section.Type))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 407, Col: 146}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 403, Col: 146}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var57)
 			if templ_7745c5c3_Err != nil {
@@ -1014,7 +1014,7 @@ func sectionsSettingsForm(cfg *config.Config, products []models.Product, categor
 			var templ_7745c5c3_Var58 string
 			templ_7745c5c3_Var58, templ_7745c5c3_Err = templ.JoinStringErrs(section.Title)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 415, Col: 76}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 411, Col: 76}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var58))
 			if templ_7745c5c3_Err != nil {
@@ -1027,7 +1027,7 @@ func sectionsSettingsForm(cfg *config.Config, products []models.Product, categor
 			var templ_7745c5c3_Var59 string
 			templ_7745c5c3_Var59, templ_7745c5c3_Err = templ.ResolveAttributeValue(fmt.Sprintf("section_%d_enabled", i))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 418, Col: 53}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 414, Col: 53}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var59)
 			if templ_7745c5c3_Err != nil {
@@ -1040,7 +1040,7 @@ func sectionsSettingsForm(cfg *config.Config, products []models.Product, categor
 			var templ_7745c5c3_Var60 string
 			templ_7745c5c3_Var60, templ_7745c5c3_Err = templ.ResolveAttributeValue(fmt.Sprintf("section_%d_enabled", i))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 418, Col: 99}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 414, Col: 99}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var60)
 			if templ_7745c5c3_Err != nil {
@@ -1063,7 +1063,7 @@ func sectionsSettingsForm(cfg *config.Config, products []models.Product, categor
 			var templ_7745c5c3_Var61 string
 			templ_7745c5c3_Var61, templ_7745c5c3_Err = templ.ResolveAttributeValue(fmt.Sprintf("section_%d_enabled", i))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 419, Col: 54}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 415, Col: 54}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var61)
 			if templ_7745c5c3_Err != nil {
@@ -1076,7 +1076,7 @@ func sectionsSettingsForm(cfg *config.Config, products []models.Product, categor
 			var templ_7745c5c3_Var62 string
 			templ_7745c5c3_Var62, templ_7745c5c3_Err = templ.ResolveAttributeValue(fmt.Sprintf("/admin/sections/%d/duplicate", i))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 423, Col: 62}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 419, Col: 62}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var62)
 			if templ_7745c5c3_Err != nil {
@@ -1089,7 +1089,7 @@ func sectionsSettingsForm(cfg *config.Config, products []models.Product, categor
 			var templ_7745c5c3_Var63 string
 			templ_7745c5c3_Var63, templ_7745c5c3_Err = templ.ResolveAttributeValue(fmt.Sprintf("/admin/sections/%d/delete", i))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 430, Col: 59}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 426, Col: 59}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var63)
 			if templ_7745c5c3_Err != nil {
@@ -1102,7 +1102,7 @@ func sectionsSettingsForm(cfg *config.Config, products []models.Product, categor
 			var templ_7745c5c3_Var64 string
 			templ_7745c5c3_Var64, templ_7745c5c3_Err = templ.ResolveAttributeValue(fmt.Sprintf("section_%d_type", i))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 443, Col: 51}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 439, Col: 51}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var64)
 			if templ_7745c5c3_Err != nil {
@@ -1115,7 +1115,7 @@ func sectionsSettingsForm(cfg *config.Config, products []models.Product, categor
 			var templ_7745c5c3_Var65 string
 			templ_7745c5c3_Var65, templ_7745c5c3_Err = templ.ResolveAttributeValue(fmt.Sprintf("section_%d_type", i))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 445, Col: 46}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 441, Col: 46}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var65)
 			if templ_7745c5c3_Err != nil {
@@ -1128,7 +1128,7 @@ func sectionsSettingsForm(cfg *config.Config, products []models.Product, categor
 			var templ_7745c5c3_Var66 string
 			templ_7745c5c3_Var66, templ_7745c5c3_Err = templ.ResolveAttributeValue(fmt.Sprintf("section_%d_type", i))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 446, Col: 44}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 442, Col: 44}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var66)
 			if templ_7745c5c3_Err != nil {
@@ -1161,7 +1161,7 @@ func sectionsSettingsForm(cfg *config.Config, products []models.Product, categor
 			var templ_7745c5c3_Var67 string
 			templ_7745c5c3_Var67, templ_7745c5c3_Err = templ.ResolveAttributeValue(fmt.Sprintf("section_%d_title", i))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 455, Col: 52}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 451, Col: 52}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var67)
 			if templ_7745c5c3_Err != nil {
@@ -1174,7 +1174,7 @@ func sectionsSettingsForm(cfg *config.Config, products []models.Product, categor
 			var templ_7745c5c3_Var68 string
 			templ_7745c5c3_Var68, templ_7745c5c3_Err = templ.ResolveAttributeValue(fmt.Sprintf("section_%d_title", i))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 456, Col: 65}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 452, Col: 65}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var68)
 			if templ_7745c5c3_Err != nil {
@@ -1187,7 +1187,7 @@ func sectionsSettingsForm(cfg *config.Config, products []models.Product, categor
 			var templ_7745c5c3_Var69 string
 			templ_7745c5c3_Var69, templ_7745c5c3_Err = templ.ResolveAttributeValue(fmt.Sprintf("section_%d_title", i))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 456, Col: 107}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 452, Col: 107}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var69)
 			if templ_7745c5c3_Err != nil {
@@ -1200,7 +1200,7 @@ func sectionsSettingsForm(cfg *config.Config, products []models.Product, categor
 			var templ_7745c5c3_Var70 string
 			templ_7745c5c3_Var70, templ_7745c5c3_Err = templ.ResolveAttributeValue(section.Title)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 456, Col: 131}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 452, Col: 131}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var70)
 			if templ_7745c5c3_Err != nil {
@@ -1213,7 +1213,7 @@ func sectionsSettingsForm(cfg *config.Config, products []models.Product, categor
 			var templ_7745c5c3_Var71 string
 			templ_7745c5c3_Var71, templ_7745c5c3_Err = templ.ResolveAttributeValue(fmt.Sprintf("section_%d_title_bg_color", i))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 461, Col: 76}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 457, Col: 76}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var71)
 			if templ_7745c5c3_Err != nil {
@@ -1226,7 +1226,7 @@ func sectionsSettingsForm(cfg *config.Config, products []models.Product, categor
 			var templ_7745c5c3_Var72 string
 			templ_7745c5c3_Var72, templ_7745c5c3_Err = templ.ResolveAttributeValue(section.TitleBgColor)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 461, Col: 107}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 457, Col: 107}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var72)
 			if templ_7745c5c3_Err != nil {
@@ -1239,7 +1239,7 @@ func sectionsSettingsForm(cfg *config.Config, products []models.Product, categor
 			var templ_7745c5c3_Var73 string
 			templ_7745c5c3_Var73, templ_7745c5c3_Err = templ.ResolveAttributeValue(fmt.Sprintf("section_%d_title_text_color", i))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 467, Col: 78}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 463, Col: 78}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var73)
 			if templ_7745c5c3_Err != nil {
@@ -1252,7 +1252,7 @@ func sectionsSettingsForm(cfg *config.Config, products []models.Product, categor
 			var templ_7745c5c3_Var74 string
 			templ_7745c5c3_Var74, templ_7745c5c3_Err = templ.ResolveAttributeValue(section.TitleTextColor)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 467, Col: 111}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 463, Col: 111}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var74)
 			if templ_7745c5c3_Err != nil {
@@ -1265,7 +1265,7 @@ func sectionsSettingsForm(cfg *config.Config, products []models.Product, categor
 			var templ_7745c5c3_Var75 string
 			templ_7745c5c3_Var75, templ_7745c5c3_Err = templ.ResolveAttributeValue(fmt.Sprintf("section_%d_add_item", i))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 474, Col: 50}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 470, Col: 50}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var75)
 			if templ_7745c5c3_Err != nil {
@@ -1278,7 +1278,7 @@ func sectionsSettingsForm(cfg *config.Config, products []models.Product, categor
 			var templ_7745c5c3_Var76 string
 			templ_7745c5c3_Var76, templ_7745c5c3_Err = templ.ResolveAttributeValue(string(templ.URL("/admin/" + activeSection)))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 476, Col: 60}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 472, Col: 60}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var76)
 			if templ_7745c5c3_Err != nil {
@@ -1291,7 +1291,7 @@ func sectionsSettingsForm(cfg *config.Config, products []models.Product, categor
 			var templ_7745c5c3_Var77 string
 			templ_7745c5c3_Var77, templ_7745c5c3_Err = templ.ResolveAttributeValue(fmt.Sprintf("section_%d_item_count", i))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 481, Col: 72}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 477, Col: 72}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var77)
 			if templ_7745c5c3_Err != nil {
@@ -1304,7 +1304,7 @@ func sectionsSettingsForm(cfg *config.Config, products []models.Product, categor
 			var templ_7745c5c3_Var78 string
 			templ_7745c5c3_Var78, templ_7745c5c3_Err = templ.ResolveAttributeValue(strconv.Itoa(len(section.CategoryItems)))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 481, Col: 123}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 477, Col: 123}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var78)
 			if templ_7745c5c3_Err != nil {
@@ -1322,7 +1322,7 @@ func sectionsSettingsForm(cfg *config.Config, products []models.Product, categor
 				var templ_7745c5c3_Var79 string
 				templ_7745c5c3_Var79, templ_7745c5c3_Err = templ.ResolveAttributeValue(fmt.Sprintf("section_%d_item_%d_delete", i, j))
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 486, Col: 61}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 482, Col: 61}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var79)
 				if templ_7745c5c3_Err != nil {
@@ -1335,7 +1335,7 @@ func sectionsSettingsForm(cfg *config.Config, products []models.Product, categor
 				var templ_7745c5c3_Var80 string
 				templ_7745c5c3_Var80, templ_7745c5c3_Err = templ.ResolveAttributeValue(string(templ.URL("/admin/" + activeSection)))
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 488, Col: 62}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 484, Col: 62}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var80)
 				if templ_7745c5c3_Err != nil {
@@ -1348,7 +1348,7 @@ func sectionsSettingsForm(cfg *config.Config, products []models.Product, categor
 				var templ_7745c5c3_Var81 string
 				templ_7745c5c3_Var81, templ_7745c5c3_Err = templ.ResolveAttributeValue(fmt.Sprintf("section_%d_item_%d_title", i, j))
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 497, Col: 81}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 493, Col: 81}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var81)
 				if templ_7745c5c3_Err != nil {
@@ -1361,7 +1361,7 @@ func sectionsSettingsForm(cfg *config.Config, products []models.Product, categor
 				var templ_7745c5c3_Var82 string
 				templ_7745c5c3_Var82, templ_7745c5c3_Err = templ.ResolveAttributeValue(item.Title)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 497, Col: 102}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 493, Col: 102}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var82)
 				if templ_7745c5c3_Err != nil {
@@ -1374,7 +1374,7 @@ func sectionsSettingsForm(cfg *config.Config, products []models.Product, categor
 				var templ_7745c5c3_Var83 string
 				templ_7745c5c3_Var83, templ_7745c5c3_Err = templ.ResolveAttributeValue(fmt.Sprintf("section_%d_item_%d_category_id", i, j))
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 501, Col: 76}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 497, Col: 76}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var83)
 				if templ_7745c5c3_Err != nil {
@@ -1392,7 +1392,7 @@ func sectionsSettingsForm(cfg *config.Config, products []models.Product, categor
 					var templ_7745c5c3_Var84 string
 					templ_7745c5c3_Var84, templ_7745c5c3_Err = templ.ResolveAttributeValue(fmt.Sprint(cat.ID))
 					if templ_7745c5c3_Err != nil {
-						return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 504, Col: 46}
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 500, Col: 46}
 					}
 					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var84)
 					if templ_7745c5c3_Err != nil {
@@ -1415,7 +1415,7 @@ func sectionsSettingsForm(cfg *config.Config, products []models.Product, categor
 					var templ_7745c5c3_Var85 string
 					templ_7745c5c3_Var85, templ_7745c5c3_Err = templ.JoinStringErrs(cat.Name)
 					if templ_7745c5c3_Err != nil {
-						return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 504, Col: 111}
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 500, Col: 111}
 					}
 					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var85))
 					if templ_7745c5c3_Err != nil {
@@ -1433,7 +1433,7 @@ func sectionsSettingsForm(cfg *config.Config, products []models.Product, categor
 				var templ_7745c5c3_Var86 string
 				templ_7745c5c3_Var86, templ_7745c5c3_Err = templ.ResolveAttributeValue(fmt.Sprintf("section_%d_item_%d_image_path", i, j))
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 511, Col: 89}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 507, Col: 89}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var86)
 				if templ_7745c5c3_Err != nil {
@@ -1446,7 +1446,7 @@ func sectionsSettingsForm(cfg *config.Config, products []models.Product, categor
 				var templ_7745c5c3_Var87 string
 				templ_7745c5c3_Var87, templ_7745c5c3_Err = templ.ResolveAttributeValue(item.Image)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 511, Col: 110}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 507, Col: 110}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var87)
 				if templ_7745c5c3_Err != nil {
@@ -1464,7 +1464,7 @@ func sectionsSettingsForm(cfg *config.Config, products []models.Product, categor
 					var templ_7745c5c3_Var88 string
 					templ_7745c5c3_Var88, templ_7745c5c3_Err = templ.ResolveAttributeValue(item.Image)
 					if templ_7745c5c3_Err != nil {
-						return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 513, Col: 33}
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 509, Col: 33}
 					}
 					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var88)
 					if templ_7745c5c3_Err != nil {
@@ -1482,7 +1482,7 @@ func sectionsSettingsForm(cfg *config.Config, products []models.Product, categor
 				var templ_7745c5c3_Var89 string
 				templ_7745c5c3_Var89, templ_7745c5c3_Err = templ.ResolveAttributeValue(fmt.Sprintf("section_%d_item_%d_image", i, j))
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 515, Col: 82}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 511, Col: 82}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var89)
 				if templ_7745c5c3_Err != nil {
@@ -1500,7 +1500,7 @@ func sectionsSettingsForm(cfg *config.Config, products []models.Product, categor
 			var templ_7745c5c3_Var90 string
 			templ_7745c5c3_Var90, templ_7745c5c3_Err = templ.ResolveAttributeValue(fmt.Sprintf("section_%d_limit", i))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 524, Col: 52}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 520, Col: 52}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var90)
 			if templ_7745c5c3_Err != nil {
@@ -1513,7 +1513,7 @@ func sectionsSettingsForm(cfg *config.Config, products []models.Product, categor
 			var templ_7745c5c3_Var91 string
 			templ_7745c5c3_Var91, templ_7745c5c3_Err = templ.ResolveAttributeValue(fmt.Sprintf("section_%d_limit", i))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 525, Col: 67}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 521, Col: 67}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var91)
 			if templ_7745c5c3_Err != nil {
@@ -1526,7 +1526,7 @@ func sectionsSettingsForm(cfg *config.Config, products []models.Product, categor
 			var templ_7745c5c3_Var92 string
 			templ_7745c5c3_Var92, templ_7745c5c3_Err = templ.ResolveAttributeValue(fmt.Sprintf("section_%d_limit", i))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 525, Col: 109}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 521, Col: 109}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var92)
 			if templ_7745c5c3_Err != nil {
@@ -1539,7 +1539,7 @@ func sectionsSettingsForm(cfg *config.Config, products []models.Product, categor
 			var templ_7745c5c3_Var93 string
 			templ_7745c5c3_Var93, templ_7745c5c3_Err = templ.ResolveAttributeValue(strconv.Itoa(section.Limit))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 525, Col: 147}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 521, Col: 147}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var93)
 			if templ_7745c5c3_Err != nil {
@@ -1552,7 +1552,7 @@ func sectionsSettingsForm(cfg *config.Config, products []models.Product, categor
 			var templ_7745c5c3_Var94 string
 			templ_7745c5c3_Var94, templ_7745c5c3_Err = templ.ResolveAttributeValue(fmt.Sprintf("section_%d_product_ids", i))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 528, Col: 58}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 524, Col: 58}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var94)
 			if templ_7745c5c3_Err != nil {
@@ -1570,7 +1570,7 @@ func sectionsSettingsForm(cfg *config.Config, products []models.Product, categor
 				var templ_7745c5c3_Var95 string
 				templ_7745c5c3_Var95, templ_7745c5c3_Err = templ.ResolveAttributeValue(fmt.Sprintf("section_%d_product_%d", i, p.ID))
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 532, Col: 81}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 528, Col: 81}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var95)
 				if templ_7745c5c3_Err != nil {
@@ -1583,7 +1583,7 @@ func sectionsSettingsForm(cfg *config.Config, products []models.Product, categor
 				var templ_7745c5c3_Var96 string
 				templ_7745c5c3_Var96, templ_7745c5c3_Err = templ.ResolveAttributeValue(fmt.Sprintf("section_%d_product_ids", i))
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 532, Col: 131}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 528, Col: 131}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var96)
 				if templ_7745c5c3_Err != nil {
@@ -1596,7 +1596,7 @@ func sectionsSettingsForm(cfg *config.Config, products []models.Product, categor
 				var templ_7745c5c3_Var97 string
 				templ_7745c5c3_Var97, templ_7745c5c3_Err = templ.ResolveAttributeValue(strconv.Itoa(int(p.ID)))
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 532, Col: 165}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 528, Col: 165}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var97)
 				if templ_7745c5c3_Err != nil {
@@ -1619,7 +1619,7 @@ func sectionsSettingsForm(cfg *config.Config, products []models.Product, categor
 				var templ_7745c5c3_Var98 string
 				templ_7745c5c3_Var98, templ_7745c5c3_Err = templ.ResolveAttributeValue(fmt.Sprintf("section_%d_product_%d", i, p.ID))
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 533, Col: 66}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 529, Col: 66}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var98)
 				if templ_7745c5c3_Err != nil {
@@ -1632,7 +1632,7 @@ func sectionsSettingsForm(cfg *config.Config, products []models.Product, categor
 				var templ_7745c5c3_Var99 string
 				templ_7745c5c3_Var99, templ_7745c5c3_Err = templ.JoinStringErrs(p.Name)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 533, Col: 118}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 529, Col: 118}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var99))
 				if templ_7745c5c3_Err != nil {
@@ -1693,7 +1693,7 @@ func themeSettingsForm(cfg *config.Config) templ.Component {
 		var templ_7745c5c3_Var101 string
 		templ_7745c5c3_Var101, templ_7745c5c3_Err = templ.ResolveAttributeValue(cfg.Theme.PrimaryColor)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 589, Col: 107}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 585, Col: 107}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var101)
 		if templ_7745c5c3_Err != nil {
@@ -1706,7 +1706,7 @@ func themeSettingsForm(cfg *config.Config) templ.Component {
 		var templ_7745c5c3_Var102 string
 		templ_7745c5c3_Var102, templ_7745c5c3_Err = templ.ResolveAttributeValue(cfg.Theme.PrimaryColor)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 590, Col: 54}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 586, Col: 54}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var102)
 		if templ_7745c5c3_Err != nil {
@@ -1719,7 +1719,7 @@ func themeSettingsForm(cfg *config.Config) templ.Component {
 		var templ_7745c5c3_Var103 string
 		templ_7745c5c3_Var103, templ_7745c5c3_Err = templ.ResolveAttributeValue(cfg.Theme.SecondaryColor)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 596, Col: 113}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 592, Col: 113}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var103)
 		if templ_7745c5c3_Err != nil {
@@ -1732,7 +1732,7 @@ func themeSettingsForm(cfg *config.Config) templ.Component {
 		var templ_7745c5c3_Var104 string
 		templ_7745c5c3_Var104, templ_7745c5c3_Err = templ.ResolveAttributeValue(cfg.Theme.SecondaryColor)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 597, Col: 56}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 593, Col: 56}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var104)
 		if templ_7745c5c3_Err != nil {
@@ -1745,7 +1745,7 @@ func themeSettingsForm(cfg *config.Config) templ.Component {
 		var templ_7745c5c3_Var105 string
 		templ_7745c5c3_Var105, templ_7745c5c3_Err = templ.ResolveAttributeValue(cfg.Theme.HeaderBgColor)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 603, Col: 112}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 599, Col: 112}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var105)
 		if templ_7745c5c3_Err != nil {
@@ -1758,7 +1758,7 @@ func themeSettingsForm(cfg *config.Config) templ.Component {
 		var templ_7745c5c3_Var106 string
 		templ_7745c5c3_Var106, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprint(cfg.Theme.HeaderBgOpacity))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 607, Col: 155}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 603, Col: 155}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var106))
 		if templ_7745c5c3_Err != nil {
@@ -1771,7 +1771,7 @@ func themeSettingsForm(cfg *config.Config) templ.Component {
 		var templ_7745c5c3_Var107 string
 		templ_7745c5c3_Var107, templ_7745c5c3_Err = templ.ResolveAttributeValue(fmt.Sprint(cfg.Theme.HeaderBgOpacity))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 609, Col: 148}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 605, Col: 148}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var107)
 		if templ_7745c5c3_Err != nil {
@@ -1784,7 +1784,7 @@ func themeSettingsForm(cfg *config.Config) templ.Component {
 		var templ_7745c5c3_Var108 string
 		templ_7745c5c3_Var108, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprint(cfg.Theme.HeaderBgOpacity))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 610, Col: 84}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 606, Col: 84}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var108))
 		if templ_7745c5c3_Err != nil {
@@ -1797,7 +1797,7 @@ func themeSettingsForm(cfg *config.Config) templ.Component {
 		var templ_7745c5c3_Var109 string
 		templ_7745c5c3_Var109, templ_7745c5c3_Err = templ.ResolveAttributeValue(cfg.Theme.PageBgColor)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 616, Col: 106}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 612, Col: 106}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var109)
 		if templ_7745c5c3_Err != nil {
@@ -1810,7 +1810,7 @@ func themeSettingsForm(cfg *config.Config) templ.Component {
 		var templ_7745c5c3_Var110 string
 		templ_7745c5c3_Var110, templ_7745c5c3_Err = templ.ResolveAttributeValue(cfg.Theme.FooterBgColor)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 622, Col: 112}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 618, Col: 112}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var110)
 		if templ_7745c5c3_Err != nil {
@@ -1833,7 +1833,7 @@ func themeSettingsForm(cfg *config.Config) templ.Component {
 		var templ_7745c5c3_Var111 string
 		templ_7745c5c3_Var111, templ_7745c5c3_Err = templ.ResolveAttributeValue(cfg.Theme.ContentBgColor)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 634, Col: 116}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 630, Col: 116}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var111)
 		if templ_7745c5c3_Err != nil {
@@ -1856,7 +1856,7 @@ func themeSettingsForm(cfg *config.Config) templ.Component {
 		var templ_7745c5c3_Var112 string
 		templ_7745c5c3_Var112, templ_7745c5c3_Err = templ.ResolveAttributeValue(cfg.Theme.ContentBgGradientStart)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 645, Col: 142}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 641, Col: 142}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var112)
 		if templ_7745c5c3_Err != nil {
@@ -1869,7 +1869,7 @@ func themeSettingsForm(cfg *config.Config) templ.Component {
 		var templ_7745c5c3_Var113 string
 		templ_7745c5c3_Var113, templ_7745c5c3_Err = templ.ResolveAttributeValue(cfg.Theme.ContentBgGradientEnd)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 649, Col: 136}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 645, Col: 136}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var113)
 		if templ_7745c5c3_Err != nil {
@@ -1882,7 +1882,7 @@ func themeSettingsForm(cfg *config.Config) templ.Component {
 		var templ_7745c5c3_Var114 string
 		templ_7745c5c3_Var114, templ_7745c5c3_Err = templ.ResolveAttributeValue(fmt.Sprint(cfg.Theme.ContentBgGradientAngle))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 653, Col: 155}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 649, Col: 155}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var114)
 		if templ_7745c5c3_Err != nil {
@@ -1929,7 +1929,7 @@ func storefrontSidebarSettingsForm(cfg *config.Config) templ.Component {
 			var templ_7745c5c3_Var116 string
 			templ_7745c5c3_Var116, templ_7745c5c3_Err = templ.ResolveAttributeValue("item_title_" + strconv.Itoa(i))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 670, Col: 51}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 666, Col: 51}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var116)
 			if templ_7745c5c3_Err != nil {
@@ -1942,7 +1942,7 @@ func storefrontSidebarSettingsForm(cfg *config.Config) templ.Component {
 			var templ_7745c5c3_Var117 string
 			templ_7745c5c3_Var117, templ_7745c5c3_Err = templ.ResolveAttributeValue("storefront_sidebar_" + strconv.Itoa(i) + "_title")
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 671, Col: 83}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 667, Col: 83}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var117)
 			if templ_7745c5c3_Err != nil {
@@ -1955,7 +1955,7 @@ func storefrontSidebarSettingsForm(cfg *config.Config) templ.Component {
 			var templ_7745c5c3_Var118 string
 			templ_7745c5c3_Var118, templ_7745c5c3_Err = templ.ResolveAttributeValue("item_title_" + strconv.Itoa(i))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 671, Col: 122}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 667, Col: 122}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var118)
 			if templ_7745c5c3_Err != nil {
@@ -1968,7 +1968,7 @@ func storefrontSidebarSettingsForm(cfg *config.Config) templ.Component {
 			var templ_7745c5c3_Var119 string
 			templ_7745c5c3_Var119, templ_7745c5c3_Err = templ.ResolveAttributeValue(item.Title)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 671, Col: 143}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 667, Col: 143}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var119)
 			if templ_7745c5c3_Err != nil {
@@ -1981,7 +1981,7 @@ func storefrontSidebarSettingsForm(cfg *config.Config) templ.Component {
 			var templ_7745c5c3_Var120 string
 			templ_7745c5c3_Var120, templ_7745c5c3_Err = templ.ResolveAttributeValue("item_link_" + strconv.Itoa(i))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 674, Col: 50}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 670, Col: 50}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var120)
 			if templ_7745c5c3_Err != nil {
@@ -1994,7 +1994,7 @@ func storefrontSidebarSettingsForm(cfg *config.Config) templ.Component {
 			var templ_7745c5c3_Var121 string
 			templ_7745c5c3_Var121, templ_7745c5c3_Err = templ.ResolveAttributeValue("storefront_sidebar_" + strconv.Itoa(i) + "_link")
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 675, Col: 82}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 671, Col: 82}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var121)
 			if templ_7745c5c3_Err != nil {
@@ -2007,7 +2007,7 @@ func storefrontSidebarSettingsForm(cfg *config.Config) templ.Component {
 			var templ_7745c5c3_Var122 string
 			templ_7745c5c3_Var122, templ_7745c5c3_Err = templ.ResolveAttributeValue("item_link_" + strconv.Itoa(i))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 675, Col: 120}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 671, Col: 120}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var122)
 			if templ_7745c5c3_Err != nil {
@@ -2020,7 +2020,7 @@ func storefrontSidebarSettingsForm(cfg *config.Config) templ.Component {
 			var templ_7745c5c3_Var123 string
 			templ_7745c5c3_Var123, templ_7745c5c3_Err = templ.ResolveAttributeValue(item.Link)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 675, Col: 140}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 671, Col: 140}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var123)
 			if templ_7745c5c3_Err != nil {
@@ -2033,7 +2033,7 @@ func storefrontSidebarSettingsForm(cfg *config.Config) templ.Component {
 			var templ_7745c5c3_Var124 string
 			templ_7745c5c3_Var124, templ_7745c5c3_Err = templ.ResolveAttributeValue("item_icon_" + strconv.Itoa(i))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 678, Col: 50}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 674, Col: 50}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var124)
 			if templ_7745c5c3_Err != nil {
@@ -2046,7 +2046,7 @@ func storefrontSidebarSettingsForm(cfg *config.Config) templ.Component {
 			var templ_7745c5c3_Var125 string
 			templ_7745c5c3_Var125, templ_7745c5c3_Err = templ.ResolveAttributeValue("storefront_sidebar_" + strconv.Itoa(i) + "_icon")
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 679, Col: 82}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 675, Col: 82}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var125)
 			if templ_7745c5c3_Err != nil {
@@ -2059,7 +2059,7 @@ func storefrontSidebarSettingsForm(cfg *config.Config) templ.Component {
 			var templ_7745c5c3_Var126 string
 			templ_7745c5c3_Var126, templ_7745c5c3_Err = templ.ResolveAttributeValue("item_icon_" + strconv.Itoa(i))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 679, Col: 120}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 675, Col: 120}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var126)
 			if templ_7745c5c3_Err != nil {
@@ -2072,7 +2072,7 @@ func storefrontSidebarSettingsForm(cfg *config.Config) templ.Component {
 			var templ_7745c5c3_Var127 string
 			templ_7745c5c3_Var127, templ_7745c5c3_Err = templ.ResolveAttributeValue(item.Icon)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 679, Col: 140}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 675, Col: 140}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var127)
 			if templ_7745c5c3_Err != nil {
@@ -2085,7 +2085,7 @@ func storefrontSidebarSettingsForm(cfg *config.Config) templ.Component {
 			var templ_7745c5c3_Var128 string
 			templ_7745c5c3_Var128, templ_7745c5c3_Err = templ.ResolveAttributeValue("storefront_sidebar_" + strconv.Itoa(i) + "_delete")
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 682, Col: 88}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 678, Col: 88}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var128)
 			if templ_7745c5c3_Err != nil {
@@ -2098,7 +2098,7 @@ func storefrontSidebarSettingsForm(cfg *config.Config) templ.Component {
 			var templ_7745c5c3_Var129 string
 			templ_7745c5c3_Var129, templ_7745c5c3_Err = templ.ResolveAttributeValue("item_delete_" + strconv.Itoa(i))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 682, Col: 128}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 678, Col: 128}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var129)
 			if templ_7745c5c3_Err != nil {
@@ -2111,7 +2111,7 @@ func storefrontSidebarSettingsForm(cfg *config.Config) templ.Component {
 			var templ_7745c5c3_Var130 string
 			templ_7745c5c3_Var130, templ_7745c5c3_Err = templ.ResolveAttributeValue("item_delete_" + strconv.Itoa(i))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 683, Col: 52}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/configuration/index.templ`, Line: 679, Col: 52}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var130)
 			if templ_7745c5c3_Err != nil {

@@ -147,19 +147,15 @@ templ siteSettingsForm(cfg *config.Config) {
 							<input type="email" name="footer_email" id="footer_email" value={ cfg.Footer.Email } class="block w-full border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500 sm:text-sm" placeholder="contact@example.com"/>
 						</div>
 					</div>
-				<div class="sm:col-span-3">
-					<label for="footer_latitude" class="block text-sm font-medium text-gray-700">Latitude</label>
+				<div class="sm:col-span-6">
+					<label for="footer_maps_link" class="block text-sm font-medium text-gray-700">Google Maps Link</label>
 					<div class="mt-1">
-						<input type="text" name="footer_latitude" id="footer_latitude" value={ cfg.Footer.Latitude } class="block w-full border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500 sm:text-sm" placeholder="36.830"/>
+						<input type="text" name="footer_maps_link" id="footer_maps_link" value="" class="block w-full border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500 sm:text-sm" placeholder="https://www.google.com/maps/place/.../@36.830,10.185,17z"/>
 					</div>
+					<p class="mt-2 text-xs text-gray-500">Go to Google Maps, search your address, and copy the URL from the address bar. Coordinates are extracted automatically.</p>
 				</div>
-				<div class="sm:col-span-3">
-					<label for="footer_longitude" class="block text-sm font-medium text-gray-700">Longitude</label>
-					<div class="mt-1">
-						<input type="text" name="footer_longitude" id="footer_longitude" value={ cfg.Footer.Longitude } class="block w-full border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500 sm:text-sm" placeholder="10.185"/>
-					</div>
-					<p class="mt-2 text-xs text-gray-500 italic">Rendered via OpenStreetMap — no API key needed.</p>
-				</div>
+				<input type="hidden" name="footer_latitude" value={ cfg.Footer.Latitude }/>
+				<input type="hidden" name="footer_longitude" value={ cfg.Footer.Longitude }/>
 				</div>
 			</div>
 
