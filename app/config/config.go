@@ -145,11 +145,12 @@ type ThemeConfig struct {
 }
 
 type FooterConfig struct {
-	Address     string       `json:"address"`
-	Phone       string       `json:"phone"`
-	Email       string       `json:"email"`
-	MapEmbedURL string       `json:"map_embed_url"`
-	Copyright   string       `json:"copyright"`
+	Address   string       `json:"address"`
+	Phone     string       `json:"phone"`
+	Email     string       `json:"email"`
+	Latitude  string       `json:"latitude"`
+	Longitude string       `json:"longitude"`
+	Copyright string       `json:"copyright"`
 	SocialLinks []SocialLink `json:"social_links"`
 	LinkColumns []LinkColumn `json:"link_columns"`
 	Hours       []StoreHour  `json:"hours"`
@@ -336,10 +337,11 @@ func defaultConfig() *Config {
 		},
 		StorefrontSidebar: []MenuItem{},
 		Footer: FooterConfig{
-			Address:     "123 Rue de la Liberté, Tunis, Tunisie",
-			Phone:       "+216 XX XXX XXX",
-			Email:       "contact@bestshop.com",
-			MapEmbedURL: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3192.0!2d10.0!3d36.0!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMzbCsDAwJzAwLjAiTiAxMMKwMDAnMDAuMCJF!5e0!3m2!1sfr!2stn!4v1",
+			Address:   "123 Rue de la Liberté, Tunis, Tunisie",
+			Phone:     "+216 XX XXX XXX",
+			Email:     "contact@bestshop.com",
+			Latitude:  "36.830",
+			Longitude: "10.185",
 			Copyright:   fmt.Sprintf("© %d BEST SHOP. All rights reserved.", time.Now().Year()),
 			SocialLinks: []SocialLink{
 				{Platform: "Facebook", URL: "https://facebook.com", Icon: "facebook"},

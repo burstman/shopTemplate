@@ -147,13 +147,19 @@ templ siteSettingsForm(cfg *config.Config) {
 							<input type="email" name="footer_email" id="footer_email" value={ cfg.Footer.Email } class="block w-full border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500 sm:text-sm" placeholder="contact@example.com"/>
 						</div>
 					</div>
-					<div class="sm:col-span-6">
-						<label for="footer_map_embed" class="block text-sm font-medium text-gray-700">Google Maps Embed URL</label>
-						<div class="mt-1">
-							<input type="text" name="footer_map_embed" id="footer_map_embed" value={ cfg.Footer.MapEmbedURL } class="block w-full border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500 sm:text-sm" placeholder="https://www.google.com/maps/embed?pb=..."/>
-						</div>
-						<p class="mt-2 text-xs text-gray-500 italic">Google Maps &rarr; Share &rarr; Embed a map &rarr; Copy the <code>src</code> URL.</p>
+				<div class="sm:col-span-3">
+					<label for="footer_latitude" class="block text-sm font-medium text-gray-700">Latitude</label>
+					<div class="mt-1">
+						<input type="text" name="footer_latitude" id="footer_latitude" value={ cfg.Footer.Latitude } class="block w-full border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500 sm:text-sm" placeholder="36.830"/>
 					</div>
+				</div>
+				<div class="sm:col-span-3">
+					<label for="footer_longitude" class="block text-sm font-medium text-gray-700">Longitude</label>
+					<div class="mt-1">
+						<input type="text" name="footer_longitude" id="footer_longitude" value={ cfg.Footer.Longitude } class="block w-full border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500 sm:text-sm" placeholder="10.185"/>
+					</div>
+					<p class="mt-2 text-xs text-gray-500 italic">Rendered via OpenStreetMap — no API key needed.</p>
+				</div>
 				</div>
 			</div>
 

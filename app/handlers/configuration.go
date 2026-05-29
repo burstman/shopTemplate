@@ -102,7 +102,8 @@ func HandleAdminSettingsUpdate(kit *kit.Kit) error {
 		cfg.Footer.Address = kit.Request.FormValue("footer_address")
 		cfg.Footer.Phone = kit.Request.FormValue("footer_phone")
 		cfg.Footer.Email = kit.Request.FormValue("footer_email")
-		cfg.Footer.MapEmbedURL = kit.Request.FormValue("footer_map_embed")
+		cfg.Footer.Latitude = kit.Request.FormValue("footer_latitude")
+		cfg.Footer.Longitude = kit.Request.FormValue("footer_longitude")
 
 		if countStr := kit.Request.FormValue("hours_count"); countStr != "" {
 			count, _ := strconv.Atoi(countStr)

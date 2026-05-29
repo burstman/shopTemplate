@@ -1,6 +1,7 @@
 package stores
 
 import (
+	"fmt"
 	"shopTemplate/app/config"
 	"shopTemplate/app/views/layouts"
 	"shopTemplate/app/models"
@@ -71,10 +72,10 @@ templ Index(user models.AuthUser, cfg *config.Config, categories []models.Catego
 					</div>
 				</div>
 
-				if cfg.Footer.MapEmbedURL != "" {
+				if cfg.Footer.Latitude != "" && cfg.Footer.Longitude != "" {
 					<div class="bg-white rounded-lg shadow overflow-hidden" style="min-height: 400px;">
 						<iframe
-							src={ templ.SafeURL(cfg.Footer.MapEmbedURL) }
+							src={ templ.SafeURL(osmEmbedURL(cfg.Footer.Latitude, cfg.Footer.Longitude)) }
 							width="100%"
 							height="100%"
 							style="border:0; min-height: 400px;"
@@ -87,4 +88,8 @@ templ Index(user models.AuthUser, cfg *config.Config, categories []models.Catego
 			</div>
 		</div>
 	}
+}
+
+func osmEmbedURL(lat, lon string) string {
+	return fmt.Sprintf("https://www.openstreetmap.org/export/embed.html?bbox=%s,%s,%s,%s&layer=mapnik&marker=%s,%s", lon, lat, lon, lat, lat, lon)
 }
