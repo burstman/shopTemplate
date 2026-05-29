@@ -232,6 +232,8 @@ func InitializeRoutes(router *chi.Mux) {
 		// Routes
 		app.Get("/", kit.Handler(handlers.HandleLandingIndex))
 		app.Get("/privacy", kit.Handler(handlers.HandlePrivacyPolicy))
+		app.Get("/content/{slug}", kit.Handler(handlers.HandleContentPage))
+		app.Get("/magasins", kit.Handler(handlers.HandleStoresIndex))
 		app.Get("/data-deletion", kit.Handler(handlers.HandleDataDeletion))
 		app.Get("/set-lang/{lang}", kit.Handler(HandleSetLang))
 		app.Get("/products", kit.Handler(handlers.HandleProductsIndex))

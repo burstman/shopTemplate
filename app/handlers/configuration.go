@@ -99,6 +99,25 @@ func HandleAdminSettingsUpdate(kit *kit.Kit) error {
 		cfg.Site.ShowOrderNow = kit.Request.FormValue("show_order_now") == "on"
 		cfg.Site.ShowAddToCart = kit.Request.FormValue("show_add_to_cart") == "on"
 		cfg.Footer.Copyright = kit.Request.FormValue("footer_copyright")
+		cfg.Footer.Address = kit.Request.FormValue("footer_address")
+		cfg.Footer.Phone = kit.Request.FormValue("footer_phone")
+		cfg.Footer.Email = kit.Request.FormValue("footer_email")
+		cfg.Footer.MapEmbedURL = kit.Request.FormValue("footer_map_embed")
+
+		if countStr := kit.Request.FormValue("hours_count"); countStr != "" {
+			count, _ := strconv.Atoi(countStr)
+			var hours []config.StoreHour
+			for j := 0; j < count; j++ {
+				prefix := fmt.Sprintf("hour_%d_", j)
+				hours = append(hours, config.StoreHour{
+					Day:       kit.Request.FormValue(prefix + "day"),
+					IsClosed:  kit.Request.FormValue(prefix+"closed") == "on",
+					OpenTime:  kit.Request.FormValue(prefix + "open"),
+					CloseTime: kit.Request.FormValue(prefix + "close"),
+				})
+			}
+			cfg.Footer.Hours = hours
+		}
 
 		var bundles []models.Bundle
 		if countStr := kit.Request.FormValue("bundles_count"); countStr != "" {

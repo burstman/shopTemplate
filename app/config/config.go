@@ -145,9 +145,21 @@ type ThemeConfig struct {
 }
 
 type FooterConfig struct {
+	Address     string       `json:"address"`
+	Phone       string       `json:"phone"`
+	Email       string       `json:"email"`
+	MapEmbedURL string       `json:"map_embed_url"`
 	Copyright   string       `json:"copyright"`
 	SocialLinks []SocialLink `json:"social_links"`
 	LinkColumns []LinkColumn `json:"link_columns"`
+	Hours       []StoreHour  `json:"hours"`
+}
+
+type StoreHour struct {
+	Day       string `json:"day"`
+	IsClosed  bool   `json:"is_closed"`
+	OpenTime  string `json:"open_time"`
+	CloseTime string `json:"close_time"`
 }
 
 type ChatConfig struct {
@@ -324,7 +336,11 @@ func defaultConfig() *Config {
 		},
 		StorefrontSidebar: []MenuItem{},
 		Footer: FooterConfig{
-			Copyright: fmt.Sprintf("© %d BEST SHOP. All rights reserved.", time.Now().Year()),
+			Address:     "123 Rue de la Liberté, Tunis, Tunisie",
+			Phone:       "+216 XX XXX XXX",
+			Email:       "contact@bestshop.com",
+			MapEmbedURL: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3192.0!2d10.0!3d36.0!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMzbCsDAwJzAwLjAiTiAxMMKwMDAnMDAuMCJF!5e0!3m2!1sfr!2stn!4v1",
+			Copyright:   fmt.Sprintf("© %d BEST SHOP. All rights reserved.", time.Now().Year()),
 			SocialLinks: []SocialLink{
 				{Platform: "Facebook", URL: "https://facebook.com", Icon: "facebook"},
 				{Platform: "Instagram", URL: "https://instagram.com", Icon: "instagram"},
@@ -333,11 +349,22 @@ func defaultConfig() *Config {
 			},
 			LinkColumns: []LinkColumn{
 				{
-					Title: "Shop",
+					Title: "Informations",
 					Links: []MenuItem{
-						{Title: "Products", Link: "/products"},
+						{Title: "Livraison", Link: "/content/livraison"},
+						{Title: "À Propos De Nous", Link: "/content/a-propos"},
+						{Title: "Magasin", Link: "/magasins"},
 					},
 				},
+			},
+			Hours: []StoreHour{
+				{Day: "Lun.", IsClosed: true},
+				{Day: "Mar.", OpenTime: "08h00", CloseTime: "17h00"},
+				{Day: "Mer.", OpenTime: "08h00", CloseTime: "17h00"},
+				{Day: "Jeu.", OpenTime: "08h00", CloseTime: "17h00"},
+				{Day: "Ven.", OpenTime: "08h00", CloseTime: "17h00"},
+				{Day: "Sam.", OpenTime: "08h00", CloseTime: "17h00"},
+				{Day: "Dim.", OpenTime: "08h00", CloseTime: "17h00"},
 			},
 		},
 		Chat: ChatConfig{

@@ -1,0 +1,57 @@
+package content
+
+import (
+	"shopTemplate/app/config"
+	"shopTemplate/app/views/layouts"
+	"shopTemplate/app/models"
+)
+
+templ Livraison(user models.AuthUser, cfg *config.Config, categories []models.Category, cartCount int) {
+	@layouts.BaseLayout(user, cfg, categories, cartCount) {
+		<div class="max-w-4xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
+			<h1 class="text-3xl font-extrabold text-gray-900 mb-8">Livraison</h1>
+			<div class="prose prose-indigo max-w-none text-gray-600 space-y-6">
+				<h2 class="text-xl font-bold text-gray-900 mt-6">Délais et zones de livraison</h2>
+				<p>Nous livrons dans toute la Tunisie. Les délais de livraison varient selon votre localisation :</p>
+				<ul class="list-disc pl-6">
+					<li><strong>Tunis et banlieue</strong> : sous 24 à 48 heures</li>
+					<li><strong>Autres régions</strong> : sous 2 à 5 jours ouvrés</li>
+				</ul>
+
+				<h2 class="text-xl font-bold text-gray-900 mt-6">Frais de livraison</h2>
+				<p>La livraison est offerte pour toute commande supérieure à 800 TND. Pour les commandes inférieures, les frais de livraison sont calculés lors du passage de la commande.</p>
+
+				<h2 class="text-xl font-bold text-gray-900 mt-6">Suivi de commande</h2>
+				<p>Une fois votre commande expédiée, vous recevrez un email de confirmation avec un numéro de suivi.</p>
+
+				<h2 class="text-xl font-bold text-gray-900 mt-6">Retours et échanges</h2>
+				<p>Vous disposez d'un délai de 7 jours à compter de la réception pour retourner un article. Les produits doivent être dans leur état d'origine.</p>
+			</div>
+		</div>
+	}
+}
+
+templ APropos(user models.AuthUser, cfg *config.Config, categories []models.Category, cartCount int) {
+	@layouts.BaseLayout(user, cfg, categories, cartCount) {
+		<div class="max-w-4xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
+			<h1 class="text-3xl font-extrabold text-gray-900 mb-8">À Propos De Nous</h1>
+			<div class="prose prose-indigo max-w-none text-gray-600 space-y-6">
+				<p>Bienvenue chez <strong>{ cfg.Site.Name }</strong>, votre destination de confiance pour tous vos besoins.</p>
+
+				<h2 class="text-xl font-bold text-gray-900 mt-6">Notre Histoire</h2>
+				<p>Depuis notre création, nous nous engageons à offrir des produits de qualité exceptionnelle à nos clients. Notre passion pour le jardinage et la nature nous pousse à sélectionner avec soin chaque article de notre catalogue.</p>
+
+				<h2 class="text-xl font-bold text-gray-900 mt-6">Notre Mission</h2>
+				<p>Notre mission est de rendre le jardinage accessible à tous, avec des conseils d'experts et des produits adaptés à chaque besoin. Nous croyons en la beauté de la nature et en son pouvoir d'améliorer notre quotidien.</p>
+
+				<h2 class="text-xl font-bold text-gray-900 mt-6">Pourquoi Nous Choisir ?</h2>
+				<ul class="list-disc pl-6">
+					<li>Produits de qualité sélectionnés avec soin</li>
+					<li>Conseils personnalisés de nos experts</li>
+					<li>Livraison rapide dans toute la Tunisie</li>
+					<li>Service client réactif et à votre écoute</li>
+				</ul>
+			</div>
+		</div>
+	}
+}
