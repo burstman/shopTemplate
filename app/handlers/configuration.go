@@ -12,6 +12,7 @@ import (
 	"shopTemplate/app/services"
 	"strconv"
 	"strings"
+	"regexp"
 
 	"shopTemplate/app/views/configuration"
 
@@ -102,7 +103,7 @@ func HandleAdminSettingsUpdate(kit *kit.Kit) error {
 		cfg.Footer.Address = kit.Request.FormValue("footer_address")
 		cfg.Footer.Phone = kit.Request.FormValue("footer_phone")
 		cfg.Footer.Email = kit.Request.FormValue("footer_email")
-		cfg.Footer.MapEmbedURL = kit.Request.FormValue("footer_map_embed")
+		cfg.Footer.MapEmbedURL = extractEmbedSrc(kit.Request.FormValue("footer_map_embed"))
 
 		if countStr := kit.Request.FormValue("hours_count"); countStr != "" {
 			count, _ := strconv.Atoi(countStr)
@@ -488,6 +489,19 @@ func HandleAdminSectionDelete(kit *kit.Kit) error {
 	}
 
 	return kit.Redirect(http.StatusSeeOther, "/admin/sections")
+}
+
+var srcRe = regexp.MustCompile(`src="([^"]+)"`)
+
+func extractEmbedSrc(v string) string {
+	if v == "" {
+		return ""
+	}
+	m := srcRe.FindStringSubmatch(v)
+	if len(m) == 2 {
+		return m[1]
+	}
+	return v
 }
 
 func HandleAdminSectionDuplicate(kit *kit.Kit) error {
