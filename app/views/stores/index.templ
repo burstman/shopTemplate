@@ -8,12 +8,12 @@ import (
 
 templ Index(user models.AuthUser, cfg *config.Config, categories []models.Category, cartCount int) {
 	@layouts.BaseLayout(user, cfg, categories, cartCount) {
-		<div class="max-w-4xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
+		<div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
 			<h1 class="text-3xl font-extrabold text-gray-900 mb-2">Nos magasins</h1>
 			<p class="text-gray-500 mb-10">Retrouvez-nous dans notre magasin d'exposition.</p>
 
-			<div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-				<div class="space-y-8">
+			<div class="grid grid-cols-1 lg:grid-cols-5 gap-8">
+				<div class="lg:col-span-2 space-y-8">
 					<div class="bg-white rounded-lg shadow p-6">
 						<h2 class="text-lg font-semibold text-gray-900 mb-4">Coordonnées</h2>
 						<div class="space-y-4">
@@ -72,7 +72,7 @@ templ Index(user models.AuthUser, cfg *config.Config, categories []models.Catego
 				</div>
 
 				if cfg.Footer.MapEmbedURL != "" {
-					<div class="bg-white rounded-lg shadow overflow-hidden" style="min-height: 400px;">
+					<div class="lg:col-span-3 bg-white rounded-lg shadow overflow-hidden" style="min-height: 400px;">
 						<iframe
 							src={ templ.SafeURL(cfg.Footer.MapEmbedURL) }
 							width="100%"

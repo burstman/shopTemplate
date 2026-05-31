@@ -47,7 +47,7 @@ func Index(user models.AuthUser, cfg *config.Config, categories []models.Categor
 				}()
 			}
 			ctx = templ.InitializeContext(ctx)
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<div class=\"max-w-4xl mx-auto py-12 px-4 sm:px-6 lg:px-8\"><h1 class=\"text-3xl font-extrabold text-gray-900 mb-2\">Nos magasins</h1><p class=\"text-gray-500 mb-10\">Retrouvez-nous dans notre magasin d'exposition.</p><div class=\"grid grid-cols-1 lg:grid-cols-2 gap-8\"><div class=\"space-y-8\"><div class=\"bg-white rounded-lg shadow p-6\"><h2 class=\"text-lg font-semibold text-gray-900 mb-4\">Coordonnées</h2><div class=\"space-y-4\">")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<div class=\"max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8\"><h1 class=\"text-3xl font-extrabold text-gray-900 mb-2\">Nos magasins</h1><p class=\"text-gray-500 mb-10\">Retrouvez-nous dans notre magasin d'exposition.</p><div class=\"grid grid-cols-1 lg:grid-cols-5 gap-8\"><div class=\"lg:col-span-2 space-y-8\"><div class=\"bg-white rounded-lg shadow p-6\"><h2 class=\"text-lg font-semibold text-gray-900 mb-4\">Coordonnées</h2><div class=\"space-y-4\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -203,7 +203,7 @@ func Index(user models.AuthUser, cfg *config.Config, categories []models.Categor
 				return templ_7745c5c3_Err
 			}
 			if cfg.Footer.MapEmbedURL != "" {
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 19, "<div class=\"bg-white rounded-lg shadow overflow-hidden\" style=\"min-height: 400px;\"><iframe src=\"")
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 19, "<div class=\"lg:col-span-3 bg-white rounded-lg shadow overflow-hidden\" style=\"min-height: 400px;\"><iframe src=\"")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
