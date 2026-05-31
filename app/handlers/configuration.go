@@ -5,7 +5,6 @@ import (
 	"log/slog"
 	"net/http"
 	"os"
-	"regexp"
 	"shopTemplate/app/config"
 	"shopTemplate/app/db"
 	"shopTemplate/app/helpers"
@@ -103,15 +102,7 @@ func HandleAdminSettingsUpdate(kit *kit.Kit) error {
 		cfg.Footer.Address = kit.Request.FormValue("footer_address")
 		cfg.Footer.Phone = kit.Request.FormValue("footer_phone")
 		cfg.Footer.Email = kit.Request.FormValue("footer_email")
-		if url := kit.Request.FormValue("footer_maps_link"); url != "" {
-			if lat, lng := parseCoordsFromMapsLink(url); lat != "" && lng != "" {
-				cfg.Footer.Latitude = lat
-				cfg.Footer.Longitude = lng
-			}
-		} else {
-			cfg.Footer.Latitude = kit.Request.FormValue("footer_latitude")
-			cfg.Footer.Longitude = kit.Request.FormValue("footer_longitude")
-		}
+		cfg.Footer.MapEmbedURL = kit.Request.FormValue("footer_map_embed")
 
 		if countStr := kit.Request.FormValue("hours_count"); countStr != "" {
 			count, _ := strconv.Atoi(countStr)
@@ -542,14 +533,4 @@ func HandleAdminSectionDuplicate(kit *kit.Kit) error {
 	}
 
 	return kit.Redirect(http.StatusSeeOther, "/admin/sections")
-}
-
-var mapsCoordRe = regexp.MustCompile(`@(-?\d+\.\d+),(-?\d+\.\d+)`)
-
-func parseCoordsFromMapsLink(url string) (lat, lng string) {
-	m := mapsCoordRe.FindStringSubmatch(url)
-	if len(m) == 3 {
-		return m[1], m[2]
-	}
-	return "", ""
 }

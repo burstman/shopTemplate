@@ -148,14 +148,12 @@ templ siteSettingsForm(cfg *config.Config) {
 						</div>
 					</div>
 				<div class="sm:col-span-6">
-					<label for="footer_maps_link" class="block text-sm font-medium text-gray-700">Google Maps Link</label>
+					<label for="footer_map_embed" class="block text-sm font-medium text-gray-700">Google Maps Embed URL</label>
 					<div class="mt-1">
-						<input type="text" name="footer_maps_link" id="footer_maps_link" value="" class="block w-full border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500 sm:text-sm" placeholder="https://www.google.com/maps/place/.../@36.830,10.185,17z"/>
+						<input type="text" name="footer_map_embed" id="footer_map_embed" value={ cfg.Footer.MapEmbedURL } class="block w-full border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500 sm:text-sm" placeholder="https://www.google.com/maps/embed?pb=..."/>
 					</div>
-					<p class="mt-2 text-xs text-gray-500">Go to Google Maps, search your address, and copy the URL from the address bar. Coordinates are extracted automatically.</p>
+					<p class="mt-2 text-xs text-gray-500">Google Maps → Share → Embed a map → copy the <code>src</code> URL. No API key needed.</p>
 				</div>
-				<input type="hidden" name="footer_latitude" value={ cfg.Footer.Latitude }/>
-				<input type="hidden" name="footer_longitude" value={ cfg.Footer.Longitude }/>
 				</div>
 			</div>
 

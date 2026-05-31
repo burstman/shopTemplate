@@ -1,11 +1,9 @@
 package stores
 
 import (
-	"fmt"
 	"shopTemplate/app/config"
 	"shopTemplate/app/views/layouts"
 	"shopTemplate/app/models"
-	"strconv"
 )
 
 templ Index(user models.AuthUser, cfg *config.Config, categories []models.Category, cartCount int) {
@@ -73,10 +71,10 @@ templ Index(user models.AuthUser, cfg *config.Config, categories []models.Catego
 					</div>
 				</div>
 
-				if cfg.Footer.Latitude != "" && cfg.Footer.Longitude != "" {
+				if cfg.Footer.MapEmbedURL != "" {
 					<div class="bg-white rounded-lg shadow overflow-hidden" style="min-height: 400px;">
 						<iframe
-							src={ templ.SafeURL(osmEmbedURL(cfg.Footer.Latitude, cfg.Footer.Longitude)) }
+							src={ templ.SafeURL(cfg.Footer.MapEmbedURL) }
 							width="100%"
 							height="100%"
 							style="border:0; min-height: 400px;"
@@ -89,17 +87,4 @@ templ Index(user models.AuthUser, cfg *config.Config, categories []models.Catego
 			</div>
 		</div>
 	}
-}
-
-func osmEmbedURL(lat, lon string) string {
-	latF, err1 := strconv.ParseFloat(lat, 64)
-	lonF, err2 := strconv.ParseFloat(lon, 64)
-	if err1 != nil || err2 != nil {
-		return ""
-	}
-	offset := 0.01
-	return fmt.Sprintf(
-		"https://www.openstreetmap.org/export/embed.html?bbox=%.5f,%.5f,%.5f,%.5f&layer=mapnik&marker=%.5f,%.5f",
-		lonF-offset, latF-offset, lonF+offset, latF+offset, latF, lonF,
-	)
 }
