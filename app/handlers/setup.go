@@ -287,7 +287,7 @@ func HandleSetupCreate(kit *kit.Kit) error {
 	// Send password via email (required)
 	if err := sendAdminPasswordEmail(email, password, cfg.Site.Name); err != nil {
 		slog.Error("setup create email failed", "err", err)
-		return kit.Render(admin.SetupPage("", "", "", "Failed to send password email: "+err.Error(), false))
+		return kit.Render(admin.SetupPage(email, password, shopURL, "", false))
 	}
 	slog.Info("setup create complete", "email", email)
 
