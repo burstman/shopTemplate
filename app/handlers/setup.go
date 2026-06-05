@@ -57,35 +57,36 @@ func generateAffiliateID() (string, error) {
 	return fmt.Sprintf("AFF-%03d", num+1), nil
 }
 
-func sendAdminPasswordEmail(to, password, siteName string) bool {
+func sendAdminPasswordEmail(to, password, siteName string) error {
 	from := os.Getenv("SMTP_FROM")
 	host := os.Getenv("SMTP_HOST")
 	port := os.Getenv("SMTP_PORT")
 	username := os.Getenv("SMTP_USER")
 	smtpPass := os.Getenv("SMTP_PASS")
 	if from == "" || host == "" || port == "" {
-		return false
+		return fmt.Errorf("SMTP not configured: set SMTP_FROM, SMTP_HOST, SMTP_PORT")
 	}
-	auth := smtp.PlainAuth("", username, smtpPass, host)
-	header := fmt.Sprintf("From: %s\r\n", from)
-	header += fmt.Sprintf("To: %s\r\n", to)
-	header += fmt.Sprintf("Subject: Admin Account Created - %s\r\n", siteName)
-	header += "MIME-version: 1.0\r\n"
-	header += "Content-Type: text/plain; charset=\"UTF-8\"\r\n\r\n"
-	body := fmt.Sprintf(
-		"Hello,\n\n"+
-			"Your admin account has been created for %s.\n\n"+
-			"Email: %s\n"+
-			"Password: %s\n\n"+
-			"Please log in and change your password as soon as possible.\n\n"+
-			"Thank you,\n%s",
-		siteName, to, password, siteName,
+
+	msg := fmt.Sprintf("From: %s\r\nTo: %s\r\nSubject: Admin Account Created - %s\r\nMIME-version: 1.0\r\nContent-Type: text/plain; charset=\"UTF-8\"\r\n\r\nHello,\n\nYour admin account has been created for %s.\n\nEmail: %s\nPassword: %s\n\nPlease log in and change your password as soon as possible.\n\nThank you,\n%s",
+		from, to, siteName, siteName, to, password, siteName,
 	)
-	if err := smtp.SendMail(host+":"+port, auth, from, []string{to}, []byte(header+body)); err != nil {
-		slog.Error("failed to send admin password email", "err", err)
-		return false
+
+	done := make(chan error, 1)
+	go func() {
+		auth := smtp.PlainAuth("", username, smtpPass, host)
+		done <- smtp.SendMail(host+":"+port, auth, from, []string{to}, []byte(msg))
+	}()
+
+	select {
+	case err := <-done:
+		if err != nil {
+			slog.Error("failed to send admin password email", "err", err)
+			return fmt.Errorf("failed to send email: %w", err)
+		}
+		return nil
+	case <-time.After(10 * time.Second):
+		return fmt.Errorf("email send timed out after 10s")
 	}
-	return true
 }
 
 func HandleSetupIndex(kit *kit.Kit) error {
@@ -218,9 +219,12 @@ func HandleSetupCreate(kit *kit.Kit) error {
 		return kit.Render(admin.SetupPage("", "", "", "Failed to save affiliate ID to config: "+err.Error(), false))
 	}
 
-	// Send password via email if SMTP is configured
-	emailSent := sendAdminPasswordEmail(email, password, cfg.Site.Name)
-	slog.Info("setup create complete", "email_sent", emailSent)
+	// Send password via email (required)
+	if err := sendAdminPasswordEmail(email, password, cfg.Site.Name); err != nil {
+		slog.Error("setup create email failed", "err", err)
+		return kit.Render(admin.SetupPage("", "", "", "Failed to send password email: "+err.Error(), false))
+	}
+	slog.Info("setup create complete", "email", email)
 
-	return kit.Render(admin.SetupPage(email, password, shopURL, "", emailSent))
+	return kit.Render(admin.SetupPage(email, "", shopURL, "", true))
 }
