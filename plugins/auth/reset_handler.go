@@ -11,6 +11,7 @@ import (
 	"shopTemplate/app/config"
 	"shopTemplate/app/db"
 	"shopTemplate/app/models"
+	"shopTemplate/app/services"
 
 	"github.com/anthdm/superkit/kit"
 	"golang.org/x/crypto/bcrypt"
@@ -65,29 +66,38 @@ func HandleResetPasswordCreate(kit *kit.Kit) error {
 
 	// Send email with new password
 	cfg := config.Get()
-	from := os.Getenv("SMTP_FROM")
-	host := os.Getenv("SMTP_HOST")
-	port := os.Getenv("SMTP_PORT")
-	username := os.Getenv("SMTP_USER")
-	password := os.Getenv("SMTP_PASS")
-
-	if from != "" && host != "" && port != "" {
-		auth := smtp.PlainAuth("", username, password, host)
-		header := fmt.Sprintf("From: %s\r\n", from)
-		header += fmt.Sprintf("To: %s\r\n", email)
-		header += fmt.Sprintf("Subject: Password Reset - %s\r\n", cfg.Site.Name)
-		header += "MIME-version: 1.0\r\n"
-		header += "Content-Type: text/plain; charset=\"UTF-8\"\r\n\r\n"
-		body := fmt.Sprintf(
-			"Hello,\n\n"+
-				"Your password has been reset as requested.\n\n"+
-				"New Password: %s\n\n"+
-				"Please log in and change your password as soon as possible.\n\n"+
-				"Thank you,\n%s",
+	if apiKey := os.Getenv("BREVO_API_KEY"); apiKey != "" {
+		subject := "Password Reset - " + cfg.Site.Name
+		body := fmt.Sprintf("Hello,\n\nYour password has been reset as requested.\n\nNew Password: %s\n\nPlease log in and change your password as soon as possible.\n\nThank you,\n%s",
 			newPassword, cfg.Site.Name,
 		)
-		if err := smtp.SendMail(host+":"+port, auth, from, []string{email}, []byte(header+body)); err != nil {
-			slog.Error("failed to send reset password email", "err", err)
+		if err := services.SendEmailViaBrevo(email, subject, body); err != nil {
+			slog.Error("failed to send reset password email via Brevo", "err", err)
+		}
+	} else {
+		from := os.Getenv("SMTP_FROM")
+		host := os.Getenv("SMTP_HOST")
+		port := os.Getenv("SMTP_PORT")
+		username := os.Getenv("SMTP_USER")
+		password := os.Getenv("SMTP_PASS")
+		if from != "" && host != "" && port != "" {
+			auth := smtp.PlainAuth("", username, password, host)
+			header := fmt.Sprintf("From: %s\r\n", from)
+			header += fmt.Sprintf("To: %s\r\n", email)
+			header += fmt.Sprintf("Subject: Password Reset - %s\r\n", cfg.Site.Name)
+			header += "MIME-version: 1.0\r\n"
+			header += "Content-Type: text/plain; charset=\"UTF-8\"\r\n\r\n"
+			body := fmt.Sprintf(
+				"Hello,\n\n"+
+					"Your password has been reset as requested.\n\n"+
+					"New Password: %s\n\n"+
+					"Please log in and change your password as soon as possible.\n\n"+
+					"Thank you,\n%s",
+				newPassword, cfg.Site.Name,
+			)
+			if err := smtp.SendMail(host+":"+port, auth, from, []string{email}, []byte(header+body)); err != nil {
+				slog.Error("failed to send reset password email", "err", err)
+			}
 		}
 	}
 

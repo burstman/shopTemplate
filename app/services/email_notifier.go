@@ -10,7 +10,9 @@ import (
 	"shopTemplate/app/models"
 )
 
-// EmailNotifier implements the OrderNotifier interface using SMTP.
+var brevoAvailable = len(os.Getenv("BREVO_API_KEY")) > 0
+
+// EmailNotifier implements the OrderNotifier interface using SMTP or Brevo API.
 type EmailNotifier struct {
 	host     string
 	port     string
@@ -21,8 +23,8 @@ type EmailNotifier struct {
 
 // NewEmailNotifier creates a new instance using environment variables.
 func NewEmailNotifier() *EmailNotifier {
-	if os.Getenv("SMTP_PASS") == "" {
-		slog.Warn("SMTP_PASS is not set in environment variables")
+	if os.Getenv("SMTP_PASS") == "" && os.Getenv("BREVO_API_KEY") == "" {
+		slog.Warn("neither SMTP_PASS nor BREVO_API_KEY is set in environment variables")
 		var aff models.Affiliate
 		if err := db.Get().First(&aff).Error; err == nil {
 			ReportWarningAffiliate(&aff, "SMTP_PASS is not set in environment variables")
@@ -39,7 +41,19 @@ func NewEmailNotifier() *EmailNotifier {
 }
 
 func (e *EmailNotifier) Name() string {
+	if brevoAvailable {
+		return "Brevo API"
+	}
 	return "Brevo SMTP"
+}
+
+func (e *EmailNotifier) send(recipient, subject, body string) error {
+	if brevoAvailable {
+		return SendEmailViaBrevo(recipient, subject, body)
+	}
+	auth := smtp.PlainAuth("", e.username, e.password, e.host)
+	msg := fmt.Sprintf("From: %s\r\nTo: %s\r\nSubject: %s\r\nMIME-version: 1.0\r\nContent-Type: text/plain; charset=\"UTF-8\"\r\n\r\n%s", e.from, recipient, subject, body)
+	return smtp.SendMail(e.host+":"+e.port, auth, e.from, []string{recipient}, []byte(msg))
 }
 
 // Send formats a basic MIME email and sends it via the configured SMTP server.
@@ -54,7 +68,6 @@ func (e *EmailNotifier) Send(order models.Order) error {
 		return e.SendTest(adminEmail)
 	}
 
-	auth := smtp.PlainAuth("", e.username, e.password, e.host)
 	cfg := config.Get()
 
 	adminEmail := cfg.Notification.AdminEmailRecipient
@@ -62,13 +75,7 @@ func (e *EmailNotifier) Send(order models.Order) error {
 		adminEmail = e.from
 	}
 
-	// 1. Send Confirmation to Customer
-	customerHeader := fmt.Sprintf("From: %s\r\n", e.from)
-	customerHeader += fmt.Sprintf("To: %s\r\n", order.Email)
-	customerHeader += fmt.Sprintf("Subject: Order Confirmation #%d - %s\r\n", order.ID, cfg.Site.Name)
-	customerHeader += "MIME-version: 1.0\r\n"
-	customerHeader += "Content-Type: text/plain; charset=\"UTF-8\"\r\n\r\n"
-
+	customerSubject := fmt.Sprintf("Order Confirmation #%d - %s", order.ID, cfg.Site.Name)
 	customerBody := fmt.Sprintf(
 		"Hello %s %s,\n\n"+
 			"Thank you for your order! We have received it and are currently processing it.\n\n"+
@@ -80,17 +87,11 @@ func (e *EmailNotifier) Send(order models.Order) error {
 		order.FirstName, order.LastName, order.ID, order.Total.ToFloat(), cfg.Site.Currency, order.Address, order.City,
 	)
 
-	if err := smtp.SendMail(e.host+":"+e.port, auth, e.from, []string{order.Email}, []byte(customerHeader+customerBody)); err != nil {
+	if err := e.send(order.Email, customerSubject, customerBody); err != nil {
 		slog.Error("failed to send customer confirmation email", "err", err, "orderID", order.ID)
 	}
 
-	// 2. Send Notification to Admin
-	adminHeader := fmt.Sprintf("From: %s\r\n", e.from)
-	adminHeader += fmt.Sprintf("To: %s\r\n", adminEmail)
-	adminHeader += fmt.Sprintf("Subject: New Order #%d from %s %s\r\n", order.ID, order.FirstName, order.LastName)
-	adminHeader += "MIME-version: 1.0\r\n"
-	adminHeader += "Content-Type: text/plain; charset=\"UTF-8\"\r\n\r\n"
-
+	adminSubject := fmt.Sprintf("New Order #%d from %s %s", order.ID, order.FirstName, order.LastName)
 	adminBody := fmt.Sprintf(
 		"Hello,\n\n"+
 			"You have a new order from %s %s (%s).\n\n"+
@@ -103,7 +104,7 @@ func (e *EmailNotifier) Send(order models.Order) error {
 		order.FirstName, order.LastName, order.Email, order.ID, order.Total.ToFloat(), cfg.Site.Currency, order.Address, order.City, order.Phone,
 	)
 
-	return smtp.SendMail(e.host+":"+e.port, auth, e.from, []string{adminEmail}, []byte(adminHeader+adminBody))
+	return e.send(adminEmail, adminSubject, adminBody)
 }
 
 func (e *EmailNotifier) SendAbandoned(order models.Order) error {
@@ -117,7 +118,6 @@ func (e *EmailNotifier) SendAbandoned(order models.Order) error {
 		return e.SendTest(adminEmail)
 	}
 
-	auth := smtp.PlainAuth("", e.username, e.password, e.host)
 	cfg := config.Get()
 
 	adminEmail := cfg.Notification.AdminEmailRecipient
@@ -125,12 +125,7 @@ func (e *EmailNotifier) SendAbandoned(order models.Order) error {
 		adminEmail = e.from
 	}
 
-	header := fmt.Sprintf("From: %s\r\n", e.from)
-	header += fmt.Sprintf("To: %s\r\n", adminEmail)
-	header += fmt.Sprintf("Subject: [Abandoned Cart] Potential Order #%d\r\n", order.ID)
-	header += "MIME-version: 1.0\r\n"
-	header += "Content-Type: text/plain; charset=\"UTF-8\"\r\n\r\n"
-
+	subject := fmt.Sprintf("[Abandoned Cart] Potential Order #%d", order.ID)
 	body := fmt.Sprintf(
 		"Hello,\n\n"+
 			"A customer started a checkout but hasn't finished yet.\n\n"+
@@ -144,22 +139,12 @@ func (e *EmailNotifier) SendAbandoned(order models.Order) error {
 		order.ID, order.FirstName, order.LastName, order.Phone, order.City, order.Total.ToFloat(), cfg.Site.Currency,
 	)
 
-	return smtp.SendMail(e.host+":"+e.port, auth, e.from, []string{adminEmail}, []byte(header+body))
+	return e.send(adminEmail, subject, body)
 }
 
 // SendTest sends a simple verification email to the specified recipient.
 func (e *EmailNotifier) SendTest(recipient string) error {
-	auth := smtp.PlainAuth("", e.username, e.password, e.host)
-
-	header := fmt.Sprintf("From: %s\r\n", e.from)
-	header += fmt.Sprintf("To: %s\r\n", recipient)
-	header += "Subject: [Test] Shop Notification System\r\n"
-	header += "MIME-version: 1.0\r\n"
-	header += "Content-Type: text/plain; charset=\"UTF-8\"\r\n\r\n"
-
+	subject := "[Test] Shop Notification System"
 	body := "This is a test email to verify your shop's notification settings. If you received this, your SMTP configuration is working correctly."
-
-	msg := []byte(header + body)
-
-	return smtp.SendMail(e.host+":"+e.port, auth, e.from, []string{recipient}, msg)
+	return e.send(recipient, subject, body)
 }

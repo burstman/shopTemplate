@@ -14,6 +14,7 @@ import (
 	"shopTemplate/app/config"
 	"shopTemplate/app/db"
 	"shopTemplate/app/models"
+	"shopTemplate/app/services"
 	"shopTemplate/app/views/admin"
 	"strconv"
 	"strings"
@@ -60,6 +61,14 @@ func generateAffiliateID() (string, error) {
 }
 
 func sendAdminPasswordEmail(to, password, siteName string) error {
+	if apiKey := os.Getenv("BREVO_API_KEY"); apiKey != "" {
+		subject := "Admin Account Created - " + siteName
+		body := fmt.Sprintf("Hello,\n\nYour admin account has been created for %s.\n\nEmail: %s\nPassword: %s\n\nPlease log in and change your password as soon as possible.\n\nThank you,\n%s",
+			siteName, to, password, siteName,
+		)
+		return services.SendEmailViaBrevo(to, subject, body)
+	}
+
 	from := os.Getenv("SMTP_FROM")
 	host := os.Getenv("SMTP_HOST")
 	port := os.Getenv("SMTP_PORT")
