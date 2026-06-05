@@ -90,6 +90,7 @@ func sendAdminPasswordEmail(to, password, siteName string) bool {
 
 func HandleSetupIndex(kit *kit.Kit) error {
 	aff := config.AffiliateFromContext(kit.Request.Context())
+	slog.Info("setup index", "host", kit.Request.Host, "affiliate_found", aff != nil, "has_password", aff != nil && aff.PasswordHash != "")
 	if aff != nil && aff.PasswordHash != "" {
 		return kit.Redirect(http.StatusSeeOther, "/login")
 	}
@@ -98,11 +99,14 @@ func HandleSetupIndex(kit *kit.Kit) error {
 
 func HandleSetupCreate(kit *kit.Kit) error {
 	aff := config.AffiliateFromContext(kit.Request.Context())
+	slog.Info("setup create", "host", kit.Request.Host, "affiliate_found", aff != nil, "affiliate_id", func() string { if aff != nil { return aff.AffiliateID }; return "" }())
 
 	name := kit.Request.FormValue("name")
 	email := kit.Request.FormValue("email")
+	slog.Info("setup create form", "name", name, "email", email)
 
 	if name == "" || email == "" {
+		slog.Warn("setup create validation failed", "reason", "missing fields")
 		return kit.Render(admin.SetupPage("", "", "", "All fields are required.", false))
 	}
 
@@ -113,6 +117,7 @@ func HandleSetupCreate(kit *kit.Kit) error {
 		excludeID = aff.AffiliateID
 	}
 	if err := db.Get().Where("email = ? AND affiliate_id != ?", email, excludeID).First(&existingAff).Error; err == nil {
+		slog.Warn("setup create email conflict", "email", email, "existing_id", existingAff.AffiliateID)
 		return kit.Render(admin.SetupPage("", "", "", "This email is already registered to another shop. Each shop must use a unique email.", false))
 	}
 
@@ -120,6 +125,7 @@ func HandleSetupCreate(kit *kit.Kit) error {
 	var authorizedEmails []string
 	db.Get().Model(&models.Affiliate{}).Where("authorized_email <> ''").Pluck("authorized_email", &authorizedEmails)
 	if len(authorizedEmails) > 0 {
+		slog.Info("setup create authorized check", "authorized_list", authorizedEmails)
 		authorized := false
 		for _, ae := range authorizedEmails {
 			if ae == email {
@@ -128,6 +134,7 @@ func HandleSetupCreate(kit *kit.Kit) error {
 			}
 		}
 		if !authorized {
+			slog.Warn("setup create unauthorized email", "email", email)
 			return kit.Render(admin.SetupPage("", "", "", "Your email is not authorized for setup. Contact the shop owner.", false))
 		}
 	}
@@ -137,14 +144,17 @@ func HandleSetupCreate(kit *kit.Kit) error {
 		scheme = "http"
 	}
 	shopURL := fmt.Sprintf("%s://%s", scheme, kit.Request.Host)
+	slog.Info("setup create shop_url", "shop_url", shopURL)
 
 	password, err := generateSetupPassword(12)
 	if err != nil {
+		slog.Error("setup create password generation failed", "err", err)
 		return err
 	}
 
 	hash, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	if err != nil {
+		slog.Error("setup create bcrypt failed", "err", err)
 		return err
 	}
 
@@ -152,6 +162,7 @@ func HandleSetupCreate(kit *kit.Kit) error {
 	if aff == nil {
 		affiliateID, err := generateAffiliateID()
 		if err != nil {
+			slog.Error("setup create affiliate ID generation failed", "err", err)
 			return kit.Render(admin.SetupPage("", "", "", "Failed to generate affiliate ID: "+err.Error(), false))
 		}
 		aff = &models.Affiliate{
@@ -164,10 +175,13 @@ func HandleSetupCreate(kit *kit.Kit) error {
 			ShopURL:      shopURL,
 			Balance:      models.NewCurrency(100.00),
 		}
+		slog.Info("setup create creating new affiliate", "affiliate_id", affiliateID, "shop_url", shopURL)
 		if err := db.Get().Create(aff).Error; err != nil {
+			slog.Error("setup create affiliate creation failed", "err", err)
 			return kit.Render(admin.SetupPage("", "", "", "Failed to create affiliate: "+err.Error(), false))
 		}
 	} else {
+		slog.Info("setup create updating existing affiliate", "affiliate_id", aff.AffiliateID)
 		db.Get().Model(aff).Updates(map[string]interface{}{
 			"name":          name,
 			"email":         email,
@@ -186,21 +200,27 @@ func HandleSetupCreate(kit *kit.Kit) error {
 			EmailVerifiedAt: sql.NullTime{Time: time.Now(), Valid: true},
 			AffiliateID:     aff.AffiliateID,
 		}
+		slog.Info("setup create creating new user", "email", email)
 		if err := db.Get().Create(&user).Error; err != nil {
+			slog.Error("setup create user creation failed", "err", err)
 			return kit.Render(admin.SetupPage("", "", "", "Failed to create admin: "+err.Error(), false))
 		}
 	} else {
+		slog.Info("setup create updating existing user", "email", email, "user_id", existing.ID)
 		db.Get().Model(&existing).Update("password_hash", string(hash))
 	}
 
 	cfg := config.Get()
 	cfg.Site.AffiliateID = aff.AffiliateID
+	slog.Info("setup create saving config", "affiliate_id", aff.AffiliateID)
 	if err := config.Save(cfg); err != nil {
+		slog.Error("setup create config save failed", "err", err)
 		return kit.Render(admin.SetupPage("", "", "", "Failed to save affiliate ID to config: "+err.Error(), false))
 	}
 
 	// Send password via email if SMTP is configured
 	emailSent := sendAdminPasswordEmail(email, password, cfg.Site.Name)
+	slog.Info("setup create complete", "email_sent", emailSent)
 
 	return kit.Render(admin.SetupPage(email, password, shopURL, "", emailSent))
 }
