@@ -282,6 +282,8 @@ func HandleSetupCreate(kit *kit.Kit) error {
 		return kit.Render(admin.SetupPage("", "", "", "Failed to save affiliate ID to config: "+err.Error(), false))
 	}
 
+	slog.Info("setup create password", "email", email, "password", password)
+
 	// Send password via email (required)
 	if err := sendAdminPasswordEmail(email, password, cfg.Site.Name); err != nil {
 		slog.Error("setup create email failed", "err", err)
