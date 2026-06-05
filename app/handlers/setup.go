@@ -2,10 +2,12 @@ package handlers
 
 import (
 	"crypto/rand"
+	"crypto/tls"
 	"database/sql"
 	"fmt"
 	"log/slog"
 	"math/big"
+	"net"
 	"net/http"
 	"net/smtp"
 	"os"
@@ -67,25 +69,86 @@ func sendAdminPasswordEmail(to, password, siteName string) error {
 		return fmt.Errorf("SMTP not configured: set SMTP_FROM, SMTP_HOST, SMTP_PORT")
 	}
 
+	slog.Info("sending admin password email", "host", host, "port", port, "from", from, "to", to, "user", username)
+
+	ips, lookupErr := net.LookupHost(host)
+	if lookupErr != nil {
+		slog.Error("SMTP host DNS lookup failed", "host", host, "err", lookupErr)
+	} else {
+		slog.Info("SMTP host resolved", "host", host, "ips", ips)
+	}
+
 	msg := fmt.Sprintf("From: %s\r\nTo: %s\r\nSubject: Admin Account Created - %s\r\nMIME-version: 1.0\r\nContent-Type: text/plain; charset=\"UTF-8\"\r\n\r\nHello,\n\nYour admin account has been created for %s.\n\nEmail: %s\nPassword: %s\n\nPlease log in and change your password as soon as possible.\n\nThank you,\n%s",
 		from, to, siteName, siteName, to, password, siteName,
 	)
 
+	addr := host + ":" + port
+
 	done := make(chan error, 1)
 	go func() {
-		auth := smtp.PlainAuth("", username, smtpPass, host)
-		done <- smtp.SendMail(host+":"+port, auth, from, []string{to}, []byte(msg))
+		conn, err := net.DialTimeout("tcp", addr, 5*time.Second)
+		if err != nil {
+			done <- fmt.Errorf("TCP connection failed: %w", err)
+			return
+		}
+		conn.Close()
+
+		if port == "465" {
+			tlsConn, err := tls.DialWithDialer(&net.Dialer{Timeout: 5 * time.Second}, "tcp", addr, &tls.Config{ServerName: host})
+			if err != nil {
+				done <- fmt.Errorf("TLS connection failed: %w", err)
+				return
+			}
+			client, err := smtp.NewClient(tlsConn, host)
+			if err != nil {
+				done <- fmt.Errorf("SMTP client failed: %w", err)
+				return
+			}
+			defer client.Close()
+			auth := smtp.PlainAuth("", username, smtpPass, host)
+			if err := client.Auth(auth); err != nil {
+				done <- fmt.Errorf("SMTP auth failed: %w", err)
+				return
+			}
+			if err := client.Mail(from); err != nil {
+				done <- fmt.Errorf("SMTP MAIL FROM failed: %w", err)
+				return
+			}
+			if err := client.Rcpt(to); err != nil {
+				done <- fmt.Errorf("SMTP RCPT TO failed: %w", err)
+				return
+			}
+			w, err := client.Data()
+			if err != nil {
+				done <- fmt.Errorf("SMTP DATA failed: %w", err)
+				return
+			}
+			_, err = w.Write([]byte(msg))
+			if err != nil {
+				done <- fmt.Errorf("SMTP write failed: %w", err)
+				return
+			}
+			err = w.Close()
+			if err != nil {
+				done <- fmt.Errorf("SMTP close failed: %w", err)
+				return
+			}
+			done <- nil
+		} else {
+			auth := smtp.PlainAuth("", username, smtpPass, host)
+			done <- smtp.SendMail(addr, auth, from, []string{to}, []byte(msg))
+		}
 	}()
 
 	select {
 	case err := <-done:
 		if err != nil {
-			slog.Error("failed to send admin password email", "err", err)
+			slog.Error("failed to send admin password email", "host", host, "port", port, "err", err)
 			return fmt.Errorf("failed to send email: %w", err)
 		}
 		return nil
-	case <-time.After(10 * time.Second):
-		return fmt.Errorf("email send timed out after 10s")
+	case <-time.After(15 * time.Second):
+		return fmt.Errorf("email send timed out after 15s")
 	}
 }
 
