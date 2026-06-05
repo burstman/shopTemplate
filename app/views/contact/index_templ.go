@@ -8,9 +8,12 @@ package contact
 import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
-import "shopTemplate/app/views/components"
+import (
+	"context"
+	"shopTemplate/app/views/components"
+)
 
-func Index() templ.Component {
+func Index(ctx context.Context) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -31,7 +34,7 @@ func Index() templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = components.ContactForm().Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = components.ContactForm(ctx).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

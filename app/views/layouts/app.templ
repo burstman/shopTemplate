@@ -97,7 +97,7 @@ templ App(user models.AuthUser, cfg *config.Config, categories []models.Category
 			<main class="flex-grow">
 				@content
 			</main>
-			@components.Footer(user,cfg)
+			@components.Footer(ctx, user, cfg)
 			if user.Role != "admin" {
 				@components.ChatButton(ctx, user, cfg)
 			}

@@ -92,7 +92,7 @@ func BaseLayout(user models.AuthUser, cfg *config.Config, categories []models.Ca
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = components.Footer(user, cfg).Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = components.Footer(ctx, user, cfg).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

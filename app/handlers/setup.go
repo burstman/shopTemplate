@@ -4,8 +4,11 @@ import (
 	"crypto/rand"
 	"database/sql"
 	"fmt"
+	"log/slog"
 	"math/big"
 	"net/http"
+	"net/smtp"
+	"os"
 	"shopTemplate/app/config"
 	"shopTemplate/app/db"
 	"shopTemplate/app/models"
@@ -54,12 +57,43 @@ func generateAffiliateID() (string, error) {
 	return fmt.Sprintf("AFF-%03d", num+1), nil
 }
 
+func sendAdminPasswordEmail(to, password, siteName string) bool {
+	from := os.Getenv("SMTP_FROM")
+	host := os.Getenv("SMTP_HOST")
+	port := os.Getenv("SMTP_PORT")
+	username := os.Getenv("SMTP_USER")
+	smtpPass := os.Getenv("SMTP_PASS")
+	if from == "" || host == "" || port == "" {
+		return false
+	}
+	auth := smtp.PlainAuth("", username, smtpPass, host)
+	header := fmt.Sprintf("From: %s\r\n", from)
+	header += fmt.Sprintf("To: %s\r\n", to)
+	header += fmt.Sprintf("Subject: Admin Account Created - %s\r\n", siteName)
+	header += "MIME-version: 1.0\r\n"
+	header += "Content-Type: text/plain; charset=\"UTF-8\"\r\n\r\n"
+	body := fmt.Sprintf(
+		"Hello,\n\n"+
+			"Your admin account has been created for %s.\n\n"+
+			"Email: %s\n"+
+			"Password: %s\n\n"+
+			"Please log in and change your password as soon as possible.\n\n"+
+			"Thank you,\n%s",
+		siteName, to, password, siteName,
+	)
+	if err := smtp.SendMail(host+":"+port, auth, from, []string{to}, []byte(header+body)); err != nil {
+		slog.Error("failed to send admin password email", "err", err)
+		return false
+	}
+	return true
+}
+
 func HandleSetupIndex(kit *kit.Kit) error {
 	aff := config.AffiliateFromContext(kit.Request.Context())
 	if aff != nil && aff.PasswordHash != "" {
 		return kit.Redirect(http.StatusSeeOther, "/login")
 	}
-	return kit.Render(admin.SetupPage("", "", "", ""))
+	return kit.Render(admin.SetupPage("", "", "", "", false))
 }
 
 func HandleSetupCreate(kit *kit.Kit) error {
@@ -69,7 +103,7 @@ func HandleSetupCreate(kit *kit.Kit) error {
 	email := kit.Request.FormValue("email")
 
 	if name == "" || email == "" {
-		return kit.Render(admin.SetupPage("", "", "", "All fields are required."))
+		return kit.Render(admin.SetupPage("", "", "", "All fields are required.", false))
 	}
 
 	// Check if email is already used by another affiliate
@@ -79,7 +113,7 @@ func HandleSetupCreate(kit *kit.Kit) error {
 		excludeID = aff.AffiliateID
 	}
 	if err := db.Get().Where("email = ? AND affiliate_id != ?", email, excludeID).First(&existingAff).Error; err == nil {
-		return kit.Render(admin.SetupPage("", "", "", "This email is already registered to another shop. Each shop must use a unique email."))
+		return kit.Render(admin.SetupPage("", "", "", "This email is already registered to another shop. Each shop must use a unique email.", false))
 	}
 
 	// Check if the email is authorized
@@ -94,7 +128,7 @@ func HandleSetupCreate(kit *kit.Kit) error {
 			}
 		}
 		if !authorized {
-			return kit.Render(admin.SetupPage("", "", "", "Your email is not authorized for setup. Contact the shop owner."))
+			return kit.Render(admin.SetupPage("", "", "", "Your email is not authorized for setup. Contact the shop owner.", false))
 		}
 	}
 
@@ -118,7 +152,7 @@ func HandleSetupCreate(kit *kit.Kit) error {
 	if aff == nil {
 		affiliateID, err := generateAffiliateID()
 		if err != nil {
-			return kit.Render(admin.SetupPage("", "", "", "Failed to generate affiliate ID: "+err.Error()))
+			return kit.Render(admin.SetupPage("", "", "", "Failed to generate affiliate ID: "+err.Error(), false))
 		}
 		aff = &models.Affiliate{
 			AffiliateID:  affiliateID,
@@ -131,7 +165,7 @@ func HandleSetupCreate(kit *kit.Kit) error {
 			Balance:      models.NewCurrency(100.00),
 		}
 		if err := db.Get().Create(aff).Error; err != nil {
-			return kit.Render(admin.SetupPage("", "", "", "Failed to create affiliate: "+err.Error()))
+			return kit.Render(admin.SetupPage("", "", "", "Failed to create affiliate: "+err.Error(), false))
 		}
 	} else {
 		db.Get().Model(aff).Updates(map[string]interface{}{
@@ -153,7 +187,7 @@ func HandleSetupCreate(kit *kit.Kit) error {
 			AffiliateID:     aff.AffiliateID,
 		}
 		if err := db.Get().Create(&user).Error; err != nil {
-			return kit.Render(admin.SetupPage("", "", "", "Failed to create admin: "+err.Error()))
+			return kit.Render(admin.SetupPage("", "", "", "Failed to create admin: "+err.Error(), false))
 		}
 	} else {
 		db.Get().Model(&existing).Update("password_hash", string(hash))
@@ -162,8 +196,11 @@ func HandleSetupCreate(kit *kit.Kit) error {
 	cfg := config.Get()
 	cfg.Site.AffiliateID = aff.AffiliateID
 	if err := config.Save(cfg); err != nil {
-		return kit.Render(admin.SetupPage("", "", "", "Failed to save affiliate ID to config: "+err.Error()))
+		return kit.Render(admin.SetupPage("", "", "", "Failed to save affiliate ID to config: "+err.Error(), false))
 	}
 
-	return kit.Render(admin.SetupPage(email, password, shopURL, ""))
+	// Send password via email if SMTP is configured
+	emailSent := sendAdminPasswordEmail(email, password, cfg.Site.Name)
+
+	return kit.Render(admin.SetupPage(email, password, shopURL, "", emailSent))
 }

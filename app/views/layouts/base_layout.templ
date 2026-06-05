@@ -37,7 +37,7 @@ templ BaseLayout(user models.AuthUser, cfg *config.Config, categories []models.C
 		<body x-data="{theme: 'light'}" :class="theme" class="bg-background text-foreground font-sans antialiased pt-16 sm:pt-28">
 			@components.Navigation(user, cfg, categories, cartCount, nil)
 			{ children... }
-			@components.Footer(user,cfg)
+			@components.Footer(ctx, user, cfg)
 			if user.Role != "admin" {
 				@components.ChatButton(ctx, user, cfg)
 			}
