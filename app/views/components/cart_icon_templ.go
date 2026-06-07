@@ -39,14 +39,14 @@ func CartIcon(count int, attrs templ.Attributes) templ.Component {
 			return templ_7745c5c3_Err
 		}
 		if count > 0 {
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "<span class=\"absolute -top-1 -right-2 ml-2 rounded-full bg-primary px-2 py-0.5 text-xs font-medium text-white\">")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "<span class=\"absolute -top-1 -right-2 ml-2 rounded-full bg-primary px-2 py-0.5 text-xs font-medium text-primary-foreground\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var2 string
 			templ_7745c5c3_Var2, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprint(count))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/components/cart_icon.templ`, Line: 14, Col: 133}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/components/cart_icon.templ`, Line: 14, Col: 146}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var2))
 			if templ_7745c5c3_Err != nil {

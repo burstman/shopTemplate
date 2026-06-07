@@ -60,7 +60,7 @@ func New(categories []models.Category, form CreateForm, cfg *config.Config, csrf
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "<div class=\"mt-6 flex justify-end gap-3\"><a href=\"/admin/products\" class=\"px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300\">Cancel</a> <button type=\"submit\" class=\"px-4 py-2 bg-primary text-white rounded-md hover:bg-primary/90\">Create Product</button></div></form></div>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "<div class=\"mt-6 flex justify-end gap-3\"><a href=\"/admin/products\" class=\"px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300\">Cancel</a> <button type=\"submit\" class=\"px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90\">Create Product</button></div></form></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

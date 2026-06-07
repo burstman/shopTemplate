@@ -516,7 +516,7 @@ func QuickViewModal(product models.Product, cfg *config.Config) templ.Component 
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 46, "\" @click=\"added = true; setTimeout(() => added = false, 2000)\" :class=\"{ 'bg-green-600 hover:bg-green-700': added }\" class=\"flex w-full items-center justify-center rounded-md border border-transparent bg-primary px-8 py-3 text-base font-medium text-white hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-colors\"><span x-show=\"!added\">")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 46, "\" @click=\"added = true; setTimeout(() => added = false, 2000)\" :class=\"{ 'bg-green-600 hover:bg-green-700': added }\" class=\"flex w-full items-center justify-center rounded-md border border-transparent bg-primary px-8 py-3 text-base font-medium text-primary-foreground hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-colors\"><span x-show=\"!added\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

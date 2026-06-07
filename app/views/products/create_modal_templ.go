@@ -56,7 +56,7 @@ func CreateModal(form CreateForm, cfg *config.Config) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "</div><div class=\"mt-6 flex justify-end gap-3 pt-4 border-t border-gray-100\"><button type=\"button\" hx-get=\"/products\" hx-target=\"body\" class=\"px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300\">Cancel</button> <button type=\"submit\" class=\"px-4 py-2 bg-primary text-white rounded-md hover:bg-primary/90 shadow-sm\">Create Product</button></div></form></div></div>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "</div><div class=\"mt-6 flex justify-end gap-3 pt-4 border-t border-gray-100\"><button type=\"button\" hx-get=\"/products\" hx-target=\"body\" class=\"px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300\">Cancel</button> <button type=\"submit\" class=\"px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 shadow-sm\">Create Product</button></div></form></div></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

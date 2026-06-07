@@ -354,7 +354,7 @@ func ProductFormFields(p FormParams, cfg *config.Config) templ.Component {
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 29, "\" class=\"absolute top-1 left-1 bg-primary text-white text-[8px] font-bold px-1.5 py-0.5 rounded shadow-sm z-10 animate-in fade-in zoom-in duration-200\">PRIMARY</div><div class=\"absolute inset-0 flex items-center justify-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity rounded-md\"><!-- Delete Toggle --><input type=\"checkbox\" name=\"delete_images\" value=\"")
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 29, "\" class=\"absolute top-1 left-1 bg-primary text-primary-foreground text-[8px] font-bold px-1.5 py-0.5 rounded shadow-sm z-10 animate-in fade-in zoom-in duration-200\">PRIMARY</div><div class=\"absolute inset-0 flex items-center justify-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity rounded-md\"><!-- Delete Toggle --><input type=\"checkbox\" name=\"delete_images\" value=\"")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
@@ -473,9 +473,9 @@ func ProductFormFields(p FormParams, cfg *config.Config) templ.Component {
 					return templ_7745c5c3_Err
 				}
 				var templ_7745c5c3_Var26 string
-				templ_7745c5c3_Var26, templ_7745c5c3_Err = templ.ResolveAttributeValue(fmt.Sprintf("primary === '%s' ? 'bg-primary text-white' : 'text-white'", img))
+				templ_7745c5c3_Var26, templ_7745c5c3_Err = templ.ResolveAttributeValue(fmt.Sprintf("primary === '%s' ? 'bg-primary text-primary-foreground' : 'text-white'", img))
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/products/product_form_fields.templ`, Line: 163, Col: 99}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/views/products/product_form_fields.templ`, Line: 163, Col: 112}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var26)
 				if templ_7745c5c3_Err != nil {

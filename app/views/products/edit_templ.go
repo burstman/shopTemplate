@@ -90,7 +90,7 @@ func Edit(product models.Product, categories []models.Category, cfg *config.Conf
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 4, "<div class=\"mt-6 flex justify-end gap-3\"><a href=\"/admin/products\" class=\"px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300\">Cancel</a> <button type=\"submit\" class=\"px-4 py-2 bg-primary text-white rounded-md hover:bg-primary/90\">Update Product</button></div></form></div>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 4, "<div class=\"mt-6 flex justify-end gap-3\"><a href=\"/admin/products\" class=\"px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300\">Cancel</a> <button type=\"submit\" class=\"px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90\">Update Product</button></div></form></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
