@@ -20,7 +20,7 @@ script initFacebookPixel(id string) {
 
 templ App(user models.AuthUser, cfg *config.Config, categories []models.Category, cartCount int, content templ.Component, csrfToken string) {
 	<!DOCTYPE html>
-	<html lang={ fmt.Sprint(ctx.Value("lang")) } class="h-full" dir={ getDir(ctx) }>
+	<html lang={ fmt.Sprint(ctx.Value("lang")) } class="h-full" dir={ getDir(ctx) } style={ templ.KV("--primary", hslStr(cfg.Theme.PrimaryColor)) }>
 		<head>
 			<meta charset="UTF-8"/>
 			<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -47,9 +47,6 @@ templ App(user models.AuthUser, cfg *config.Config, categories []models.Category
 				<!-- End Facebook Pixel Code -->
 			}
 			<link rel="stylesheet" href="/public/assets/styles.css"/>
-			<style>
-				:root { --primary: { fmt.Sprintf("%.0f %.0f%% %.0f%%", hexToHSL(cfg.Theme.PrimaryColor)) }; }
-			</style>
 			<script src="https://unpkg.com/htmx.org@1.9.10"></script>
 			<script src="https://unpkg.com/htmx.org@1.9.10/dist/ext/ws.js"></script>
 			<script src="/public/assets/index.js"></script>
@@ -104,6 +101,11 @@ templ App(user models.AuthUser, cfg *config.Config, categories []models.Category
 			<audio id="chat-ping-sound" src="/public/assets/ping.wav" preload="auto" class="hidden"></audio>
 		</body>
 	</html>
+}
+
+func hslStr(hex string) string {
+	h, s, l := hexToHSL(hex)
+	return fmt.Sprintf("%.0f %.0f%% %.0f%%", h, s, l)
 }
 
 func getPageStyle(cfg *config.Config) string {
@@ -230,7 +232,7 @@ templ iconFor(name string) {
 
 templ AdminPage(user models.AuthUser, cfg *config.Config, categories []models.Category, cartCount int, sidebar []config.SidebarGroup, activePath string, content templ.Component, csrfToken string) {
 	<!DOCTYPE html>
-	<html lang={ fmt.Sprint(ctx.Value("lang")) } class="h-full" dir={ getDir(ctx) }>
+	<html lang={ fmt.Sprint(ctx.Value("lang")) } class="h-full" dir={ getDir(ctx) } style={ templ.KV("--primary", hslStr(cfg.Theme.PrimaryColor)) }>
 		<head>
 			<meta charset="UTF-8"/>
 			<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -238,9 +240,6 @@ templ AdminPage(user models.AuthUser, cfg *config.Config, categories []models.Ca
 			<title>{ pageTitleFromPath(activePath) } — { cfg.Site.Name }</title>
 			<link rel="stylesheet" href="/public/assets/styles.css"/>
 			<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lucide-static@latest/font/lucide.css">
-			<style>
-				:root { --primary: { fmt.Sprintf("%.0f %.0f%% %.0f%%", hexToHSL(cfg.Theme.PrimaryColor)) }; }
-			</style>
 			<script src="https://unpkg.com/htmx.org@1.9.10"></script>
 			<script src="https://unpkg.com/htmx.org@1.9.10/dist/ext/ws.js"></script>
 			<script src="/public/assets/index.js"></script>
