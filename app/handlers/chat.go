@@ -533,7 +533,7 @@ func HandleAdminChatSend(kit *kit.Kit) error {
 		}
 
 		clientConn, isOnline := activeClients[session.Identifier]
-		currentAdminID := getChatIdentifier(kit)
+		currentAdminID := "admin-" + user.Email
 
 		admins := make([]connInfo, 0, len(activeAdmins))
 		for aid, conn := range activeAdmins {
