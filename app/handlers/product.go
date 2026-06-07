@@ -33,6 +33,7 @@ func HandleAdminProductsIndex(kit *kit.Kit) error {
 		return kit.Redirect(http.StatusSeeOther, "/")
 	}
 
+	q := kit.Request.URL.Query().Get("q")
 	pageStr := kit.Request.URL.Query().Get("page")
 	page, _ := strconv.Atoi(pageStr)
 	if page < 1 {
@@ -40,23 +41,33 @@ func HandleAdminProductsIndex(kit *kit.Kit) error {
 	}
 	perPage := 10
 
+	query := db.Get().Model(&models.Product{})
+	if q != "" {
+		query = query.Where("name ILIKE ?", "%"+q+"%")
+	}
+
 	var total int64
-	err := db.Get().Model(&models.Product{}).Count(&total).Error
-	if err != nil {
+	if err := query.Count(&total).Error; err != nil {
 		return err
 	}
 	totalPages := int(math.Ceil(float64(total) / float64(perPage)))
 	offset := (page - 1) * perPage
 
 	var productsList []models.Product
-	if err := db.Get().Preload("Categories").Order("created_at desc").Limit(perPage).Offset(offset).Find(&productsList).Error; err != nil {
+	if err := query.Preload("Categories").Order("created_at desc").Limit(perPage).Offset(offset).Find(&productsList).Error; err != nil {
 		return err
 	}
 
 	activePath := "/admin/products"
 	sidebar := config.GetAdminSidebarGroups()
 	cfg := config.Get()
-	content := products.AdminList(productsList, page, totalPages, cfg)
+
+	isHX := kit.Request.Header.Get("HX-Request") != ""
+	if isHX {
+		return kit.Render(products.AdminList(productsList, page, totalPages, cfg, q))
+	}
+
+	content := products.AdminList(productsList, page, totalPages, cfg, q)
 	return RenderAdminWithLayout(kit, sidebar, activePath, content)
 }
 
