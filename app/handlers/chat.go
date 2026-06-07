@@ -122,7 +122,7 @@ func HandleChatWS(kit *kit.Kit) error {
 
 	clientsMu.Lock()
 	if isAdmin {
-		activeAdmins[id] = conn
+		activeAdmins["admin-"+user.Email] = conn
 	} else {
 		activeClients[id] = conn
 	}
@@ -163,8 +163,8 @@ func HandleChatWS(kit *kit.Kit) error {
 		slog.Info("websocket disconnected", "id", id, "isAdmin", isAdmin, "user", user.Email)
 		clientsMu.Lock()
 		if isAdmin {
-			if activeAdmins[id] == conn {
-				delete(activeAdmins, id)
+			if activeAdmins["admin-"+user.Email] == conn {
+				delete(activeAdmins, "admin-"+user.Email)
 			}
 		} else {
 			if activeClients[id] == conn {
