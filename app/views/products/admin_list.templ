@@ -23,6 +23,7 @@ templ AdminList(products []models.Product, page int, totalPages int, cfg *config
 			hx-target=".admin-content-inner"
 			hx-swap="innerHTML"
 			hx-push-url="true"
+			x-init="$el.focus()"
 			class="w-full sm:w-80 px-4 py-2 rounded-md border border-gray-300 shadow-sm focus:border-primary focus:ring-primary text-sm"
 		/>
 	</div>
