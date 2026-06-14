@@ -914,6 +914,14 @@ label {
   grid-column: span 1 / span 1;
 }
 
+.col-span-2 {
+  grid-column: span 2 / span 2;
+}
+
+.col-span-4 {
+  grid-column: span 4 / span 4;
+}
+
 .col-span-6 {
   grid-column: span 6 / span 6;
 }
@@ -1515,6 +1523,10 @@ label {
   grid-template-columns: repeat(1, minmax(0, 1fr));
 }
 
+.grid-cols-12 {
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+}
+
 .grid-cols-2 {
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }
@@ -1944,6 +1956,11 @@ label {
 
 .border-white\/20 {
   border-color: rgb(255 255 255 / 0.2);
+}
+
+.border-yellow-200 {
+  --tw-border-opacity: 1;
+  border-color: rgb(254 240 138 / var(--tw-border-opacity));
 }
 
 .bg-amber-400 {
@@ -3086,6 +3103,12 @@ label {
   border-right: 1px solid var(--admin-sidebar-border);
 }
 
+@media (max-width: 1023px) {
+  .admin-sidebar {
+    display: none;
+  }
+}
+
 .admin-sidebar-head {
   padding: 16px;
   border-bottom: 1px solid var(--admin-sidebar-border);
@@ -3685,9 +3708,9 @@ label {
   color: rgb(67 56 202 / var(--tw-text-opacity));
 }
 
-.file\:text-white::file-selector-button {
+.file\:text-primary-foreground::file-selector-button {
   --tw-text-opacity: 1;
-  color: rgb(255 255 255 / var(--tw-text-opacity));
+  color: hsl(var(--primary-foreground) / var(--tw-text-opacity));
 }
 
 .placeholder\:text-gray-400::-moz-placeholder {
@@ -3708,6 +3731,10 @@ label {
 .placeholder\:text-muted-foreground::placeholder {
   --tw-text-opacity: 1;
   color: hsl(var(--muted-foreground) / var(--tw-text-opacity));
+}
+
+.last\:border-b-0:last-child {
+  border-bottom-width: 0px;
 }
 
 .focus-within\:outline-none:focus-within {
@@ -4247,6 +4274,10 @@ label {
 
   .sm\:w-72 {
     width: 18rem;
+  }
+
+  .sm\:w-80 {
+    width: 20rem;
   }
 
   .sm\:w-96 {
