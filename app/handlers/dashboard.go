@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"net/http"
+	"time"
 	"shopTemplate/app/config"
 	"shopTemplate/app/db"
 	"shopTemplate/app/models"
@@ -42,19 +43,19 @@ func HandleAdminDashboard(kit *kit.Kit) error {
 
 	totalRevenue := totalRev.Total
 
-	// Fetch affiliate balance
-	var balance float64
+	// Fetch affiliate expiry
+	var expiresAt *time.Time
 	var affiliate models.Affiliate
 	if err := db.Get().Where("affiliate_id = ?", "AFF-001").First(&affiliate).Error; err == nil {
-		balance = affiliate.Balance.ToFloat()
+		expiresAt = affiliate.ExpiresAt
 	}
 
 	data := dashboard.DashboardData{
-		TotalOrders:  totalOrders,
-		TotalRevenue: totalRevenue,
-		Balance:      balance,
-		OrdersByStatus: ordersByStatus,
-		RecentOrders:   recentOrders,
+		TotalOrders:    totalOrders,
+		TotalRevenue:   totalRevenue,
+		ExpiresAt:      expiresAt,
+		OrdersByStatus:  ordersByStatus,
+		RecentOrders:    recentOrders,
 	}
 
 	cfg := config.FromContext(kit.Request.Context())

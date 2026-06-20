@@ -7,24 +7,10 @@ import (
 	"shopTemplate/app/services"
 )
 
-templ Index(orders []models.Order, page int, totalPages int, balance float64, cfg *config.Config) {
+templ Index(orders []models.Order, page int, totalPages int, cfg *config.Config) {
 	<div class="flex flex-col gap-6 mb-8">
 		<div class="flex justify-between items-center">
 			<h1 class="text-2xl font-bold">{ services.GetI18n().T(ctx, "orders") }</h1>
-		</div>
-
-		<!-- Balance Card -->
-		<div class={ "rounded-xl p-6 border max-w-sm",
-			templ.KV("bg-green-50 border-green-200", balance > 0),
-			templ.KV("bg-red-50 border-red-200", balance <= 0) }>
-			if balance > 0 {
-				<p class="text-sm font-medium text-green-600 uppercase tracking-wider mb-1">{ services.GetI18n().T(ctx, "remaining_balance") }</p>
-				<p class="text-3xl font-black text-green-600">{ fmt.Sprintf("%.2f", balance) } { cfg.Site.Currency }</p>
-			} else {
-				<p class="text-sm font-medium text-red-600 uppercase tracking-wider mb-1">{ services.GetI18n().T(ctx, "remaining_balance") }</p>
-				<p class="text-3xl font-black text-red-600">{ fmt.Sprintf("%.2f", balance) } { cfg.Site.Currency }</p>
-				<p class="mt-2 text-xs text-red-500">{ services.GetI18n().T(ctx, "balance_depleted") }</p>
-			}
 		</div>
 	</div>
 

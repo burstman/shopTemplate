@@ -5,9 +5,11 @@ import (
 	"encoding/json"
 	"log/slog"
 	"net/http"
+	"strconv"
 	"shopTemplate/app/db"
 	"shopTemplate/app/models"
 	"strings"
+	"time"
 
 	"github.com/anthdm/superkit/kit"
 )
@@ -62,7 +64,6 @@ type commissionJSON struct {
 	TotalCommission   float64 `json:"total_commission"`
 	PendingCommission float64 `json:"pending_commission"`
 	PaidCommission    float64 `json:"paid_commission"`
-	Balance      float64 `json:"balance"`
 }
 
 func writeJSON(w http.ResponseWriter, status int, data any) {
@@ -149,15 +150,52 @@ func HandleAPIAffiliateCommission(kit *kit.Kit) error {
 		rows.Scan(&r.TotalOrders, &r.TotalRevenue, &r.TotalCommission, &r.PendingCommission, &r.PaidCommission)
 	}
 
-	balance := affiliate.Balance.ToFloat()
-
 	writeJSON(kit.Response, http.StatusOK, commissionJSON{
 		TotalOrders:       r.TotalOrders,
 		TotalRevenue:      r.TotalRevenue,
 		TotalCommission:   r.TotalCommission,
 		PendingCommission: r.PendingCommission,
 		PaidCommission:    r.PaidCommission,
-		Balance:           balance,
+	})
+	return nil
+}
+
+func HandleAPIAffiliateExtend(kit *kit.Kit) error {
+	affiliate := getAPIAffiliate(kit.Request)
+	if affiliate == nil {
+		writeJSON(kit.Response, http.StatusUnauthorized, map[string]string{"error": "unauthorized"})
+		return nil
+	}
+
+	daysStr := kit.Request.FormValue("days")
+	if daysStr == "" {
+		writeJSON(kit.Response, http.StatusBadRequest, map[string]string{"error": "days parameter is required"})
+		return nil
+	}
+
+	days, err := strconv.Atoi(daysStr)
+	if err != nil || days <= 0 {
+		writeJSON(kit.Response, http.StatusBadRequest, map[string]string{"error": "days must be a positive integer"})
+		return nil
+	}
+
+	now := time.Now()
+	var newExpiry time.Time
+	if affiliate.ExpiresAt != nil && affiliate.ExpiresAt.After(now) {
+		newExpiry = affiliate.ExpiresAt.AddDate(0, 0, days)
+	} else {
+		newExpiry = now.AddDate(0, 0, days)
+	}
+
+	if err := db.Get().Model(&models.Affiliate{}).Where("id = ?", affiliate.ID).Update("expires_at", newExpiry).Error; err != nil {
+		slog.Error("failed to extend affiliate expiry", "err", err)
+		writeJSON(kit.Response, http.StatusInternalServerError, map[string]string{"error": "failed to extend"})
+		return nil
+	}
+
+	writeJSON(kit.Response, http.StatusOK, map[string]any{
+		"expires_at": newExpiry.Format(time.RFC3339),
+		"days_added": days,
 	})
 	return nil
 }

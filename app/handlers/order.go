@@ -42,17 +42,10 @@ func HandleAdminOrdersIndex(kit *kit.Kit) error {
 		return err
 	}
 
-	// Fetch affiliate balance
-	var balance float64
-	var affiliate models.Affiliate
-	if err := db.Get().Where("affiliate_id = ?", "AFF-001").First(&affiliate).Error; err == nil {
-		balance = affiliate.Balance.ToFloat()
-	}
-
 	cfg := config.FromContext(kit.Request.Context())
 	activePath := "/admin/orders"
 	sidebar := config.GetAdminSidebarGroups()
-	content := orders.Index(ordersList, page, totalPages, balance, cfg)
+	content := orders.Index(ordersList, page, totalPages, cfg)
 	return RenderAdminWithLayout(kit, sidebar, activePath, content)
 }
 

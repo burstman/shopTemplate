@@ -2,15 +2,15 @@ package dashboard
 
 import (
 	"fmt"
+	"time"
 	"shopTemplate/app/config"
 	"shopTemplate/app/models"
-	"shopTemplate/app/services"
 )
 
 type DashboardData struct {
 	TotalOrders    int64
 	TotalRevenue   float64
-	Balance   float64
+	ExpiresAt      *time.Time
 	OrdersByStatus map[string]int64
 	RecentOrders   []models.Order
 }
@@ -54,18 +54,21 @@ templ Index(data DashboardData, cfg *config.Config) {
 			<div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
 				<div class="flex items-center justify-between">
 					<div>
-						<p class="text-sm font-medium text-gray-500 uppercase tracking-wider">{ services.GetI18n().T(ctx, "balance") }</p>
-						<p class={ "mt-2 text-3xl font-black",
-							templ.KV("text-green-600", data.Balance > 0),
-							templ.KV("text-red-600", data.Balance <= 0) }>{ fmt.Sprintf("%.2f", data.Balance) } { cfg.Site.Currency }</p>
+						<p class="text-sm font-medium text-gray-500 uppercase tracking-wider">Subscription</p>
+						if data.ExpiresAt != nil && time.Until(*data.ExpiresAt) > 0 {
+							<p class="mt-2 text-3xl font-black text-green-600">{ int(time.Until(*data.ExpiresAt).Hours() / 24) } <span class="text-lg font-medium text-gray-500">days remaining</span></p>
+							<p class="text-xs text-gray-400 mt-1">Expires { data.ExpiresAt.Format("Jan 02, 2006") }</p>
+						} else if data.ExpiresAt != nil {
+							<p class="mt-2 text-3xl font-black text-red-600">Expired</p>
+							<p class="text-xs text-red-400 mt-1">Contact admin to renew</p>
+						} else {
+							<p class="mt-2 text-3xl font-black text-gray-400">--</p>
+							<p class="text-xs text-gray-400 mt-1">Not set — contact admin</p>
+						}
 					</div>
-					<div class={ "p-3 rounded-lg",
-						templ.KV("bg-green-100", data.Balance > 0),
-						templ.KV("bg-red-100", data.Balance <= 0) }>
-						<svg class={ "w-8 h-8",
-							templ.KV("text-green-600", data.Balance > 0),
-							templ.KV("text-red-600", data.Balance <= 0) } fill="none" stroke="currentColor" viewBox="0 0 24 24">
-							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+					<div class="p-3 rounded-lg bg-blue-100">
+						<svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
 						</svg>
 					</div>
 				</div>

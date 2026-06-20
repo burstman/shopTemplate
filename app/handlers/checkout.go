@@ -10,7 +10,6 @@ import (
 	"shopTemplate/app/db"
 	"shopTemplate/app/helpers"
 	"shopTemplate/app/models"
-	"shopTemplate/app/services"
 	"shopTemplate/app/views/checkout"
 	"strconv"
 	"time"
@@ -18,7 +17,6 @@ import (
 	"github.com/anthdm/superkit/event"
 	"github.com/anthdm/superkit/kit"
 	"github.com/anthdm/superkit/validate"
-	"gorm.io/gorm"
 )
 
 func getAffiliateID(ctx context.Context) *uint {
@@ -43,28 +41,6 @@ func HandleCheckoutSuccess(kit *kit.Kit) error {
 		total = 0
 	}
 	return RenderWithLayout(kit, checkout.Success(cfg, total))
-}
-
-func deductCommissionFromBalance(commission models.Currency, affiliateID *uint) error {
-	if affiliateID == nil || commission <= 0 {
-		return nil
-	}
-	result := db.Get().Model(&models.Affiliate{}).
-		Where("id = ?", *affiliateID).
-		Update("balance", gorm.Expr("GREATEST(balance - ?, 0)", commission.ToFloat()))
-	if result.Error != nil {
-		slog.Error("failed to deduct balance", "err", result.Error)
-		return result.Error
-	}
-	if result.RowsAffected == 0 {
-		slog.Warn("affiliate not found for balance deduction", "id", *affiliateID)
-		var aff models.Affiliate
-		if err := db.Get().First(&aff, *affiliateID).Error; err == nil {
-			services.ReportWarningAffiliate(&aff, fmt.Sprintf("affiliate %d not found for balance deduction", *affiliateID))
-		}
-		return fmt.Errorf("affiliate %d not found", *affiliateID)
-	}
-	return nil
 }
 
 func HandleCheckoutCreate(kit *kit.Kit) error {
@@ -104,13 +80,7 @@ func HandleCheckoutCreate(kit *kit.Kit) error {
 		commission = 0
 	}
 
-	// Deduct commission from affiliate's balance
 	affiliateID := getAffiliateID(kit.Request.Context())
-	if !isTest {
-		if err := deductCommissionFromBalance(commission, affiliateID); err != nil {
-			slog.Error("commission deduction failed, order will still proceed", "err", err)
-		}
-	}
 
 	// Check for existing abandoned order
 	sess := kit.GetSession("session")

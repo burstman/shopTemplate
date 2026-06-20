@@ -246,7 +246,6 @@ func HandleSetupCreate(kit *kit.Kit) error {
 			Rate:         0,
 			Active:       true,
 			ShopURL:      shopURL,
-			Balance:      models.NewCurrency(100.00),
 		}
 		slog.Info("setup create creating new affiliate", "affiliate_id", affiliateID, "shop_url", shopURL)
 		if err := db.Get().Create(aff).Error; err != nil {

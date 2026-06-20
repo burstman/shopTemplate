@@ -188,6 +188,7 @@ func InitializeRoutes(router *chi.Mux) {
 		app.Use(handlers.AffiliateAPIMiddleware)
 		app.Get("/api/orders", kit.Handler(handlers.HandleAPIAffiliateOrders))
 		app.Get("/api/commission", kit.Handler(handlers.HandleAPIAffiliateCommission))
+		app.Post("/api/affiliate/extend", kit.Handler(handlers.HandleAPIAffiliateExtend))
 	})
 
 	// CSRF protection using gorilla/csrf
