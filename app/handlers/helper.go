@@ -1,7 +1,10 @@
 package handlers
 
 import (
+	"time"
+
 	"shopTemplate/app/config"
+	"shopTemplate/app/db"
 	"shopTemplate/app/helpers"
 	"shopTemplate/app/models"
 	"shopTemplate/app/views/layouts"
@@ -35,5 +38,17 @@ func RenderAdminWithLayout(kit *kit.Kit, sidebar []config.SidebarGroup, activePa
 	cart := helpers.GetCart(kit)
 	csrfToken := csrf.Token(kit.Request)
 
-	return kit.Render(layouts.AdminPage(user, cfg, categories, cart.Total, sidebar, activePath, content, csrfToken))
+	// Fetch affiliate's expires_at for subscription badge
+	var expiresAt *time.Time
+	if user.ID > 0 {
+		var u models.User
+		if err := db.Get().Where("email = ?", user.Email).First(&u).Error; err == nil && u.AffiliateID != "" {
+			var aff models.Affiliate
+			if err := db.Get().Where("affiliate_id = ?", u.AffiliateID).First(&aff).Error; err == nil {
+				expiresAt = aff.ExpiresAt
+			}
+		}
+	}
+
+	return kit.Render(layouts.AdminPage(user, cfg, categories, cart.Total, expiresAt, sidebar, activePath, content, csrfToken))
 }

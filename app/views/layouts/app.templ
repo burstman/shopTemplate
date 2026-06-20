@@ -6,6 +6,7 @@ import (
 	"math"
 	"strconv"
 	"strings"
+	"time"
 	"shopTemplate/app/config"
 	"shopTemplate/app/models"
 	"shopTemplate/app/views/components"
@@ -230,7 +231,7 @@ templ iconFor(name string) {
 	}
 }
 
-templ AdminPage(user models.AuthUser, cfg *config.Config, categories []models.Category, cartCount int, sidebar []config.SidebarGroup, activePath string, content templ.Component, csrfToken string) {
+templ AdminPage(user models.AuthUser, cfg *config.Config, categories []models.Category, cartCount int, expiresAt *time.Time, sidebar []config.SidebarGroup, activePath string, content templ.Component, csrfToken string) {
 	<!DOCTYPE html>
 	<html lang={ fmt.Sprint(ctx.Value("lang")) } class="h-full" dir={ getDir(ctx) } style={ templ.KV("--primary", hslStr(cfg.Theme.PrimaryColor)) }>
 		<head>
@@ -405,6 +406,13 @@ templ AdminPage(user models.AuthUser, cfg *config.Config, categories []models.Ca
 							<span style="font-weight:500;">{ services.GetI18n().T(ctx, pageTitleFromPath(activePath)) }</span>
 						</div>
 						<div class="admin-header-actions">
+							if expiresAt != nil && time.Until(*expiresAt).Hours() / 24 > 0 {
+								<span style="font-size:11px;padding:2px 8px;border-radius:4px;background:#dbeafe;color:#1e40af;font-weight:600;white-space:nowrap">{ int(time.Until(*expiresAt).Hours() / 24) } days left</span>
+							} else if expiresAt != nil {
+								<span style="font-size:11px;padding:2px 8px;border-radius:4px;background:#fee2e2;color:#991b1b;font-weight:600;white-space:nowrap">Expired</span>
+							} else {
+								<span class="subscription-badge" style="font-size:11px;padding:2px 8px;border-radius:4px;background:#f3f4f6;color:#6b7280;font-weight:600;white-space:nowrap">No subscription</span>
+							}
 							if user.ID != 0 {
 								<span class="text-sm text-gray-500">{ user.Email }</span>
 							}
