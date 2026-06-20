@@ -224,7 +224,6 @@ func GetAdminSidebarGroups() []SidebarGroup {
 		{
 			Label: "Operations",
 			Items: []MenuItem{
-				{Title: "Orders", Link: "/admin/orders", Icon: "clipboard-list"},
 				{Title: "Payment Methods", Link: "/admin/payment", Icon: "credit-card"},
 			},
 		},

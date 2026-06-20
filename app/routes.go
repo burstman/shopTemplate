@@ -265,6 +265,7 @@ func InitializeRoutes(router *chi.Mux) {
 
 		// Routes
 		app.Get("/admin/dashboard", kit.Handler(handlers.HandleAdminDashboard))
+		app.Post("/admin/extend/{affiliateID}", kit.Handler(handlers.HandleAdminExtend))
 		app.Get("/admin/categories", kit.Handler(handlers.HandleAdminCategoriesIndex))
 		app.Post("/admin/categories", kit.Handler(handlers.HandleAdminCategoryCreate))
 		app.Delete("/admin/categories/{id}", kit.Handler(handlers.HandleAdminCategoryDelete))
